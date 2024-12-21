@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main_page.views import request_on_main_page
+from app.main_page.views import request_on_main_page, requests_on_get_polls, request_on_create_new_poll
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', request_on_main_page, name='home')
+    path('', request_on_main_page, name='home'),
+    path('get_polls', requests_on_get_polls),
+    path('create_poll', request_on_create_new_poll)
 ]
