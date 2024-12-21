@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pollster</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}">
+
+</head>
+
+<body>
+    <header>
+        <h1>Pollster</h1>
+    </header>
+    <h2>Актуальные опросы:</h2>
+    <ul class="polls">
+        {% for item in all_objects %}
+        <li class="poll-item">
+            <h2 class="poll-name">{{item.name_of_poll}}</h2>
+            <span>Описание:</span>
+            <p class="poll-description">{{item.description}}</p>
+            <p>Тэги: {{item.tags}} </p>
+        
+
+        </li>
+        {% endfor %}
+    </ul>
+
+</body>
+
+</html>
