@@ -39,9 +39,17 @@ class MysqlDB:
         self.connection.commit()
 
     def get_polls(self, num_of_polls: int = 1) -> list:
+        """
+        Функция возвращает list, состоящий из id: int, tags: string, name_of_poll: string, description: string
+        :param num_of_polls: количество опросов, которые должна вернуть функция
+        :return: list
+        """
         self.cursor.execute("""SELECT * FROM polls""")
         result = self.cursor.fetchmany(num_of_polls)
-        return result
+        polls_list: list[Poll] = []
+        for poll in result:
+            polls_list.append(Poll(poll[3], poll[2], poll[1], poll[0]))
+        return polls_list
 
     def create_poll(self, poll: Poll):
         try:
