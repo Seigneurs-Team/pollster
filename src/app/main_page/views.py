@@ -6,7 +6,8 @@ from random import randint
 
 
 def request_on_main_page(requests):
-    return HttpResponse("Main page")
+    polls = client_mysqldb.get_polls()
+    return render(requests, 'index.html', context={'all_objects': polls})
 
 
 def requests_on_get_polls(request, num_of_polls):
