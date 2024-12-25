@@ -3,6 +3,7 @@ import mysql
 import logging
 from Configs.Hosts import Hosts
 from Configs.Poll import Poll
+import time
 logger = logging.getLogger()
 
 
@@ -13,6 +14,7 @@ class MysqlDB:
 
     def connect_to_db(self):
         try:
+            time.sleep(5)
             connection = connect(
                 host=Hosts.mysql_db,
                 user='root',
