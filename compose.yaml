@@ -1,0 +1,46 @@
+services:
+  pollster:
+    build:
+      dockerfile: ./Dockerfile
+    image: pollster:latest
+    ports:
+      - 127.0.0.1:8000:8000
+    networks:
+      back:
+        ipv4_address: 172.16.235.5
+      default:
+    volumes:
+      - ./:/pollster:./
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+        restart: true
+    restart: unless-stopped
+
+
+  mysql_db:
+    image: mysql:latest
+    networks:
+      back:
+        ipv4_address: 172.16.235.2
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234567890
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      start_period: 30s
+      interval: 10s
+      timeout: 20s
+      retries: 5
+    restart: unless-stopped
+
+
+networks:
+  back:
+    driver: bridge
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.235.0/24
+  default:
+    driver: bridge
