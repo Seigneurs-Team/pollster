@@ -1,0 +1,24 @@
+body {
+   margin:10px;
+    
+}
+ul.polls {
+    /* обнуление стилей списка опросов */
+   padding: 0;
+   text-indent: 0;
+   list-style-type: none;
+
+}
+li.poll-item {
+    border: blueviolet solid 1px;
+    border-radius: 20px;
+    margin: 20px;
+    padding: 20px
+}
+h2.poll-name {
+    margin: 0;
+
+}
+.poll-description {
+    margin: 0;
+}
