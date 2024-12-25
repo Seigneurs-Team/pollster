@@ -15,12 +15,6 @@ services:
       mysql_db:
         condition: service_healthy
         restart: true
-    healthcheck:
-      test: [ "CMD", "ping", "172.16.235.2" ]
-      start_period: 30s
-      interval: 10s
-      timeout: 20s
-      retries: 5
     restart: unless-stopped
 
 
