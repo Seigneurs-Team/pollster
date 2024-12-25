@@ -22,7 +22,7 @@ class MysqlDB:
             )
             logger.info('Успешное подключение')
             return connection, connection.cursor(buffered=True)
-        except mysql.connector.errors.ProgrammingError:
+        except (mysql.connector.errors.ProgrammingError, mysql.connector.errors.DatabaseError):
             connection = connect(
                 host=Hosts.mysql_db,
                 user='root',
