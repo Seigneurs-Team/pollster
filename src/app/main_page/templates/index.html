@@ -6,6 +6,8 @@
     <title>Pollster</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 </head>
 
@@ -13,6 +15,8 @@
     <header>
         <h1>Pollster</h1>
     </header>
+    <button id="createPollBtn">Создать опрос</button> <!-- Кнопка для создания опроса -->
+
     <h2>Актуальные опросы:</h2>
     <ul class="polls">
         {% for item in all_objects %}
@@ -26,6 +30,35 @@
         </li>
         {% endfor %}
     </ul>
+
+<!-- модалка создания опроса (пока что будет модалка, потом, когда будет готов дизайн, будет отдельная страница.) -->
+    <div id="create-poll-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span> <!-- Кнопка закрытия -->
+            <h1>Создать опрос</h1>
+
+            <div>
+                <label for="pollTitle">Название опроса (макс. 60 символов):</label>
+                <input type="text" id="pollTitle" maxlength="60">
+            </div>
+
+            <div>
+                <label for="pollDescription">Описание опроса (макс. 200 символов):</label>
+                <textarea id="pollDescription" maxlength="200"></textarea>
+            </div>
+
+            <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
+            <div> 
+                <label for="pollTags">Тэги:</label>
+                <input type="text" id="pollTags" maxlength="60">
+            </div>
+
+            <button id="submitPollBtn">Отправить опрос</button>
+        </div>
+
+    </div>
+
+    <script src="{% static 'scripts/modal.js' %}"></script>
 
 </body>
 
