@@ -4,7 +4,7 @@ from random import randint
 
 @dataclass
 class Poll:
-    description: str
     name_of_poll: str
+    description: str
     tags: str
     id: int
