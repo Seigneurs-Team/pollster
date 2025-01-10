@@ -1,0 +1,39 @@
+/* reset default styles */
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    font-family: BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-sans;
+    font-weight: lighter;
+    /* font-style: normal; */
+}
+
+header .logo {
+    width: 150px;
+}
+
+.content {
+    width: 768px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+footer {
+    padding: 30px 100px;
+    background-color: #5863BF;
+}
+
+footer p {
+    background-color: white;
+    border-radius: 20px;
+    padding: 10px;
+    /* margin временный */
+    margin: 20px;
+}

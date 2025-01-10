@@ -7,59 +7,104 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- css, общий для всех страниц (header, footer, fonts...)  -->
+    <link rel="stylesheet" href="{% static 'css/general.css' %}">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
-    <header>
-        <h1>Pollster</h1>
-    </header>
-    <button id="createPollBtn">Создать опрос</button> <!-- Кнопка для создания опроса -->
+    <div class="content">
+        <header>
+            <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+        </header>
+        <button id="createPollBtn" data-polls="{{all_objects}}">Создать опрос</button>
+        <!-- Кнопка для создания опроса -->
+        <img src="{% static 'img\circles.png' %}" alt="logo" class="circles">
 
-    <h2>Актуальные опросы:</h2>
-    <ul class="polls">
-        {% for item in all_objects %}
-        <li class="poll-item">
-            <h2 class="poll-name">{{item.name_of_poll}}</h2>
-            <span>Описание:</span>
-            <p class="poll-description">{{item.description}}</p>
-            <p>Тэги: {{item.tags}} </p>
-        
+        <main>
+            <h2>Актуальные опросы:</h2>
 
-        </li>
-        {% endfor %}
-    </ul>
+            <ul class="polls">
+                {% for item in all_objects %}
+                <li class="poll-item">
+                    <h2 class="poll-name">{{item.name_of_poll}}</h2>
+                    <span>Описание:</span>
+                    <p class="poll-description">{{item.description}}</p>
+                    <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo""></div>
+            
 
-<!-- модалка создания опроса (пока что будет модалка, потом, когда будет готов дизайн, будет отдельная страница.) -->
-    <div id="create-poll-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span> <!-- Кнопка закрытия -->
-            <h1>Создать опрос</h1>
+                    <p>Тэги: {{item.tags}} </p>
+                    <button class=" delete-poll" data-poll="{{item.id}}">
+                        <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 59 59"
+                            style="enable-background:new 0 0 59 59;" xml:space="preserve">
+                            <g>
+                                <path
+                                    d="M29.5,51c0.552,0,1-0.447,1-1V17c0-0.553-0.448-1-1-1s-1,0.447-1,1v33C28.5,50.553,28.948,51,29.5,51z">
+                                </path>
+                                <path
+                                    d="M19.5,51c0.552,0,1-0.447,1-1V17c0-0.553-0.448-1-1-1s-1,0.447-1,1v33C18.5,50.553,18.948,51,19.5,51z">
+                                </path>
+                                <path
+                                    d="M39.5,51c0.552,0,1-0.447,1-1V17c0-0.553-0.448-1-1-1s-1,0.447-1,1v33C38.5,50.553,38.948,51,39.5,51z">
+                                </path>
+                                <path
+                                    d="M52.5,6H38.456c-0.11-1.25-0.495-3.358-1.813-4.711C35.809,0.434,34.751,0,33.499,0H23.5c-1.252,0-2.31,0.434-3.144,1.289 C19.038,2.642,18.653,4.75,18.543,6H6.5c-0.552,0-1,0.447-1,1s0.448,1,1,1h2.041l1.915,46.021C10.493,55.743,11.565,59,15.364,59 h28.272c3.799,0,4.871-3.257,4.907-4.958L50.459,8H52.5c0.552,0,1-0.447,1-1S53.052,6,52.5,6z M21.792,2.681 C22.24,2.223,22.799,2,23.5,2h9.999c0.701,0,1.26,0.223,1.708,0.681c0.805,0.823,1.128,2.271,1.24,3.319H20.553 C20.665,4.952,20.988,3.504,21.792,2.681z M46.544,53.979C46.538,54.288,46.4,57,43.636,57H15.364 c-2.734,0-2.898-2.717-2.909-3.042L10.542,8h37.915L46.544,53.979z">
+                                </path>
+                            </g>
+                        </svg><span>Удалить</span>
+                        </button>
 
-            <div>
-                <label for="pollTitle">Название опроса (макс. 60 символов):</label>
-                <input type="text" id="pollTitle" maxlength="60">
+
+
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- модалка создания опроса (пока что будет модалка, потом, когда будет готов дизайн, будет отдельная страница.) -->
+            <div id="create-poll-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span> <!-- Кнопка закрытия -->
+                    <h1>Создать опрос</h1>
+
+                    <div>
+                        <label for="pollTitle">Название опроса (макс. 60 символов):</label>
+                        <input type="text" id="pollTitle" maxlength="60">
+                    </div>
+
+                    <div>
+                        <label for="pollDescription">Описание опроса (макс. 200 символов):</label>
+                        <textarea id="pollDescription" maxlength="200"></textarea>
+                    </div>
+
+                    <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
+                    <div>
+                        <label for="pollTags">Тэги:</label>
+                        <input type="text" id="pollTags" maxlength="60">
+                    </div>
+
+                    <button id="submitPollBtn">Отправить опрос</button>
+                </div>
+
             </div>
-
-            <div>
-                <label for="pollDescription">Описание опроса (макс. 200 символов):</label>
-                <textarea id="pollDescription" maxlength="200"></textarea>
-            </div>
-
-            <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
-            <div> 
-                <label for="pollTags">Тэги:</label>
-                <input type="text" id="pollTags" maxlength="60">
-            </div>
-
-            <button id="submitPollBtn">Отправить опрос</button>
-        </div>
+            <script src="{% static 'scripts/index.js' %}"></script>
+            <script src="{% static 'scripts/modal.js' %}"></script>
+        </main>
 
     </div>
-
-    <script src="{% static 'scripts/modal.js' %}"></script>
-
+    <footer>
+        <p>Почему именно Pollster?</p>
+        <p>- Потому что это <b>самый удобный</b> конструктор для создания опросов
+            <br>
+            - <b>Диаграммы и графики</b> для ваших результатов
+            <br>
+            - <b>Расширенные фильтры</b> для поиска и подбора опросов
+        </p>
+        <p class="contacts">(наши контакты)</p>
+    </footer>
 </body>
 
 </html>

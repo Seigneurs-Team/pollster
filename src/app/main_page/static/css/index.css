@@ -1,24 +1,87 @@
-body {
-   margin:10px;
-    
+:root {
+    --border-radius: 15px;
+    --violet: #5863BF;
 }
+
+#createPollBtn {
+    width: 600px;
+    height: 100px;
+    margin: auto;
+    border: var(--violet) dashed 6px;
+    border-radius: var(--border-radius);
+    background: white;
+}
+
+#createPollBtn:hover {
+    color: #fff;
+    background-color: var(--violet);
+}
+
+.circles {
+    width: 100%
+}
+
 ul.polls {
     /* обнуление стилей списка опросов */
-   padding: 0;
-   text-indent: 0;
-   list-style-type: none;
+    padding: 0;
+    text-indent: 0;
+    list-style-type: none;
+
+    margin: 30px 0 70px 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 30px;
+    row-gap: 30px;
 
 }
+
 li.poll-item {
-    border: blueviolet solid 1px;
-    border-radius: 20px;
-    margin: 20px;
-    padding: 20px
+    width: 315px;
+    border: var(--violet) solid 1px;
+    border-radius: var(--border-radius);
+    padding: 10px;
+
 }
+
+li.poll-item .poll-img {
+    width: 315px;
+    height: 18;
+
+}
+
+li.poll-item .poll-img img {
+    width: 100%;
+    /* Ширина изображений */
+    height: 100%;
+    /* Высота изображении */
+    object-fit: cover;
+    /* Вписываем фотографию в область */
+    border-radius: var(--border-radius);
+
+}
+
+li.poll-item .delete-poll {
+    background-color: white;
+    border: var(--border-radius) solid 1px;
+    border-radius: 4px;
+
+}
+
+li.poll-item .delete-poll:hover {
+    background-color: rgb(253, 244, 255);
+}
+
+li.poll-item .delete-poll svg {
+    display: inline;
+    width: 20px;
+}
+
 h2.poll-name {
     margin: 0;
 
 }
+
 .poll-description {
     margin: 0;
 }

@@ -1,12 +1,7 @@
 body {
     font-family: Arial, sans-serif;
 }
-.poll-item {
-    border: 1px #000 solid;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px;
-}
+
 .modal {
     display: none;
     /* Скрываем модальное окно по умолчанию */

@@ -4,12 +4,13 @@
 // данные в pollData будут заноситься в обработчиках действий пользователя во время создания опроса: нажатие на кнопки которые создают вопросы, а также окончание редактирования таких полей, как название опроса, его описание и загрузка картинки опроса.
 
 // Операции с модальным окном
-var modal = $("#create-poll-modal");
-var btn = $("#createPollBtn");
-var span = $(".close").first();
-var host = 'http://127.0.0.1:8000';
+const modal = $("#create-poll-modal");
+const create_poll_btn = $("#createPollBtn");
+const close_span = $(".close").first();
+const host = 'http://127.0.0.1:8000';
 
-btn.on("click", function () {
+create_poll_btn.on("click", function () {
+    console.log('все опросы:', $(event.currentTarget).attr('data-polls'));
     modal.css("display", "block");
     let pollData = {
         // TODO по умолчанию ставить None или ''? наверное лучше '' и сделать где надо проверки на пустые значения (которые обязательные: имя)
@@ -19,7 +20,7 @@ btn.on("click", function () {
     };
 });
 
-span.on("click", function () {
+close_span.on("click", function () {
     modal.hide();
 });
 
@@ -34,7 +35,6 @@ submitButton.on('click', submitPoll);
 
 function submitPoll(event) {
     event.preventDefault(); // Prevent default form submission behavior
-
     // Собираем данные
     pollData = {
         name_of_poll: $('#pollTitle').val(),
@@ -63,11 +63,11 @@ function sendData() { // тут данные просто отправляютс
     // тут надо отправить jsonPollData (json нового опроса) на сервер
     const Http = new XMLHttpRequest();
 
-    Http.open("POST", host+"/create_poll", true);
+    Http.open("POST", host + "/create_poll", true);
     Http.setRequestHeader("Content-Type", "application/json");
     Http.send(jsonPollData);
 
-    Http.onload = function() {
+    Http.onload = function () {
         var response = JSON.parse(Http.response);
         console.log('result: ', response);
     };
@@ -84,7 +84,7 @@ function checkCorrectData(pollData) { // проверка на корректн�
 
     }
 }
- 
+
 function resetForm() {
     // очистка формы
     $('#pollTitle').val('');
