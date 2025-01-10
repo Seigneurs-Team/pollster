@@ -40,7 +40,7 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, PRIMARY KEY (id))""")
         self.connection.commit()
 
-    def get_polls(self, num_of_polls: int = 1) -> list:
+    def get_polls(self, num_of_polls: int = 4) -> list:
         """
         Функция возвращает list, состоящий из id: int, tags: string, name_of_poll: string, description: string
         :param num_of_polls: количество опросов, которые должна вернуть функция

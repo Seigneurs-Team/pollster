@@ -7,6 +7,7 @@
 var modal = $("#create-poll-modal");
 var btn = $("#createPollBtn");
 var span = $(".close").first();
+var host = 'http://127.0.0.1:8000';
 
 btn.on("click", function () {
     modal.css("display", "block");
@@ -60,6 +61,16 @@ function sendData() { // тут данные просто отправляютс
     jsonPollData = JSON.stringify(pollData)
 
     // тут надо отправить jsonPollData (json нового опроса) на сервер
+    const Http = new XMLHttpRequest();
+
+    Http.open("POST", host+"/create_poll", true);
+    Http.setRequestHeader("Content-Type", "application/json");
+    Http.send(jsonPollData);
+
+    Http.onload = function() {
+        var response = JSON.parse(Http.response);
+        console.log('result: ', response);
+    };
 
     console.log("pollData в json:", jsonPollData)
 }
