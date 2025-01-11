@@ -3,6 +3,21 @@
     --violet: #5863BF;
 }
 
+.log-in {
+    width: 87px;
+    height: 26px;
+    border: var(--violet) solid 2px;
+    border-radius: 4px;
+    float: right;
+    background-color: white;
+    margin: 10px 10px 10px 0;
+}
+
+.log-in:hover {
+    background-color: var(--violet);
+    color: #fff;
+}
+
 #createPollBtn {
     width: 600px;
     height: 100px;
@@ -10,6 +25,8 @@
     border: var(--violet) dashed 6px;
     border-radius: var(--border-radius);
     background: white;
+    color: #8D8D8D;
+    font-size: 21px;
 }
 
 #createPollBtn:hover {
@@ -21,6 +38,11 @@
     width: 100%
 }
 
+h1 {
+    font-family: 'Lack', 'Arial';
+    font-size: 36px;
+}
+
 ul.polls {
     /* обнуление стилей списка опросов */
     padding: 0;
@@ -29,7 +51,7 @@ ul.polls {
 
     margin: 30px 0 70px 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     column-gap: 30px;
     row-gap: 30px;
@@ -37,16 +59,7 @@ ul.polls {
 }
 
 li.poll-item {
-    width: 315px;
-    border: var(--violet) solid 1px;
-    border-radius: var(--border-radius);
-    padding: 10px;
-
-}
-
-li.poll-item .poll-img {
-    width: 315px;
-    height: 18;
+    width: 340px;
 
 }
 
@@ -63,9 +76,22 @@ li.poll-item .poll-img img {
 
 li.poll-item .delete-poll {
     background-color: white;
-    border: var(--border-radius) solid 1px;
-    border-radius: 4px;
+    border: none;
+    vertical-align: text-top;
+    line-height: 12px;
+    font-family: inherit;
+}
 
+li.poll-item .till-the-end {
+    float: right;
+    font-size: 14px;
+    line-height: 12px;
+    vertical-align: text-top;
+
+}
+
+li.poll-item .till-the-end svg {
+    width: 20px;
 }
 
 li.poll-item .delete-poll:hover {
@@ -79,9 +105,33 @@ li.poll-item .delete-poll svg {
 
 h2.poll-name {
     margin: 0;
-
+    font-family: 'Lack', 'Arial';
+    font-size: 18px;
 }
 
 .poll-description {
-    margin: 0;
+    height: 55px;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Lack', 'Arial';
+    font-size: 14px;
+}
+
+/* Псевдоэлемент для создания эффекта градиента */
+.poll-description::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    /* Высота градиентной части */
+    background: linear-gradient(to bottom, transparent, white);
+    /* Или используйте цвет фона карточки */
+    /* display: none; Скрыть по умолчанию */
+}
+
+.poll-tags {
+    font-size: 14px;
+    color: rgb(52, 115, 242);
 }

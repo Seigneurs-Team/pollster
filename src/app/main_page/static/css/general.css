@@ -14,7 +14,7 @@ body {
 }
 
 header .logo {
-    width: 150px;
+    width: 350px;
 }
 
 .content {
@@ -36,4 +36,41 @@ footer p {
     padding: 10px;
     /* margin временный */
     margin: 20px;
+}
+
+.footer-content {
+    position: relative;
+    width: 768px;
+    margin: 0 auto;
+    min-height: 350px;
+}
+
+.footer-content .lamp {
+    width: 200px;
+    height: 200px;
+}
+.footer-content p {
+    position: absolute;
+}
+.footer-content p:nth-of-type(1) {
+
+    right: 0;
+    top: 0;
+    float: right;
+    max-width: 390px;
+    min-height: 40px;
+
+    font-size: 34px;
+
+}
+.footer-content p:nth-of-type(2) {
+    top: 100px;
+    right: 0;
+    max-width: 366px;
+    min-height: 180px;
+}
+.footer-content p:nth-of-type(3) {
+    left: 0;
+    top: 250px;
+
 }
