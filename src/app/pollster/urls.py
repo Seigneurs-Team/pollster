@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from app.main_page.views import request_on_main_page, requests_on_get_polls, request_on_create_new_poll
+from app.create_poll_page.views import request_on_сreate_poll_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', request_on_main_page, name='home'),
+    path('сreate_poll_page', request_on_сreate_poll_page, name='сreate_poll_page'),
     path('get_polls', requests_on_get_polls),
     path('create_poll', request_on_create_new_poll)
 ]
