@@ -119,9 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+print(BASE_DIR)
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'common_static'),  # Общие статические файлы. django будет искать статические файлы в папках static каждой страницы отдельно, а также в common_static, где хранятся общие статические файлы для всех страниц
+    os.path.join(BASE_DIR, 'common_static'), # все статические файлы общие
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

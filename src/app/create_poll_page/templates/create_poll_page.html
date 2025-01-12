@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/create_poll_page.css' %}">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -20,14 +20,14 @@
     <div class="content">
         <header>
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
-            <button class="log-in">Войти</button>
+            <h1>СОЗДАНИЕ ОПРОСА</h1>
+
         </header>
         <button id="createPollBtn" data-polls="{{all_objects}}">+ Создать опрос</button>
         <!-- Кнопка для создания опроса -->
         <img src="{% static 'img\circles.png' %}" alt="logo" class="circles">
 
         <main>
-            <h1>СОЗДАНИЕ ОПРОСА (пока что это тупо дубляж главной страницы)</h1>
             <script src="{% static 'scripts/index.js' %}"></script>
             <script src="{% static 'scripts/modal.js' %}"></script>
         </main>
