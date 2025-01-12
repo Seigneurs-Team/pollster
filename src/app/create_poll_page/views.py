@@ -1,5 +1,7 @@
 import json
 
+import json
+
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpRequest
 from databases.mysql_db import client_mysqldb
