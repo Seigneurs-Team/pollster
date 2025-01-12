@@ -23,13 +23,33 @@
             <h1>СОЗДАНИЕ ОПРОСА</h1>
 
         </header>
-        <button id="createPollBtn" data-polls="{{all_objects}}">+ Создать опрос</button>
-        <!-- Кнопка для создания опроса -->
-        <img src="{% static 'img\circles.png' %}" alt="logo" class="circles">
+
 
         <main>
-            <script src="{% static 'scripts/index.js' %}"></script>
-            <script src="{% static 'scripts/modal.js' %}"></script>
+            <div class="form">
+                <button id="addImage" data-polls="{{all_objects}}">+ Добавить картинку</button>
+
+                
+                    <label class="form-label" for="pollTitle">Название опроса (макс. 60 символов):</label>
+                    <input type="text" id="pollTitle" maxlength="60">
+                
+
+                
+                    <label class="form-label" for="pollDescription">Описание опроса (макс. 200 символов):</label>
+                    <textarea id="pollDescription" maxlength="200"></textarea>
+                
+
+                <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
+                
+                    <label class="form-label" for="pollTags">Тэги:</label>
+                    <input type="text" id="pollTags" maxlength="60">
+                
+
+                <button id="submitPollBtn">Отправить опрос</button>
+
+                <script src="{% static 'scripts/index.js' %}"></script>
+                <script src="{% static 'scripts/modal.js' %}"></script>
+            </div>
         </main>
 
     </div>

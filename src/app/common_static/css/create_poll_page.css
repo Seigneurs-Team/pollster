@@ -1,137 +1,52 @@
 :root {
-    --border-radius: 15px;
+    --border-radius: 12px;
     --violet: #5863BF;
+    --form-width: 600px;
 }
 
-.log-in {
-    width: 87px;
+header h1 {
+    width: 318px;
     height: 26px;
-    border: var(--violet) solid 2px;
-    border-radius: 4px;
+    display: block;
     float: right;
     background-color: white;
     margin: 10px 10px 10px 0;
+    font-size: 30px;
+
 }
 
-.log-in:hover {
-    background-color: var(--violet);
-    color: #fff;
+.form {
+    width: var(--form-width);
+    display: flex;
+    row-gap: 30px;
+    flex-direction: column;
+    margin: auto;
 }
 
-#createPollBtn {
-    width: 600px;
-    height: 100px;
+#addImage {
+    width: var(--form-width);
+    height: 150px;
     margin: auto;
     border: var(--violet) dashed 6px;
     border-radius: var(--border-radius);
     background: white;
     color: #8D8D8D;
     font-size: 21px;
+    font-weight: 700;
+    color:#8D8D8D;
 }
 
-#createPollBtn:hover {
+#addImage:hover {
     color: #fff;
     background-color: var(--violet);
 }
 
-.circles {
-    width: 100%
+.form .form-label {
+    font-weight: 700;
+    color:#8D8D8D;
 }
 
-h1 {
-    font-family: 'Lack', 'Arial';
-    font-size: 36px;
-}
-
-ul.polls {
-    /* обнуление стилей списка опросов */
-    padding: 0;
-    text-indent: 0;
-    list-style-type: none;
-
-    margin: 30px 0 70px 0;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    column-gap: 30px;
-    row-gap: 30px;
-
-}
-
-li.poll-item {
-    width: 340px;
-
-}
-
-li.poll-item .poll-img img {
-    width: 100%;
-    /* Ширина изображений */
-    height: 100%;
-    /* Высота изображении */
-    object-fit: cover;
-    /* Вписываем фотографию в область */
+.form input, .form textarea {
+    border: var(--violet) solid 2px;
     border-radius: var(--border-radius);
-
-}
-
-li.poll-item .delete-poll {
-    background-color: white;
-    border: none;
-    vertical-align: text-top;
-    line-height: 12px;
-    font-family: inherit;
-}
-
-li.poll-item .till-the-end {
-    float: right;
-    font-size: 14px;
-    line-height: 12px;
-    vertical-align: text-top;
-
-}
-
-li.poll-item .till-the-end svg {
-    width: 20px;
-}
-
-li.poll-item .delete-poll:hover {
-    background-color: rgb(253, 244, 255);
-}
-
-li.poll-item .delete-poll svg {
-    display: inline;
-    width: 20px;
-}
-
-h2.poll-name {
-    margin: 0;
-    font-family: 'Lack', 'Arial';
-    font-size: 18px;
-}
-
-.poll-description {
-    height: 55px;
-    overflow: hidden;
-    position: relative;
-    font-family: 'Lack', 'Arial';
-    font-size: 14px;
-}
-
-/* Псевдоэлемент для создания эффекта градиента */
-.poll-description::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-    /* Высота градиентной части */
-    background: linear-gradient(to bottom, transparent, white);
-    /* Или используйте цвет фона карточки */
-    /* display: none; Скрыть по умолчанию */
-}
-
-.poll-tags {
-    font-size: 14px;
-    color: rgb(52, 115, 242);
 }
