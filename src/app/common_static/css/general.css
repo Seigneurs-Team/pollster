@@ -1,16 +1,35 @@
+:root {
+    --font-family: BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-sans;
+}
+
+
 /* reset default styles */
 * {
     padding: 0px;
     margin: 0px;
+    font-family: var(--font-family);
+    font-weight: lighter;
+    /* font-size: 11px; */
+}
+
+button {
+    background-color: #fff;
+
 }
 
 body {
     margin: 0;
     padding: 0;
     font-size: 20px;
-    font-family: BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-sans;
-    font-weight: lighter;
-    /* font-style: normal; */
+}
+
+h1 {
+    font-weight: 500;
+}
+
+button:hover {
+    color: #fff;
+    background-color: var(--violet);
 }
 
 header .logo {

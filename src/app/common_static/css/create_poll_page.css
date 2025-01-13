@@ -1,7 +1,6 @@
 :root {
     --border-radius: 12px;
     --violet: #5863BF;
-    --form-width: 600px;
 }
 
 header h1 {
@@ -12,41 +11,74 @@ header h1 {
     background-color: white;
     margin: 10px 10px 10px 0;
     font-size: 30px;
-
+    
 }
 
 .form {
-    width: var(--form-width);
-    display: flex;
-    row-gap: 30px;
-    flex-direction: column;
+    /* display: flex; */
+    /* row-gap: 30px; */
+    /* flex-direction: column; */
+    width: 444px;
     margin: auto;
+
 }
 
-#addImage {
-    width: var(--form-width);
+.form > * {
+    display: block;
+    width: 100%;
+    margin: auto;
+
+}
+
+#addPollImage {
     height: 150px;
     margin: auto;
-    border: var(--violet) dashed 6px;
+    border: var(--violet) dashed 4px;
     border-radius: var(--border-radius);
-    background: white;
     color: #8D8D8D;
-    font-size: 21px;
+    font-size: 18px;
     font-weight: 700;
-    color:#8D8D8D;
 }
 
-#addImage:hover {
+#addPollImage:hover {
     color: #fff;
-    background-color: var(--violet);
 }
+ 
 
 .form .form-label {
-    font-weight: 700;
+    margin: 35px 0 10px 0;
+    font-weight: 500;
     color:#8D8D8D;
+    font-size: 20px;
 }
 
 .form input, .form textarea {
-    border: var(--violet) solid 2px;
+    width: calc(100% - 20px)
+}
+.form input, .form textarea, .form button {
+    border: var(--violet) solid 1px;
+    padding: 0 10px;
     border-radius: var(--border-radius);
+}
+.form input, .form textarea, .form button {
+    margin-bottom: 35px;
+
+}
+.form input, .form button {
+    min-height: 30px;
+}
+
+.form textarea{
+    min-height: 100px;
+}
+
+.addQuestionImage {
+    border: var(--violet) dashed 2px;
+    border-radius: var(--border-radius);
+    background: white;
+    text-align: left;
+}
+
+.form .chooseQuestionType {
+    width: 200px;
 }

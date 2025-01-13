@@ -13,33 +13,26 @@
     margin: 10px 10px 10px 0;
 }
 
-.log-in:hover {
-    background-color: var(--violet);
-    color: #fff;
-}
-
 #createPollBtn {
     width: 600px;
     height: 100px;
     margin: auto;
     border: var(--violet) dashed 6px;
     border-radius: var(--border-radius);
-    background: white;
     color: #8D8D8D;
     font-size: 21px;
-}
+    font-weight: 700;
 
+}
 #createPollBtn:hover {
     color: #fff;
-    background-color: var(--violet);
 }
-
+ 
 .circles {
     width: 100%
 }
 
 h1 {
-    font-family: 'Lack', 'Arial';
     font-size: 36px;
 }
 
@@ -79,7 +72,6 @@ li.poll-item .delete-poll {
     border: none;
     vertical-align: text-top;
     line-height: 12px;
-    font-family: inherit;
 }
 
 li.poll-item .till-the-end {
@@ -103,17 +95,20 @@ li.poll-item .delete-poll svg {
     width: 20px;
 }
 
+h2.poll-name, .poll-description {
+    font-weight: 500;
+
+}
+
 h2.poll-name {
     margin: 0;
-    font-family: 'Lack', 'Arial';
-    font-size: 18px;
+    font-size: 22px;
 }
 
 .poll-description {
     height: 55px;
     overflow: hidden;
     position: relative;
-    font-family: 'Lack', 'Arial';
     font-size: 14px;
 }
 
