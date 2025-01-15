@@ -50,10 +50,10 @@
                 <button class="addQuestionImage">Добавить картинку к вопросу? (необязательно)</button>
 
                 <button class="chooseQuestionType">Выберите тип ответа</button>
-                
-                <div id="create-poll-modal" class="modal">
+
+                <div id="choose-question-type-modal" class="modal">
                     <div class="modal-content">
-                        <span class="close">&times;</span> <!-- Кнопка закрытия -->
+                        <span class="modal-close">&times;</span> <!-- Кнопка закрытия -->
                         <button class="answerType">Ответ текстом (ограничено) </button>
                         <button class="answerType">Развернутый ответ
                             (без ограничений) </button>
@@ -61,15 +61,16 @@
                         <button class="answerType">Несколько вариантов ответа</button>
                         <button class="answerType">1 вариант ответа (картинки)</button>
                         <button class="answerType">Несколько вариантов ответа (картинки)</button>
-                        
-    
+
+
 
                     </div>
+                </div>
 
                 <button id="submitPollBtn">Отправить опрос</button>
 
-                <script src="{% static 'scripts/index.js' %}"></script>
-                <script src="{% static 'scripts/modal.js' %}"></script>
+                <script src="{% static 'scripts/create_poll_page.js' %}"></script>
+
             </div>
         </main>
 

@@ -1,39 +1,43 @@
-// используется jquery (подключается через sdn в index.html)
+// TODO добавление вопросов:
+// изначально 3 поля: текст вопроса, поля для загрузки картинки, выбор типа ответа. ниже их кнопка "добавить вопрос"
+// после выбора типа ответа кнопка "тип ответа" скрывается, добавляется соответствующие интерфейс:
+//  - вопрос с развернутым ответом - ничего не добавляется
+//  - вопрос с кратким текстовым ответом - input для ввода правильного ответа (если пользователь ничего не напишет, то правильного ответа нет)
+//  - чекбоксы: ul (минимум 2 li), после него кнопка "+" для добавления варианта ответа. интерфейс выбора правлиьного ответа???
+//
 
 
-// данные в pollData будут заноситься в обработчиках действий пользователя во время создания опроса: нажатие на кнопки которые создают вопросы, а также окончание редактирования таких полей, как название опроса, его описание и загрузка картинки опроса.
+const modalType = $("#choose-question-type-modal");
+const openModalBtn = $('.chooseQuestionType')
+const closeModalBtn = $('.modal-close')
 
-// Операции с модальным окном
-const modal = $("#create-poll-modal");
-const create_poll_btn = $("#createPollBtn");
-const close_span = $(".close").first();
-const host = 'http://127.0.0.1:8000';
-
-create_poll_btn.on("click", function () {
-    console.log('все опросы:', $(event.currentTarget).attr('data-polls'));
-    modal.css("display", "block");
-    let pollData = {
-        // TODO по умолчанию ставить None или ''? наверное лучше '' и сделать где надо проверки на пустые значения (которые обязательные: имя)
-        name_of_poll: '',
-        description: '',
-        tags: '',
-    };
-});
-
-close_span.on("click", function () {
-    modal.hide();
-});
 
 $(window).on("click", function (event) {
-    if (event.target == modal[0]) {
-        modal.hide();
+    if (event.target == modalType[0]) {
+        modalType.hide();
     }
 });
 
-submitButton = $('#submitPollBtn');
-submitButton.on('click', submitPoll);
+openModalBtn.on('click', function() {
+    modalType.show();
+})
 
+closeModalBtn.on('click', function() {
+    modalType.hide();
+})
+
+$(".answerType").on('click', function () {
+    console.log($(this).text())
+    modalType.hide();
+})
+
+
+
+submitButton = $("#submitPollBtn");
+submitButton.on('click', submitPoll);
+console.log(submitButton)
 function submitPoll(event) {
+    console.log('submitPollBtn clicked')
     event.preventDefault(); // Prevent default form submission behavior
     // Собираем данные
     pollData = {
@@ -83,11 +87,4 @@ function checkCorrectData(pollData) { // проверка на корректн�
         console.log('имя опроса не может быть пустым!')
 
     }
-}
-
-function resetForm() {
-    // очистка формы
-    $('#pollTitle').val('');
-    $('#pollDescription').val('');
-    $('#pollTags').val('');
 }

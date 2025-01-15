@@ -82,3 +82,7 @@ header h1 {
 .form .chooseQuestionType {
     width: 200px;
 }
+
+#choose-question-type-modal {
+    display: none;
+}
