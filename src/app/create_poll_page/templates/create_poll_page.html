@@ -45,11 +45,19 @@
                 <input type="text" id="pollTags" maxlength="60">
 
                 <label class="form-label">Вопросы</label>
-                <input type="text" maxlength="60" placeholder="Задайте вопрос">
+                <div class="questions">
+                    <div class="question" id="1">
+                        <input type="text" maxlength="60" placeholder="Задайте вопрос">
 
-                <button class="addQuestionImage">Добавить картинку к вопросу? (необязательно)</button>
+                        <button class="addQuestionImage">+ Картинка опроса (необязательно)</button>
 
-                <button class="chooseQuestionType">Выберите тип ответа</button>
+                        <button class="chooseQuestionType">Выберите тип ответа</button>
+                        <button class="deleteQuestion">Удалить вопрос</button>
+                    </div>
+                </div>
+                <button class="addQuestion"> + Добавить вопрос</button>
+
+                <button id="submitPollBtn">Отправить опрос</button>
 
                 <div id="choose-question-type-modal" class="modal">
                     <div class="modal-content">
@@ -61,17 +69,15 @@
                         <button class="answerType">Несколько вариантов ответа</button>
                         <button class="answerType">1 вариант ответа (картинки)</button>
                         <button class="answerType">Несколько вариантов ответа (картинки)</button>
-
-
-
                     </div>
+
                 </div>
 
-                <button id="submitPollBtn">Отправить опрос</button>
 
-                <script src="{% static 'scripts/create_poll_page.js' %}"></script>
 
             </div>
+            <script src="{% static 'scripts/create_poll_page.js' %}"></script>
+
         </main>
 
     </div>

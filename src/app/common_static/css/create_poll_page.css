@@ -11,19 +11,17 @@ header h1 {
     background-color: white;
     margin: 10px 10px 10px 0;
     font-size: 30px;
-    
+
 }
 
 .form {
-    /* display: flex; */
-    /* row-gap: 30px; */
-    /* flex-direction: column; */
     width: 444px;
     margin: auto;
+    margin-bottom: 40px;
 
 }
 
-.form > * {
+.form>* {
     display: block;
     width: 100%;
     margin: auto;
@@ -43,32 +41,50 @@ header h1 {
 #addPollImage:hover {
     color: #fff;
 }
- 
+
 
 .form .form-label {
     margin: 35px 0 10px 0;
     font-weight: 500;
-    color:#8D8D8D;
+    color: #8D8D8D;
     font-size: 20px;
 }
 
-.form input, .form textarea {
+.form input,
+.form textarea {
     width: calc(100% - 20px)
 }
-.form input, .form textarea, .form button {
+
+.form input,
+.form textarea,
+.form button {
     border: var(--violet) solid 1px;
     padding: 0 10px;
     border-radius: var(--border-radius);
 }
-.form input, .form textarea, .form button {
+
+.form button {
+    border: var(--violet) dashed 1.5px;
+}
+
+.form>input,
+.form>textarea,
+.form>button {
     margin-bottom: 35px;
 
 }
-.form input, .form button {
+
+.form .question {
+    margin-bottom: 20px;
+
+}
+
+.form input,
+.form button {
     min-height: 30px;
 }
 
-.form textarea{
+.form textarea {
     min-height: 100px;
 }
 
@@ -85,4 +101,27 @@ header h1 {
 
 #choose-question-type-modal {
     display: none;
+}
+
+.question>* {
+    margin-bottom: 10px;
+}
+
+button.deleteQuestion {
+    border: red solid 1px;
+    color: red;
+    width: 100%;
+}
+
+.questionId {
+    font-size: 10px;
+}
+
+
+#submitPollBtn {
+    border: var(--violet) solid 1px;
+    padding: 0 10px;
+    border-radius: var(--border-radius);
+    min-height: 30px;
+    margin: auto;
 }
