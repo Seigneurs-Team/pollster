@@ -125,3 +125,9 @@ button.deleteQuestion {
     min-height: 30px;
     margin: auto;
 }
+
+div.option * {
+    width: auto;
+    font-size: 12px;
+    min-height: auto;
+}

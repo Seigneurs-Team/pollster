@@ -47,11 +47,11 @@
                 <label class="form-label">Вопросы</label>
                 <div class="questions">
                     <div class="question" id="1">
+                        <span class="questionId">Вопрос #1</span>
                         <input type="text" maxlength="60" placeholder="Задайте вопрос">
-
                         <button class="addQuestionImage">+ Картинка опроса (необязательно)</button>
-
                         <button class="chooseQuestionType">Выберите тип ответа</button>
+                        <div class="questionContent"></div>
                         <button class="deleteQuestion">Удалить вопрос</button>
                     </div>
                 </div>
@@ -62,13 +62,13 @@
                 <div id="choose-question-type-modal" class="modal">
                     <div class="modal-content">
                         <span class="modal-close">&times;</span> <!-- Кнопка закрытия -->
-                        <button class="answerType">Ответ текстом (ограничено) </button>
-                        <button class="answerType">Развернутый ответ
+                        <button class="answerType" name="short text">Ответ текстом (ограничено) </button>
+                        <button class="answerType" name="long text">Развернутый ответ
                             (без ограничений) </button>
-                        <button class="answerType">1 вариант ответа</button>
-                        <button class="answerType">Несколько вариантов ответа</button>
-                        <button class="answerType">1 вариант ответа (картинки)</button>
-                        <button class="answerType">Несколько вариантов ответа (картинки)</button>
+                        <button class="answerType" name="radiobutton">1 вариант ответа</button>
+                        <button class="answerType" name="checkbutton">Несколько вариантов ответа</button>
+                        <button class="answerType" name="radiobutton img">1 вариант ответа (картинки)</button>
+                        <button class="answerType" name="checkbutton img">Несколько вариантов ответа (картинки)</button>
                     </div>
 
                 </div>

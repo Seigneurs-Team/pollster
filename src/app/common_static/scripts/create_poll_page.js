@@ -1,17 +1,12 @@
 // TODO добавление вопросов:
 // изначально есть 1 опрос, 3 поля: текст вопроса, поле для загрузки картинки, кнопка выбора типа ответа. ниже их кнопка "добавить вопрос"
-// после выбора типа ответа кнопка "тип ответа" скрывается, добавляется соответствующие интерфейс:
-//  - вопрос с развернутым ответом - добавляется надпись "вопрос с развернутым ответом"
-//  - вопрос с кратким текстовым ответом - input для ввода правильного ответа (если пользователь ничего не напишет, то правильного ответа нет. placeholder="введите правильный ответ (необязательно)")
-//  - checkbox: ul (минимум 2 li), после него кнопка "+" для добавления варианта ответа. выбранный(е) вариант(ы) считаются правильными
-//  - radiobutton:  тож самое. если картинки, то в ul добавляем поля для загрузки изображений. если не во все поля загружены изображения, будет выходить предупреждение
-
-
 
 const modalType = $("#choose-question-type-modal");
 const openModalBtn = $('.chooseQuestionType')
 const closeModalBtn = $('.modal-close')
 
+currentQuestionBtn = null
+let currentQuestionContent = null // переменная хранит вопрос, для которого сейчас выбирается тип вопроса в модальном окне. модалка открывается по нажатию на кнопку, а в эту переменную записывается родитель этой кнопки
 
 $(window).on("click", function (event) {
     if (event.target == modalType[0]) {
@@ -19,31 +14,77 @@ $(window).on("click", function (event) {
     }
 });
 
+const showModal = function (target) {
+    // кнопка "выберите тип вопроса", на которую только что нажали и контент соответствующего вопроса
+    currentQuestionBtn = target
+    console.log('target: ', target)
+    currentQuestionContent = $(target).parent('.question').find('.questionContent');
+    console.log("$(target).parent('.question'): ", $(target).parent('.question'))
 
-const showModal = function () {
+    console.log('currentQuestionContent defining: ', currentQuestionContent)
+
     modalType.show();
 }
 
-openModalBtn.on('click', showModal)
+openModalBtn.on('click', function () { showModal(this) })
 
 closeModalBtn.on('click', function () {
     modalType.hide();
 })
 
 $(".answerType").on('click', function () {
-    console.log($(this).text())
+    questionType = $(this).attr('name')
+
+    // после выбора типа ответа кнопка "тип ответа" скрывается, добавляется соответствующие интерфейс
+    content = questionContents(questionType)
+
+    console.log('currentQuestionContent: ', currentQuestionContent)
+    currentQuestionContent.append($(content));
+
+    $(currentQuestionBtn).hide()
     modalType.hide();
+
+
+    currentQuestionBtn = null
+    currentQuestionContent = null // после генерации содержимого вопроса обнуляем currentQuestionContent
 })
+
+function questionContents(questionType) {
+    //  - вопрос с развернутым ответом - добавляется надпись "вопрос с развернутым ответом"
+    //  - вопрос с кратким текстовым ответом - input для ввода правильного ответа (если пользователь ничего не напишет, то правильного ответа нет. placeholder="введите правильный ответ (необязательно)")
+    //  - checkbox: ul (минимум 2 li), после него кнопка "+" для добавления варианта ответа. выбранный(е) вариант(ы) считаются правильными
+    //  - radiobutton:  тож самое. если картинки, то в ul добавляем поля для загрузки изображений. если не во все поля загружены изображения, будет выходить предупреждение
+
+    if (questionType == "short text") {
+        console.log('hi there')
+        content = '<input type="text" maxlength="60" placeholder="введите правильный ответ (необязательно)">';
+    } else if (questionType == "long text") {
+        content = '<p>Это вопрос с развернутым ответом</p>';
+
+    } else if (questionType == "radiobutton") {
+        content = '<div class="option"><input type="radio" name="1" id="first"><label for="first">first</label></div><div class="option"><input type="radio" name="1" id="second"><label for="second">second</label></div><br><button class="addOption">+</button>'
+
+    } else if (questionType == "checkbutton") {
+        return 0
+
+    } else if (questionType == "radiobutton img") {
+        return 0
+
+    } else if (questionType == "checkbutton img") {
+        return 0
+
+    }
+
+    return content;
+}
 
 
 let questionsIds = 1 // увеличивается при добавлении нового вопроса, не уменьшается никогда. нужна для создания уникального id каждому вопросу
-
 
 const deleteQuestion = function (target) {
     console.log('deleteQuestion activated')
     $(target).parent('.question').remove(); // Удаляем родительский элемент .question
 }
-
 
 addQuestionButton = $(".addQuestion");
 addQuestionButton.on('click', addQuestion);
@@ -52,8 +93,7 @@ function addQuestion(event) {
     questionsIds++
 
     // создаем новый вопрос
-    let newQuestion = $('<div class="question" id="' + questionsIds + '"><span class="questionId">Вопрос #' + questionsIds + '</span><input type="text" maxlength="60" placeholder="Задайте вопрос"><button class= "addQuestionImage" > + Картинка опроса(необязательно)</button><button class="chooseQuestionType">Выберите тип ответа</button><button class="deleteQuestion">Удалить вопрос</button></div > ');
-
+    let newQuestion = $('<div class="question" id="' + questionsIds + '"><span class="questionId">Вопрос #' + questionsIds + '</span><input type="text" maxlength="60" placeholder="Задайте вопрос"><button class="addQuestionImage">+ Картинка опроса (необязательно)</button>                        <button class="chooseQuestionType">Выберите тип ответа</button>                        <div class="questionContent"></div>                        <button class="deleteQuestion">Удалить вопрос</button> ');
 
     $(".questions").append(newQuestion);
 
@@ -61,11 +101,9 @@ function addQuestion(event) {
     $(".deleteQuestion").on('click', function (event) {
         deleteQuestion(this)
     });
-    $('.chooseQuestionType').on('click', showModal)
-
+    $('.chooseQuestionType').on('click', function () { showModal(this) })
 
     // добавляются поле для ввода текста вопроса, поле для загрузки картинки, кнопка выбора типа ответа.
-    console.log('addQuestion clicked, questionsIds: ', questionsIds)
 }
 
 $(".deleteQuestion").on('click', function (event) {
