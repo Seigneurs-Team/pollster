@@ -21,27 +21,35 @@ header h1 {
 
 }
 
-.form>* {
+.form> *, .chooseQuestionType2 {
     display: block;
     width: 100%;
     margin: auto;
 
 }
 
-#addPollImage {
+.addPollImage {
+    display: inline-block;
     height: 150px;
+    line-height: 150px;
     margin: auto;
     border: var(--violet) dashed 4px;
     border-radius: var(--border-radius);
     color: #8D8D8D;
     font-size: 18px;
     font-weight: 700;
+    text-align: center;
 }
 
-#addPollImage:hover {
+.addPollImage:hover, .questionImage:hover {
     color: #fff;
+    background-color: var(--violet);
+
 }
 
+.addPollImage input[type="file"], .questionImage input[type="file"] {
+    display: none; /* Скрытие оригинального input */
+}
 
 .form .form-label {
     margin: 35px 0 10px 0;
@@ -57,13 +65,22 @@ header h1 {
 
 .form input,
 .form textarea,
-.form button {
+.form button, 
+.questionImage {
+
     border: var(--violet) solid 1px;
     padding: 0 10px;
     border-radius: var(--border-radius);
+    font-size: initial;
+    
 }
 
-.form button {
+.questionImage {
+    width: calc(100% - 20px);
+    line-height: 28px;
+}
+
+.form button, .questionImage {
     border: var(--violet) dashed 1.5px;
 }
 
@@ -80,7 +97,7 @@ header h1 {
 }
 
 .form input,
-.form button {
+.form button, .questionImage {
     min-height: 30px;
 }
 
@@ -88,16 +105,14 @@ header h1 {
     min-height: 100px;
 }
 
-.addQuestionImage {
-    border: var(--violet) dashed 2px;
-    border-radius: var(--border-radius);
+.questionImage {
+    display: inline-block;
+    /* border-radius: var(--border-radius); */
     background: white;
     text-align: left;
+
 }
 
-.form .chooseQuestionType {
-    width: 200px;
-}
 
 #choose-question-type-modal {
     display: none;

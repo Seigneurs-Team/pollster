@@ -1,12 +1,13 @@
 // TODO добавление вопросов:
 // изначально есть 1 опрос, 3 поля: текст вопроса, поле для загрузки картинки, кнопка выбора типа ответа. ниже их кнопка "добавить вопрос"
-
+import "1.js"
+currentQuestionBtn = null
+let currentQuestionContent = null // переменная хранит вопрос, для которого сейчас выбирается тип вопроса в модальном окне. модалка открывается по нажатию на кнопку, а в эту переменную записывается родитель этой кнопки
 const modalType = $("#choose-question-type-modal");
 const openModalBtn = $('.chooseQuestionType')
 const closeModalBtn = $('.modal-close')
+const host = 'http://127.0.0.1:8000';
 
-currentQuestionBtn = null
-let currentQuestionContent = null // переменная хранит вопрос, для которого сейчас выбирается тип вопроса в модальном окне. модалка открывается по нажатию на кнопку, а в эту переменную записывается родитель этой кнопки
 
 $(window).on("click", function (event) {
     if (event.target == modalType[0]) {
@@ -38,8 +39,27 @@ $(".answerType").on('click', function () {
     // после выбора типа ответа кнопка "тип ответа" скрывается, добавляется соответствующие интерфейс
     content = questionContents(questionType)
 
-    console.log('currentQuestionContent: ', currentQuestionContent)
     currentQuestionContent.append($(content));
+
+
+    /* назначаем обработчики событий (как правило это нужно на button которая добавляет option в checkbox и radiobutton). тут надо поставить проверку на questionType */
+
+    
+    
+    $('.addOptionRadio').on('click', function() {
+        addOptionRadio()
+    })
+    
+    $('.addOptionCheckbox').on('click', function() {
+        addOptionCheckbox()
+    })
+    
+    // if (questionType == "radiobutton") {
+
+    // } else if (questionType == "checkbutton") {
+
+    // }
+    
 
     $(currentQuestionBtn).hide()
     modalType.hide();
@@ -48,6 +68,19 @@ $(".answerType").on('click', function () {
     currentQuestionBtn = null
     currentQuestionContent = null // после генерации содержимого вопроса обнуляем currentQuestionContent
 })
+
+
+
+function addOptionRadio () {
+    console.log('addOptionRadio clicked')
+
+}
+
+
+function addOptionCheckbox () {
+    console.log('addOptionCheckbox clicked')
+
+}
 
 function questionContents(questionType) {
     //  - вопрос с развернутым ответом - добавляется надпись "вопрос с развернутым ответом"
@@ -62,10 +95,10 @@ function questionContents(questionType) {
         content = '<p>Это вопрос с развернутым ответом</p>';
 
     } else if (questionType == "radiobutton") {
-        content = '<div class="option"><input type="radio" name="1" id="first"><label for="first">first</label></div><div class="option"><input type="radio" name="1" id="second"><label for="second">second</label></div><br><button class="addOption">+</button>'
+        content = '<div class="option"><input type="radio" name="1" id="first"><label for="first">first</label></div><div class="option"><input type="radio" name="1" id="second"><label for="second">second</label></div><br><button class="addOptionRadio">+</button>'
 
     } else if (questionType == "checkbutton") {
-        return 0
+        content = '<div class="option"><input type="checkbox" name="1" id="first"><label for="first">first</label></div><div class="option"><input type="checkbox" name="1" id="second"><label for="second">second</label></div><br><button class="addOptionCheckbox">+</button>'
 
     } else if (questionType == "radiobutton img") {
         return 0
@@ -79,6 +112,7 @@ function questionContents(questionType) {
 }
 
 
+
 let questionsIds = 1 // увеличивается при добавлении нового вопроса, не уменьшается никогда. нужна для создания уникального id каждому вопросу
 
 const deleteQuestion = function (target) {
@@ -90,10 +124,19 @@ addQuestionButton = $(".addQuestion");
 addQuestionButton.on('click', addQuestion);
 
 function addQuestion(event) {
+
+    
+    questions123 = $('.question')
+    questions123.each(function(index, element) {
+        console.log('text:', $(element).find('.questionText').val())
+        console.log('content:', $(element).find('.questionContent').val())
+    })
+    
+
     questionsIds++
 
     // создаем новый вопрос
-    let newQuestion = $('<div class="question" id="' + questionsIds + '"><span class="questionId">Вопрос #' + questionsIds + '</span><input type="text" maxlength="60" placeholder="Задайте вопрос"><button class="addQuestionImage">+ Картинка опроса (необязательно)</button>                        <button class="chooseQuestionType">Выберите тип ответа</button>                        <div class="questionContent"></div>                        <button class="deleteQuestion">Удалить вопрос</button> ');
+    let newQuestion = $('<div class="question" id="' + questionsIds + '"><span class="questionId">Вопрос #' + questionsIds + '</span><input type="text" maxlength="60" placeholder="Задайте вопрос"><button class="questionImage">+ Картинка опроса (необязательно)</button>                        <button class="chooseQuestionType">Выберите тип ответа</button>                        <div class="questionContent"></div>                        <button class="deleteQuestion">Удалить вопрос</button> ');
 
     $(".questions").append(newQuestion);
 
@@ -124,18 +167,38 @@ function submitPoll(event) {
         name_of_poll: $('#pollTitle').val(),
         description: $('#pollDescription').val(),
         tags: $('#pollTags').val(),
+        questions: [
+            {
+                'type': 'checkbox',
+                'text': 'question1',
+                'options': ['option1', 'option2', 'option3'],
+                'right-answers': ['option1', 'option2']
+            },
+            {
+                'type': 'checkbox',
+                'text': 'question2',
+                'options': ['option1', 'option2'],
+                'right-answers': null,
+            },
+            {
+                'type': 'short',
+                'text': 'question3',
+                'options': null,
+                'right-answer': 'this is right answer',
+            },
+            {
+                'type': 'long',
+                'text': 'question4',
+                'options': null,
+                'right-answer': null,
+            },
+        ],
     };
     console.log("pollData:", pollData)
 
     if (checkCorrectData(pollData)) {
         // отправляем опрос на сервер
         sendData();
-
-        // Закрываем модальное окно
-        modal.hide();
-
-        // Сбрасываем форму
-        resetForm();
     }
 
 }
