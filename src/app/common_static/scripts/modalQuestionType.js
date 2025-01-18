@@ -1,5 +1,6 @@
 let currentQuestionBtn = null
 let currentQuestionContent = null // переменная хранит вопрос, для которого сейчас выбирается тип вопроса в модальном окне. модалка открывается по нажатию на кнопку, а в эту переменную записывается родитель этой кнопки
+let currentQuestionOptions = null
 let questionType = null
 
 const modalType = $("#choose-question-type-modal");
@@ -13,7 +14,6 @@ $(window).on("click", function (event) {
 });
 
 export function showModal(target) {
-
     // кнопка "выберите тип вопроса", на которую только что нажали и контент соответствующего вопроса
     currentQuestionBtn = target
     currentQuestionContent = $(target).parent('.question').find('.questionContent');
@@ -37,26 +37,15 @@ $(".answerType").on('click', function () {
     let content = questionContents(questionType, questionId)
 
     currentQuestionContent.append($(content));
-    console.log(currentQuestionContent.find('.options'))
-
-
-    /* назначаем обработчики событий (как правило это нужно на button которая добавляет option в checkbox и radiobutton) */
-
-
+    
+    /* назначаем обработчики событий (на button которая добавляет option в checkbox и radiobutton) */
     $('.addOptionRadio').on('click', function () {
-        addOptionRadio()
+        addOption(this, 'radio')
     })
 
     $('.addOptionCheckbox').on('click', function () {
-        addOptionCheckbox()
+        addOption(this, 'checkbox')
     })
-
-    // if (questionType == "radiobutton") {
-
-    // } else if (questionType == "checkbutton") {
-
-    // }
-
 
     $(currentQuestionBtn).hide()
     modalType.hide();
@@ -80,17 +69,33 @@ function questionContents(questionType, questionId) {
         return '<p>Это вопрос с развернутым ответом</p>';
 
     } else if (questionType == "radiobutton") {
-        // TODO сделать не id="first", а name, и лучше id вообще удалить или присваивать униклаьный номер (хз как и зачем. лучше удалить) name будет равно индексу question, id должно быть уникально как в кажодой радиокнопке, так и в каждом вопросе, поэтому оно будет составляться из номера вопроса и номера кнопки... как-то... типа }{question_id}-{radiobutton_id}
-        return '<div class="questionContent"> <div class="options"> <div class="option"><input type="radio" name="1" id="1_1"><input type="text" for="1_1"></input> </div> <div class="option"><input type="radio" name="1" id="1_2"><input type="text" for="1_2"></input></div><br><button class="addOptionRadio">+</button> </div> </div> <button class="deleteQuestion">Удалить вопрос</button>'
-        
-
-    } else if (questionType == "checkbutton") {
-        return '<div class="option"><input type="checkbox" name="2" id="second"><label for="second">first</label></div><div class="option"><input type="checkbox" name="2" id="second"><label for="second">second</label></div><br><button class="addOptionCheckbox">+</button>'
+        // name равно индексу question, id должно быть уникально как в кажодой радиокнопке, так и в каждом вопросе, поэтому оно будет составляться из номера вопроса и номера кнопки {question_id}-{radiobutton_id}
+        return `
+    <div class="options">
+        <div class="option"><input type="radio" name="1" id="1_1"> <input type="text"
+                for="1_1"></input>
+        </div>
+        <div class="option"><input type="radio" name="1" id="1_2"> <input type="text"
+                for="1_2"></input></div>
+    </div>
+    <br><button class="addOptionRadio">+</button>
+    `
+    } else if (questionType == "checkbox") {
+        return `
+    <div class="options">
+        <div class="option"><input type="checkbox" name="1" id="1_1"> <input type="text"
+                for="1_1"></input>
+        </div>
+        <div class="option"><input type="checkbox" name="1" id="1_2"> <input type="text"
+                for="1_2"></input></div>
+    </div>
+    <br><button class="addOptionCheckbox">+</button>
+    `
 
     } else if (questionType == "radiobutton img") {
         return 0
 
-    } else if (questionType == "checkbutton img") {
+    } else if (questionType == "checkbox img") {
         return 0
 
     }
@@ -99,12 +104,15 @@ function questionContents(questionType, questionId) {
 
 
 
-function addOptionRadio () {
-    console.log('addOptionRadio clicked')
+function addOption(target, type) {
+    let options = $(target).closest('.question').find('.options'); // closest находит ближайший элемент .question. отличие от метода parent в том, что parent ищет только родительский элемент, а closest - также выше по иерархии.
 
-}
+    let optionsCount = options.find('.option').length;
 
-function addOptionCheckbox () {
-    console.log('addOptionCheckbox clicked')
-
+    // Создаем новый вариант ответа
+    optionsCount++; // Увеличиваем счетчик для нового варианта
+    options.append($(`<div class="option">
+        <input type="${type}" name="1" id="1_${optionsCount}">
+        <input type="text" for="1_${optionsCount}">
+    </div>`));
 }
