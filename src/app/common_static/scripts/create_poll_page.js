@@ -1,4 +1,4 @@
-// TODO добавление вопросов:
+// добавление вопросов:
 // изначально есть 1 опрос, 3 поля: текст вопроса, поле для загрузки картинки, кнопка выбора типа ответа. ниже их кнопка "добавить вопрос"
 const host = 'http://127.0.0.1:8000';
 
@@ -18,16 +18,7 @@ let addQuestionButton = $(".addQuestion");
 addQuestionButton.on('click', addQuestion);
 
 function addQuestion(event) {
-
-    
-    // questions123 = $('.question')
-    // questions123.each(function(index, element) {
-    //     console.log('text:', $(element).find('.questionText').val())
-    //     console.log('content:', $(element).find('.questionContent').val())
-    // })
-    
-
-    questionsIds++
+    questionsIds++ // увеличиваем счетчик ID
 
     // создаем новый вопрос
     let newQuestion = $('<div class="question" id="' + questionsIds + '"><span class="questionId">Вопрос #' + questionsIds + '</span><input type="text" maxlength="60" placeholder="Задайте вопрос"><button class="questionImage">+ Картинка опроса (необязательно)</button>                        <button class="chooseQuestionType">Выберите тип ответа</button>                        <div class="questionContent"></div>                        <button class="deleteQuestion">Удалить вопрос</button> ');

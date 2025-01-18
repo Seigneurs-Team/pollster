@@ -128,6 +128,11 @@ button.deleteQuestion {
     width: 100%;
 }
 
+button.deleteQuestion:hover {
+    color: #FFF;
+    background-color: red;
+}
+
 .questionId {
     font-size: 10px;
 }
