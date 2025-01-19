@@ -7,7 +7,7 @@ const host = 'http://127.0.0.1:8000';
 import {showModal} from './modalQuestionType.js';
 
 
-let questionsIds = 1 // увеличивается при добавлении нового вопроса, не уменьшается никогда. нужна для создания уникального id каждому вопросу
+let questionsIds = 0 // увеличивается при добавлении нового вопроса, не уменьшается никогда. нужна для создания уникального id каждому вопросу
 
 const deleteQuestion = function (target) {
     console.log('deleteQuestion activated')

@@ -3,8 +3,8 @@ let currentQuestionContent = null // переменная хранит вопр�
 let currentQuestionOptions = null
 let questionType = null
 
-const modalType = $("#choose-question-type-modal");
-const openModalBtn = $('.chooseQuestionType')
+// const modalType = $("#choose-question-type-modal");
+// const openModalBtn = $('.chooseQuestionType')
 const closeModalBtn = $('.modal-close')
 
 $(window).on("click", function (event) {
@@ -21,7 +21,7 @@ export function showModal(target) {
     modalType.show();
 }
 
-openModalBtn.on('click', function () { showModal(this) })
+// openModalBtn.on('click', function () { showModal(this) })
 
 closeModalBtn.on('click', function () {
     modalType.hide();
@@ -29,6 +29,7 @@ closeModalBtn.on('click', function () {
 
 $(".answerType").on('click', function () {
     // обработка нажатия на кнопку выбора того или иного типа вопроса: рендеринг соответствующего контента, скрытие кнопки "выбрать тип ответа", затем назначение обработчиков событий, если были отрисованы чекбоксы или радиокнопки (событие нажатия на кнопку добавления варианта ответа)
+    
     let questionType = $(this).attr('name')
     let questionId = $(currentQuestionBtn).parent('.question').attr('id')
     console.log('questionId: ', questionId)
