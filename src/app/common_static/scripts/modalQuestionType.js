@@ -3,8 +3,7 @@ let currentQuestionContent = null // переменная хранит вопр�
 let currentQuestionOptions = null
 let questionType = null
 
-// const modalType = $("#choose-question-type-modal");
-// const openModalBtn = $('.chooseQuestionType')
+const modalType = $("#choose-question-type-modal");
 const closeModalBtn = $('.modal-close')
 
 $(window).on("click", function (event) {
@@ -21,11 +20,7 @@ export function showModal(target) {
     modalType.show();
 }
 
-// openModalBtn.on('click', function () { showModal(this) })
-
-closeModalBtn.on('click', function () {
-    modalType.hide();
-})
+closeModalBtn.on('click', function () { modalType.hide();})
 
 $(".answerType").on('click', function () {
     // обработка нажатия на кнопку выбора того или иного типа вопроса: рендеринг соответствующего контента, скрытие кнопки "выбрать тип ответа", затем назначение обработчиков событий, если были отрисованы чекбоксы или радиокнопки (событие нажатия на кнопку добавления варианта ответа)
@@ -40,20 +35,16 @@ $(".answerType").on('click', function () {
     currentQuestionContent.append($(content));
     
     /* назначаем обработчики событий (на button которая добавляет option в checkbox и radiobutton) */
-    $('.addOptionRadio').on('click', function () {
-        addOption(this, 'radio')
-    })
+    $('.addOptionRadio').on('click', function () { addOption(this, 'radio')    })
+    $('.addOptionCheckbox').on('click', function () { addOption(this, 'checkbox')    })
 
-    $('.addOptionCheckbox').on('click', function () {
-        addOption(this, 'checkbox')
-    })
-
+    // скрываем кнопку выбора типа вопроса. TODO в дальнейшем можно сделать так, чтобы ее текст менялся на "изменить тип вопроса", где при необходимости radio заменялись бы на checkbox и наоборот. но тогда нужно будет не только добавлять QuestionContent, но и перед этим извлекать его содержимое, затем удалять, и только потом добавлять новое
     $(currentQuestionBtn).hide()
     modalType.hide();
 
-
+    // после генерации содержимого вопроса обнуляем currentQuestionBtn, currentQuestionContent
     currentQuestionBtn = null
-    currentQuestionContent = null // после генерации содержимого вопроса обнуляем currentQuestionContent
+    currentQuestionContent = null 
 })
 
 
@@ -65,12 +56,13 @@ function questionContents(questionType, questionId) {
 
     if (questionType == "short text") {
         console.log('hi there')
-        return '<input type="text" maxlength="60" placeholder="введите правильный ответ (необязательно)">';
+        return '<input class="right-answer" type="text" maxlength="60" placeholder="введите правильный ответ (необязательно)">';
     } else if (questionType == "long text") {
         return '<p>Это вопрос с развернутым ответом</p>';
 
     } else if (questionType == "radiobutton") {
-        // name равно индексу question, id должно быть уникально как в кажодой радиокнопке, так и в каждом вопросе, поэтому оно будет составляться из номера вопроса и номера кнопки {question_id}-{radiobutton_id}
+        // name равно индексу question, id должно быть уникально как в кажодой радиокнопке, так и в каждом вопросе, поэтому оно будет составляться из номера вопроса и номера кнопки {question_id}-{radiobutton_id}. в checkbox то же самое
+        // TODO добавить кнопку "удалить" для option (и в checkbox тоже)
         return `
     <div class="options">
         <div class="option"><input type="radio" name="1" id="1_1"> <input type="text"
@@ -92,7 +84,7 @@ function questionContents(questionType, questionId) {
     </div>
     <br><button class="addOptionCheckbox">+</button>
     `
-
+    // TODO загрузка изображений
     } else if (questionType == "radiobutton img") {
         return 0
 
