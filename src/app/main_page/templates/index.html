@@ -8,7 +8,6 @@
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -22,7 +21,7 @@
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
             <button class="log-in">Войти</button>
         </header>
-        <button id="createPollBtn" data-polls="{{all_objects}}">+ Создать опрос</button>
+        <a href="/create_poll_page" id="createPollBtn">+ Создать опрос</a>
         <!-- Кнопка для создания опроса -->
         <img src="{% static 'img\circles.png' %}" alt="logo" class="circles">
 
@@ -77,34 +76,8 @@
                 {% endfor %}
             </ul>
 
-            <!-- модалка создания опроса (пока что будет модалка, потом, когда будет готов дизайн, будет отдельная страница.) -->
-            <div id="create-poll-modal" class="modal">
-                <div class="modal-content">
-                    <span class="modal-close">&times;</span> <!-- Кнопка закрытия -->
-                    <h1>Создать опрос</h1>
 
-                    <div>
-                        <label for="pollTitle">Название опроса (макс. 60 символов):</label>
-                        <input type="text" id="pollTitle" maxlength="60">
-                    </div>
-
-                    <div>
-                        <label for="pollDescription">Описание опроса (макс. 200 символов):</label>
-                        <textarea id="pollDescription" maxlength="200"></textarea>
-                    </div>
-
-                    <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
-                    <div>
-                        <label for="pollTags">Тэги:</label>
-                        <input type="text" id="pollTags" maxlength="60">
-                    </div>
-
-                    <button id="submitPollBtn">Отправить опрос</button>
-                </div>
-
-            </div>
             <script src="{% static 'scripts/index.js' %}"></script>
-            <script src="{% static 'scripts/modal.js' %}"></script>
         </main>
 
     </div>

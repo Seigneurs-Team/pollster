@@ -14,14 +14,18 @@
 }
 
 #createPollBtn {
+    display: block;
+    text-align: center;
     width: 600px;
     height: 100px;
+    line-height: 100px;
     margin: auto;
     border: var(--violet) dashed 6px;
     border-radius: var(--border-radius);
     color: #8D8D8D;
     font-size: 21px;
     font-weight: 700;
+    text-decoration: none;
 
 }
 #createPollBtn:hover {
