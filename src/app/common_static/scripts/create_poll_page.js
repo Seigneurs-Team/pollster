@@ -34,7 +34,7 @@ $(".answerType").on('click', function () {
 
     // сам вопрос, в который вставляется content
     let newQuestion = $(`
-<div class="question" id="` + questionsId + `">
+<div class="question" id="` + questionsId + `" data-type="` + questionType + `">
     <span class="questionId">Вопрос #` + questionsId + `</span>
     <input class="questionText" type="text" maxlength="60" placeholder="Задайте вопрос">
     <button class="questionImage">+ Картинка опроса (необязательно)</button>
@@ -84,22 +84,24 @@ function answerType(questionType, questionId) {
         // TODO добавить кнопку "удалить" для option (и в checkbox тоже)
         return `
     <div class="options">
-        <div class="option"><input type="radio" name="1" id="`+ questionId + `_1"> <input type="text"
-                for="1_1"></input>
+        <div class="option"><input type="radio" name="1" id="`+ questionId + `_1" class="check"> <input type="text"
+                for="1_1" class="value"></input>
         </div>
-        <div class="option"><input type="radio" name="1" id="`+ questionId + `_2"> <input type="text"
-                for="1_2"></input></div>
+        <div class="option"><input type="radio" name="1" id="`+ questionId + `_2" class="check"> <input type="text"
+                for="1_2" class="value"></input></div>
     </div>
     <br><button class="addOptionRadio">+</button>
     `
     } else if (questionType == "checkbox") {
         return `
     <div class="options">
-        <div class="option"><input type="checkbox" name="1" id=""`+ questionId + `_1"> <input type="text"
-                for="1_1"></input>
+        <div class="option"><input type="checkbox" name="1" id="`+ questionId + `_1" class="check"> 
+        <input type="text"
+                for="`+ questionId + `_1" class="value">
         </div>
-        <div class="option"><input type="checkbox" name="1" id=""`+ questionId + `_2"> <input type="text"
-                for="1_2"></input></div>
+        <div class="option"><input type="checkbox" name="1" id="`+ questionId + `_2" class="check"> 
+        <input type="text"
+                for="`+ questionId + `_2" class="value"></div>
     </div>
     <br><button class="addOptionCheckbox">+</button>
     `
@@ -116,7 +118,6 @@ function answerType(questionType, questionId) {
 
 
 function addOption(target, type) {
-    console.log('adding an option...')
     let options = $(target).closest('.question').find('.options'); // closest находит ближайший элемент .question. отличие от метода parent в том, что parent ищет только родительский элемент, а closest - также выше по иерархии.
 
     let optionsCount = options.find('.option').length;
@@ -124,13 +125,12 @@ function addOption(target, type) {
     // Создаем новый вариант ответа
     optionsCount++; // Увеличиваем счетчик для нового варианта
     options.append($(`<div class="option">
-        <input type="${type}" name="1" id="1_${optionsCount}">
-        <input type="text" for="1_${optionsCount}">
+        <input type="${type}" name="1" id="1_${optionsCount}" class="check">
+        <input type="text" for="1_${optionsCount}" class="value">
     </div>`));
 }
 
 
 
 // отправка опроса на сервер
-let submitButton = $("#submitPollBtn");
-submitButton.on('click', submitPoll);
+$("#submitPollBtn").on('click', submitPoll);

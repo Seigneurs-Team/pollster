@@ -7,45 +7,69 @@ export function submitPoll(event) {
     console.log('submitPollBtn clicked')
 
     event.preventDefault(); // Prevent default form submission behavior
-/*
-    let questions = [
-        {
-            'type': 'checkbox',
-            'text': 'question1',
-            'options': ['option1', 'option2', 'option3'],
-            'right-answers': ['option1', 'option2']
-        },
-        {
-            'type': 'checkbox',
-            'text': 'question2',
-            'options': ['option1', 'option2'],
-            'right-answers': null,
-        },
-        {
-            'type': 'short',
-            'text': 'question3',
-            'options': null,
-            'right-answer': 'this is right answer',
-        },
-        {
-            'type': 'long',
-            'text': 'question4',
-            'options': null,
-            'right-answer': null,
-        },
-    ]
-*/
-// Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
+    /*
+        let questions = [
+            {
+                'type': 'checkbox',
+                'text': 'question1',
+                'options': ['option1', 'option2', 'option3'],
+                'right-answers': ['option1', 'option2']
+            },
+            {
+                'type': 'checkbox',
+                'text': 'question2',
+                'options': ['option1', 'option2'],
+                'right-answers': null,
+            },
+            {
+                'type': 'short',
+                'text': 'question3',
+                'options': null,
+                'right-answer': 'this is right answer',
+            },
+            {
+                'type': 'long',
+                'text': 'question4',
+                'options': null,
+                'right-answer': null,
+            },
+        ]
+    */
+    // Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
 
-    let questions = $('.question').map(function() {
+    let questions = $('.question').map(function () {
+        let type = $(this).attr('data-type')
+        let options = []
+        let rightAnswersId = []
+
+        // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
+        if (type == 'radiobutton' | type == 'checkbox') {
+            // id ответов начинаются с 0
+            let counter = -1
+            $(this).find('.option').each(function () {
+                // Извлекаем значение из input.value, убираем пробелы в начале и в конце
+                let value = $(this).find('.value').val().trim();
+                // Если значение не пустое, добавляем его в массив options
+                if (value) {
+                    options.push(value);
+                    counter++
+                }
+                if ($(this).find('.check').is(':checked')) {
+                    rightAnswersId.push(counter);
+                    // записывать буду порядковый номер правильных ответов, который возьму в качестве id. лучше использовать id, чем сравнение строк
+                }
+            });
+        }
+
+
         return {
             id: $(this).attr('id'),
-            type: '',
+            type: type,
             text: $(this).find('.questionText').val(),
-            // options: [option1, option2, option3], от типа будет зависеть. в if засунуть, в тернарный оператор прямо здесь
-            // rightAnswers: [option1, option2], тоже от типа зависит. если long text, то '', если short text, то содержимое инпута .right-answer. если checkbox или radio, то находим .option с правильным ответом, если такового нет, то '' нверное. лучше не '', а какой-нибудь null, а то можно же создать опрос, где реально правильным ответом будет '', тогда будет иметь место двузначность
+            options: options,
+            rightAnswersId: rightAnswersId,
         }
-    }).get()
+    }).get() // Преобразуем результат в массив
 
 
 
@@ -63,7 +87,7 @@ export function submitPoll(event) {
 }
 
 
-function sendData(pollData) { 
+function sendData(pollData) {
     // данные  отправляются на сервер
     let jsonPollData = JSON.stringify(pollData)
 
