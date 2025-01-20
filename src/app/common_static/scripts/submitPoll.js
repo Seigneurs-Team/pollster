@@ -7,34 +7,7 @@ export function submitPoll(event) {
     console.log('submitPollBtn clicked')
 
     event.preventDefault(); // Prevent default form submission behavior
-    /*
-        let questions = [
-            {
-                'type': 'checkbox',
-                'text': 'question1',
-                'options': ['option1', 'option2', 'option3'],
-                'right-answers': ['option1', 'option2']
-            },
-            {
-                'type': 'checkbox',
-                'text': 'question2',
-                'options': ['option1', 'option2'],
-                'right-answers': null,
-            },
-            {
-                'type': 'short',
-                'text': 'question3',
-                'options': null,
-                'right-answer': 'this is right answer',
-            },
-            {
-                'type': 'long',
-                'text': 'question4',
-                'options': null,
-                'right-answer': null,
-            },
-        ]
-    */
+
     // Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
 
     let questions = $('.question').map(function () {
@@ -100,6 +73,10 @@ function sendData(pollData) {
     Http.onload = function () {
         var response = JSON.parse(Http.response);
         console.log('result: ', response);
+        if (response) {
+            alert('Опрос успешно создан')
+            window.location.href = '/'; // Перенаправление на домашнюю страницу
+        }
     };
 
     console.log("pollData в json:", jsonPollData)

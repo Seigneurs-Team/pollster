@@ -11,8 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/create_poll_page.css' %}">
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
 
 </head>
 
@@ -35,7 +34,7 @@
                 </label>
 
                 <label class="form-label" for="pollTitle">Название опроса (макс. 60 символов):</label>
-                <input type="text" id="pollTitle" maxlength="60" value="lsadg">
+                <input type="text" id="pollTitle" maxlength="60">
 
 
                 <label class="form-label" for="pollDescription">Описание опроса (макс. 200 символов):</label>
