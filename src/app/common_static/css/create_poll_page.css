@@ -151,3 +151,29 @@ div.option * {
     font-size: 12px;
     min-height: auto;
 }
+
+/* @media (max-width: 770px) {
+
+
+    .form input, .form textarea, .form button, .questionImage {
+        font-size: unset;
+    }
+    main {
+        width: 100%;
+        color: red;
+
+    }
+
+    .form {
+        width: 100%;
+        color: red;
+
+    }
+
+    * {
+        color: red;
+        font-size: unset;
+    }
+
+
+} */

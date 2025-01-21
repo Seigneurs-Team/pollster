@@ -1,0 +1,39 @@
+
+@media (max-width: 770px) {
+
+
+     .form input, .form textarea, .form button, .questionImage, .addPollImage {
+        font-size: unset;
+    } 
+
+    main {
+        margin: 30px;
+    }
+
+    .form {
+        width: 100%;
+        font-size: unset;
+
+
+    }
+
+    * {
+        font-size: unset;
+    }
+
+
+}
+
+/* @media (orientation: landscape) {
+    body {
+      background: #000;
+
+    }
+  }
+
+  @media (orientation: portrait) and (max-width: 770px) {
+    body {
+      background: red;
+
+    }
+  } */
