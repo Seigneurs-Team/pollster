@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.main_page',
-    'app.create_poll_page'
+    'app.create_poll_page',
+    'app.passing_poll_page',
+
 ]
 
 MIDDLEWARE = [
