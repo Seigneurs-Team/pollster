@@ -8,8 +8,7 @@ from random import randint
 
 
 def request_on_create_poll_page(requests):
-    polls = client_mysqldb.get_polls()
-    return render(requests, 'create_poll_page.html', context={'all_objects': polls})
+    return render(requests, 'create_poll_page.html')
 
 
 def requests_on_get_polls(request, num_of_polls=5):
