@@ -12,6 +12,10 @@
     /* font-size: 11px; */
 }
 
+a {
+    text-decoration: none;
+    color: unset;
+}
 button {
     background-color: #fff;
 }
@@ -26,7 +30,7 @@ h1 {
     font-weight: 500;
 }
 
-button:hover, a:hover {
+button:hover, #createPollBtn:hover {
     color: #fff;
     background-color: var(--violet);
 }

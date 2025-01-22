@@ -31,8 +31,9 @@
             <ul class="polls">
                 {% for item in all_objects %}
                 <li class="poll-item">
+                    <a href="passing_poll/{{item.id}}/">
                     <h2 class="poll-name">{{item.name_of_poll}}</h2>
-                    <p class="poll-description">{{item.description}}</p>
+                    <p class="poll-description">{{item.description}}</p> <span class="poll_id">#{{item.id}}</span>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo""></div>
             
 
@@ -71,7 +72,7 @@
                                 </path>
                             </svg><span>Осталось  ответов</span></div>
 
-
+                        </a>
                 </li>
                 {% endfor %}
             </ul>

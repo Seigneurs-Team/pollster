@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', request_on_main_page, name='home'),
     path('create_poll_page', request_on_create_poll_page, name='create_poll_page'),
-    path('passing_poll', request_on_passing_poll_page, name='passing_poll_page'),
+    path('passing_poll/<int:poll_id>/', request_on_passing_poll_page, name='passing_poll_page'),
     path('get_polls', requests_on_get_polls),
     path('create_poll', request_on_create_new_poll)
 ]
