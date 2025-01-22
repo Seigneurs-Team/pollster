@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-    <link rel="stylesheet" href="{% static 'css/create_poll_page.css' %}">
+    <link rel="stylesheet" href="{% static 'css/passing_poll_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
@@ -21,17 +21,18 @@
     <div class="content">
         <header>
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
-            <h1>ПРОХОЖДЕНИЕ ОПРОСА</h1>
-
         </header>
 
 
         <main>
-           <p>название: {{poll.name_of_poll}}</p>
-           <p>описание: {{poll.description}}</p>
-           <p>id: {{poll.id}}</p>
-
-
+            <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
+            <h1 class="poll-name">{{poll.name_of_poll}}</h1>
+            <p class="poll-description">{{poll.description}}</p> <span class="poll_id">#{{poll.id}}</span>
+            <p class="poll-tags">{{poll.tags}} </p>
+            <div id="questions">
+                <p>*тут будут вопросы* {{poll.questions}}</p>
+            </div>
+            <button class="start">Прохождение опроса</button>
         </main>
 
     </div>
@@ -74,6 +75,9 @@
             <p class="contacts">(наши контакты)</p>
         </div>
     </footer>
+
+    <script src="{% static 'scripts/passing_poll_page.js' %}" type="module"></script>
+
 </body>
 
 </html>

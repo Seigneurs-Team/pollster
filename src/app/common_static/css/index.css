@@ -3,6 +3,12 @@
     --violet: #5863BF;
 }
 
+.content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .log-in {
     width: 87px;
     height: 26px;
