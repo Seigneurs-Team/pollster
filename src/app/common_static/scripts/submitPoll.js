@@ -32,6 +32,9 @@ export function submitPoll(event) {
                     // записывать буду порядковый номер правильных ответов, который возьму в качестве id. лучше использовать id, чем сравнение строк
                 }
             });
+        } else if (type == 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
+            let answer = $(this).find('.right-answer').val()
+            if (answer) {rightAnswersId.push(answer);}           
         }
 
 
