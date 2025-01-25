@@ -15,13 +15,13 @@ const deleteQuestion = function (target) {
     $(target).parent('.question').remove(); // Удаляем родительский элемент .question
 }
 
-// закрытие модального окна
-$('.modal-close').on('click', function () { console.log('modal-close clicked'); modalType.hide(); })
-
 
 // по нажатию на "добавить вопрос" открываем модальное окно для выбора типа вопроса
-$(".addQuestion").on('click', addQuestion);
-function addQuestion() { modalType.show(); }
+$(".addQuestion").on('click', function () { modalType.show(); });
+
+// закрытие модального окна
+$('.modal-close').on('click', function () { modalType.hide(); })
+
 
 // после выбора типа вопроса
 $(".answerType").on('click', function () {

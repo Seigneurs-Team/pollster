@@ -114,10 +114,6 @@ header h1 {
 }
 
 
-#choose-question-type-modal {
-    display: none;
-}
-
 .question>* {
     margin-bottom: 10px;
 }
