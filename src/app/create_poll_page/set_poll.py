@@ -47,7 +47,7 @@ def set_options(json_data: dict, question_object: list[Question]) -> list[Option
 def set_right_answers(json_data: dict, options_object: list[Option]):
     list_of_right_answers: list[RightAnswer] = []
     for index, question in enumerate(json_data.get('questions', '')):
-        for right_answer_id in json_data.get('rightAnswersId', ''):
+        for right_answer_id in question.get('rightAnswersId', ''):
             list_of_right_answers.append(
                 RightAnswer(
                     **options_object[index].__dict__,

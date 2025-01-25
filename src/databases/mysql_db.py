@@ -67,17 +67,22 @@ class MysqlDB:
         :param id_of_poll: идентификатор опроса
         :return:
         """
+        # self.cursor.execute(f"""SELECT polls.name_of_poll, polls.description, polls.tags, polls.description,
+        #  questions.text_of_question, questions.type_of_question, options.option_name, rightAnswers.rightAnswerId
+        #  FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
+        #  INNER JOIN options ON questions.id_of_question = options.id_of_question
+        #  INNER JOIN rightAnswers ON options.id_of_option = rightAnswers.id_of_option
+        #  WHERE polls.id = {id_of_poll}""")
+
         self.cursor.execute(f"""SELECT polls.name_of_poll, polls.description, polls.tags, polls.description,
-         questions.text_of_question, questions.type_of_question, options.option_name, rightAnswers.rightAnswerId
-         FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll 
-         INNER JOIN options ON questions.id_of_question = options.id_of_question 
-         INNER JOIN rightAnswers ON options.id_of_option = rightAnswers.id_of_option 
-         WHERE polls.id = {id_of_poll}""")
+                 questions.text_of_question, questions.type_of_question
+                 FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
+                 WHERE polls.id = {id_of_poll}""")
 
         response_from_query = self.cursor.fetchall()
 
-        self.cursor.execute("""SELECT * FROM questions""")
-
+        # self.cursor.execute("SELECT * FROM polls; SELECT * FROM questions; SELECT * FROM options; SELECT * FROM rightAnswers")
+        self.cursor.execute("SELECT * FROM options")
         print(self.cursor.fetchall())
 
         print(response_from_query)
@@ -169,7 +174,7 @@ class MysqlDB:
         self.connection, self.cursor = self.connect_to_db()
 
     def delete_tables(self):
-        self.cursor.execute("""DROP TABLE polls""")
+        self.cursor.execute("""DROP TABLE polls, questions, options, rightAnswers""")
         self.connection.commit()
 
 

@@ -33,9 +33,9 @@
             <ul class="polls">
                 {% for item in all_objects %}
                 <li class="poll-item">
-                    <a href="passing_poll/{{item.id}}/">
+                    <a href="passing_poll/{{item.id_of_poll}}/">
                     <h2 class="poll-name">{{item.name_of_poll}}</h2>
-                    <p class="poll-description">{{item.description}}</p> <span class="poll_id">#{{item.id}}</span>
+                    <p class="poll-description">{{item.description}}</p> <span class="poll_id">#{{item.id_of_poll}}</span>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
                     <p class="poll-tags">{{item.tags}} </p>
                     <button class="delete-poll" data-poll="{{item.id}}">
