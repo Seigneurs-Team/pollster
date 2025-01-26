@@ -19,6 +19,7 @@ from django.urls import path
 from app.main_page.views import request_on_main_page, requests_on_get_polls
 from app.create_poll_page.views import request_on_create_poll_page, request_on_create_new_poll
 from app.passing_poll_page.views import request_on_passing_poll_page
+from app.sign_in_page.views import request_on_sign_in_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +27,7 @@ urlpatterns = [
     path('create_poll_page', request_on_create_poll_page, name='create_poll_page'),
     path('passing_poll/<int:poll_id>/', request_on_passing_poll_page, name='passing_poll_page'),
     path('get_polls', requests_on_get_polls),
-    path('create_poll', request_on_create_new_poll)
+    path('create_poll', request_on_create_new_poll),
+    path('sign_in', request_on_sign_in_page)
+
 ]
