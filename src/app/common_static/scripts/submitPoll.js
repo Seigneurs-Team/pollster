@@ -13,10 +13,11 @@ export function submitPoll(event) {
     let questions = $('.question').map(function () {
         let type = $(this).attr('data-type')
         let options = []
-        let rightAnswersId = []
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
         if (type == 'radiobutton' | type == 'checkbox') {
+        let rightAnswersId = []
+                        
             // id ответов начинаются с 0
             let counter = -1
             $(this).find('.option').each(function () {
@@ -32,19 +33,28 @@ export function submitPoll(event) {
                     // записывать буду порядковый номер правильных ответов, который возьму в качестве id. лучше использовать id, чем сравнение строк
                 }
             });
+
+            return {
+                id: $(this).attr('id'),
+                type: type,
+                text: $(this).find('.questionText').val(),
+                options: options,
+                rightAnswersId: rightAnswersId,
+            }
         } else if (type == 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
             let answer = $(this).find('.right-answer').val()
-            if (answer) {rightAnswersId.push(answer);}           
+
+            
+            return {
+                id: $(this).attr('id'),
+                type: type,
+                text: $(this).find('.questionText').val(),
+                options: options,
+                shortTextRightAnswer: answer,
+            }   
         }
 
 
-        return {
-            id: $(this).attr('id'),
-            type: type,
-            text: $(this).find('.questionText').val(),
-            options: options,
-            rightAnswersId: rightAnswersId,
-        }
     }).get() // Преобразуем результат в массив
 
 
