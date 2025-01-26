@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'app.main_page',
     'app.create_poll_page',
     'app.passing_poll_page',
+    'app.sign_in_page',
+    'app.create_new_account_page',
 
 ]
 
