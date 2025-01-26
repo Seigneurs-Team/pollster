@@ -22,7 +22,6 @@ header h1 {
 }
 
 .form> *, .chooseQuestionType {
-    display: block;
     width: 100%;
     margin: auto;
 

@@ -35,9 +35,14 @@ button:hover, #createPollBtn:hover {
     color: #fff;
     background-color: var(--violet);
 }
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
 header .logo {
-    width: 350px;
+    width: 234px;
 }
 
 .content {
@@ -47,6 +52,7 @@ header .logo {
 }
 
 footer {
+    margin-top: 30px;
     padding: 30px 100px;
     background-color: #5863BF;
 }

@@ -3,7 +3,7 @@
     --violet: #5863BF;
 }
 
-.content {
+main {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -76,6 +76,14 @@ li.poll-item .poll-img img {
     border-radius: var(--border-radius);
 
 }
+
+li.poll-item .poll_id {
+    float: right;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8D8D8D;
+}
+
 
 li.poll-item .delete-poll {
     background-color: white;
