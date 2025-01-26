@@ -49,10 +49,16 @@ export function submitPoll(event) {
                 id: $(this).attr('id'),
                 type: type,
                 text: $(this).find('.questionText').val(),
-                options: options,
-                shortTextRightAnswer: answer,
+                rightAnswer: answer,
             }   
-        }
+        } else if (type == 'long text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
+            
+            return {
+                id: $(this).attr('id'),
+                type: type,
+                text: $(this).find('.questionText').val(),
+            }   
+        } 
 
 
     }).get() // Преобразуем результат в массив
