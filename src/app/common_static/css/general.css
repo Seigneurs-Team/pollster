@@ -27,6 +27,14 @@ body {
     font-size: 20px;
 }
 
+.go-back {
+    display: flex;
+    flex-direction: column;
+    width: 143px;
+    font-size: 17px;
+    font-weight: 800;
+}
+
 h1 {
     font-weight: 500;
 }
