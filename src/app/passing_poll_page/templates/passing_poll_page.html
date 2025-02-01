@@ -31,12 +31,10 @@
 
         <main>
             <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
-            <h1 class="poll-name">{{poll.name_of_poll}}</h1>
+            <h1 class="poll-name">Прохождение опроса<br>{{poll.name_of_poll}}</h1>
             <p class="poll-description">{{poll.description}}</p> <span class="poll_id">#{{poll.id}}</span>
             <p class="poll-tags">{{poll.tags}} </p>
-            <div id="questions">
-                <p>*тут будут вопросы* {{poll.questions}}</p>
-            </div>
+            <div id="questions"></div>
             <button class="start">Прохождение опроса</button>
         </main>
 
