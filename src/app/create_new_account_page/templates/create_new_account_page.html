@@ -8,7 +8,7 @@
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/create_new_account_page.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sign_in.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
@@ -19,7 +19,7 @@
 <body>
     <div class="content">
         <header>
-            <a href="/" class="go-back">
+            <a href="/sign_in" class="go-back">
                 <span>вернуться назад</span>
                 <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
             </a>
@@ -30,13 +30,19 @@
 
 
         <main>
-<form action="" id="loginForm">
-    <label for="login">login:</label>
-    <input type="text" name="login" id="login"><br>
-    <label for="password">password:</label>
-    <input type="text" name="password" id="password">
-<button type="submit">submit</button>
-</form>
+            <h1>РЕГИСТРАЦИЯ</h1>
+            <form action="" id="loginForm">
+                <div>
+                    <label for="login">login:</label>
+                    <input type="text" name="login" id="login">
+                </div>
+                <div>
+                    <label for="password">password:</label>
+                    <input type="text" name="password" id="password">
+                </div>
+                <button type="submit">submit</button>
+                <!-- TODO сделать поле "введите пароль" еще раз, будет называться password-repeat и в js буду проверять, совпадают ли password и password-repeat. если нет, то надпись отрисовывается в html соответствующая, но для начала в console.log будет -->
+            </form>
         </main>
         <script src="{% static 'scripts/create_new_account_page.js' %}" type="module"></script>
 

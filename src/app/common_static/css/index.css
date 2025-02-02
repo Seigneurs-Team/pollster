@@ -9,14 +9,16 @@ main {
     flex-direction: column;
 }
 
-.log-in {
+.sign-up {
+    display: block;
     width: 87px;
     height: 26px;
+    margin: 10px 10px 10px 0;
     border: var(--violet) solid 2px;
     border-radius: 4px;
     float: right;
     background-color: white;
-    margin: 10px 10px 10px 0;
+    text-align: center;
 }
 
 #createPollBtn {
