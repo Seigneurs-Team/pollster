@@ -1,27 +1,32 @@
 const questionsDiv = $("#questions");
 
 // временный список вопросов
-const questionsList = [{"id": "1", "type": "short text", "text": "ваше имя", "rightAnswer": ""}, {
-    "id": "2",
-    "type": "long text",
-    "text": "расскажите о себе"
-}, {
-    "id": "3",
-    "type": "radiobutton",
-    "text": "ваш пол",
-    "options": ["м", "ж", "другое"],
-    "rightAnswersId": []
-}, {
-    "id": "4",
-    "type": "checkbox",
-    "text": "домашние животные",
-    "options": ["нет", "кошка❤️❤️❤️", "собака", "попугай🤔"],
-    "rightAnswersId": []
-}]
-
+// const questionsList = [
+//     {
+//         "id": "1",
+//         "type": "short text",
+//         "text": "ваше имя",
+//         "rightAnswer": ""},
+//     {
+//         "id": "2",
+//         "type": "long text",
+//         "text": "расскажите о себе"
+//     }, {
+//         "id": "3",
+//         "type": "radiobutton",
+//         "text": "ваш пол",
+//         "options": ["м", "ж", "другое"],
+//         "rightAnswersId": []
+//     }, {
+//         "id": "4",
+//         "type": "checkbox",
+//         "text": "домашние животные",
+//         "options": ["нет", "кошка❤️❤️❤️", "собака", "попугай🤔"],
+//         "rightAnswersId": []
+//     }]
+console.log(questionsList)
 questionsList.forEach(question => {
 
-    console.log(question.type, question.id)
     const questionEl = $(`<div id="${question.id}" class="question"></div>`)
 
 
@@ -33,14 +38,12 @@ questionsList.forEach(question => {
 
     questionEl.append(questionText);
     questionEl.append(questionContent);
-    console.log('questionEl', questionEl)
     questionsDiv.append(questionEl);
 
 })
 
 
 $(".start").on('click', function () {
-    console.log('showing questions...');
     questionsDiv.show();
     $(this).hide()
 });

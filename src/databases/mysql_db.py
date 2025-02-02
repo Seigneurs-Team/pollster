@@ -111,7 +111,7 @@ class MysqlDB:
             if type_of_question == 'short text':
                 dict_of_poll['questions'][index]['shortTextRightAnswer'] = self.get_text_right_answers(id_of_question)
 
-            elif text_of_question == 'radiobutton' or text_of_question == 'checkbox':
+            elif type_of_question == 'radiobutton' or type_of_question == 'checkbox':
                 dict_of_poll['questions'][index]['options'] = self.get_options(id_of_question)
                 dict_of_poll['questions'][index]['rightAnswersId'] = self.get_right_answers(id_of_question)
 
