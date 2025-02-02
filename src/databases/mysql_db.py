@@ -6,9 +6,13 @@ from Configs.Poll import (
     Poll,
     Question,
     Option,
-    RightAnswer
+    RightAnswer,
+    RightTextAnswer
 )
 from app.create_poll_page.set_poll import get_random_id
+from typing import List
+
+from Configs.Exceptions import NotFoundPoll
 logger = logging.getLogger()
 
 
@@ -44,7 +48,8 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, PRIMARY KEY (id))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, PRIMARY KEY(id_of_question))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED, option_name TEXT, PRIMARY KEY(id_of_option))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_option INT UNSIGNED, rightAnswerId INT UNSIGNED, PRIMARY KEY (rightAnswerId))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, PRIMARY KEY (rightAnswerId))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, PRIMARY KEY (id_of_question))""")
         self.connection.commit()
 
     def get_polls(self, num_of_polls: int = 4) -> list:
@@ -60,12 +65,12 @@ class MysqlDB:
             polls_list.append(Poll(poll[3], poll[2], poll[1], poll[0]))
         return polls_list
 
-    def get_poll(self, id_of_poll: int):
+    def get_poll(self, id_of_poll: int) -> dict or None:
         """
-        Функция выполняет транзакцию, у которой ответ состоит из полей четырех таблиц
+        Функция выполняет транзакцию, у которой ответ состоит из перекрытия полей четырех таблиц.
 
         :param id_of_poll: идентификатор опроса
-        :return:
+        :return: None
         """
         # self.cursor.execute(f"""SELECT polls.name_of_poll, polls.description, polls.tags, polls.description,
         #  questions.text_of_question, questions.type_of_question, options.option_name, rightAnswers.rightAnswerId
@@ -74,25 +79,96 @@ class MysqlDB:
         #  INNER JOIN rightAnswers ON options.id_of_option = rightAnswers.id_of_option
         #  WHERE polls.id = {id_of_poll}""")
 
-        self.cursor.execute(f"""SELECT polls.name_of_poll, polls.description, polls.tags, polls.description,
-                 questions.text_of_question, questions.type_of_question
+        # self.cursor.execute(f"""SELECT polls.id, questions.id_of_question
+        #          FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
+        #          WHERE polls.id = {id_of_poll}""")
+
+        questions_entries = self.get_questions(id_of_poll)
+        dict_of_poll = self.set_dict_poll(questions_entries, id_of_poll)
+        return dict_of_poll
+
+    def set_dict_poll(self, questions_entries: list, id_of_poll: int) -> dict:
+        print(questions_entries)
+        dict_of_poll: dict = {
+            'id_of_poll': id_of_poll,
+            'name_of_poll': questions_entries[0][1],
+            'description': questions_entries[0][3],
+            'tags': questions_entries[0][2],
+            'questions': []
+        }
+
+        for index, question in enumerate(questions_entries):
+            id_of_question = question[4]
+            type_of_question = question[5]
+            text_of_question = question[6]
+
+            dict_of_poll['questions'].append({
+                'id': id_of_question,
+                'type': type_of_question,
+                'text': text_of_question
+            })
+
+            if type_of_question == 'short text':
+                dict_of_poll['questions'][index]['shortTextRightAnswer'] = self.get_text_right_answers(id_of_question)
+
+            elif text_of_question == 'radiobutton' or text_of_question == 'checkbox':
+                dict_of_poll['questions'][index]['options'] = self.get_options(id_of_question)
+                dict_of_poll['questions'][index]['rightAnswersId'] = self.get_right_answers(id_of_question)
+
+        return dict_of_poll
+
+    def get_questions(self, id_of_poll: int) -> List or None:
+        self.cursor.execute(f"""SELECT polls.id, polls.name_of_poll, polls.tags, 
+                 polls.description, questions.id_of_question, questions.type_of_question, questions.text_of_question
                  FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
                  WHERE polls.id = {id_of_poll}""")
-
         response_from_query = self.cursor.fetchall()
 
-        # self.cursor.execute("SELECT * FROM polls; SELECT * FROM questions; SELECT * FROM options; SELECT * FROM rightAnswers")
-        self.cursor.execute("SELECT * FROM options")
-        print(self.cursor.fetchall())
+        if len(response_from_query) == 0:
+            raise NotFoundPoll('Опрос не найден')
+        return response_from_query
 
-        print(response_from_query)
+    def get_options(self, id_of_question: int) -> list[str]:
+        """
+        Функция выполняет выборку записей из таблицы options по ключевому ключу id_of_question
+        :param id_of_question: идентификатор вопроса
+        :return: возвращает список объекта Option
+        """
+        self.cursor.execute(f"""SELECT option_name, FROM options WHERE id_of_question = {id_of_question}""")
+        response_from_query = self.cursor.fetchall()
+
+        return [option[0] for option in response_from_query]
+
+    def get_text_right_answers(self, id_of_question: int) -> str:
+        """
+        Функция выполняет выборку записей из таблицы text_rights_answers по ключевому ключу id_of_question
+        :param id_of_question: идентификатор вопроса
+        :return: возвращает список объекта RightTextAnswer
+        """
+        self.cursor.execute("""SELECT * FROM text_rights_answers""")
+        self.cursor.execute(f"""SELECT text_of_right_answer FROM text_rights_answers WHERE id_of_question = {id_of_question}""")
+        response_of_query = self.cursor.fetchall()
+
+        return response_of_query[0][0]
+
+    def get_right_answers(self, id_of_question: int):
+        """
+        Функция выполняет выборку записей из таблицы rightAnswers по ключевому ключу id_of_question
+        :return:
+        """
+
+        self.cursor.execute(f"""SELECT rightAnswerId FROM rightAnswers WHERE id_of_question={id_of_question}""")
+        response_of_query = self.cursor.fetchall()
+
+        return [right_answer_id[0] for right_answer_id in response_of_query]
 
     def create_pool(
             self,
             poll: Poll,
             list_of_questions: list[Question],
             list_of_options: list[Option],
-            list_of_right_answers: list[RightAnswer]
+            list_of_right_answers: list[RightAnswer],
+            list_of_text_right_answers: list[RightTextAnswer]
     ) -> bool:
         """
         Функция создает опрос в базе данных
@@ -100,6 +176,7 @@ class MysqlDB:
         :param list_of_questions: объект класса list[Question]
         :param list_of_options: объект класса list[Option]
         :param list_of_right_answers: объект класса list[RightAnswer]
+        :param list_of_text_right_answers: объект класса list[RightTextAnswer]
         :return: возвращает 1 или 0; 1 означает success create poll, 0 означает, что транзакция не была совершена
         """
         try:
@@ -112,6 +189,8 @@ class MysqlDB:
 
             for right_answer in list_of_right_answers:
                 self.add_new_entry_into_right_answers_table(right_answer)
+            for right_text_answer in list_of_text_right_answers:
+                self.add_new_entry_into_text_rights_answers_table(right_text_answer)
             self.connection.commit()
             return True
         except Exception as ex:
@@ -164,11 +243,20 @@ class MysqlDB:
         :return:
         """
         try:
-            self.cursor.execute("""INSERT INTO(id_of_option, rightAnswerId) VALUES (%s, %s)""",
-                                (right_answer.id_of_option, right_answer.RightAnswerId))
+            self.cursor.execute("""INSERT INTO rightAnswers(id_of_question, rightAnswerId) VALUES (%s, %s)""",
+                                (right_answer.id_of_question, right_answer.RightAnswerId))
         except mysql.connector.errors.IntegrityError:
             right_answer.RightAnswerId = get_random_id()
             self.add_new_entry_into_right_answers_table(right_answer)
+
+    def add_new_entry_into_text_rights_answers_table(self, right_text_answer: RightTextAnswer) -> None:
+        """
+        Добавляет запись в таблицу text_rights_answers
+        :param right_text_answer: объект класса RightTextAnswer
+        :return:
+        """
+        self.cursor.execute("""INSERT INTO text_rights_answers(id_of_question, text_of_right_answer) VALUES(%s, %s)""",
+                            (right_text_answer.id_of_question, right_text_answer.text_of_right_answer))
 
     def reconnect(self):
         self.connection, self.cursor = self.connect_to_db()

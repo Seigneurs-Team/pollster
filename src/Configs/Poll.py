@@ -18,11 +18,16 @@ class Question(Poll):
 
 
 @dataclass
+class RightTextAnswer(Question):
+    text_of_right_answer: str
+
+
+@dataclass
 class Option(Question):
     id_of_option: int
     option: str
 
 
 @dataclass
-class RightAnswer(Option):
+class RightAnswer(Question):
     RightAnswerId: int
