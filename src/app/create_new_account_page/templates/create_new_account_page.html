@@ -8,8 +8,7 @@
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-    <link rel="stylesheet" href="{% static 'css/passing_poll_page.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sign_in.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
@@ -20,23 +19,32 @@
 <body>
     <div class="content">
         <header>
-            <a href="/" class="go-back">
+            <a href="/sign_in" class="go-back">
                 <span>вернуться назад</span>
                 <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
             </a>
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
-            <span>профиль</span>
+
+
         </header>
 
 
         <main>
-            <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
-            <h1 class="poll-name">Прохождение опроса<br>{{poll.name_of_poll}}</h1>
-            <p class="poll-description">{{poll.description}}</p> <span class="poll_id">#{{poll.id}}</span>
-            <p class="poll-tags">{{poll.tags}} </p>
-            <div id="questions"></div>
-            <button class="start">Прохождение опроса</button>
+            <h1>РЕГИСТРАЦИЯ</h1>
+            <form action="" id="loginForm">
+                <div>
+                    <label for="login">login:</label>
+                    <input type="text" name="login" id="login">
+                </div>
+                <div>
+                    <label for="password">password:</label>
+                    <input type="text" name="password" id="password">
+                </div>
+                <button type="submit">submit</button>
+                <!-- TODO сделать поле "введите пароль" еще раз, будет называться password-repeat и в js буду проверять, совпадают ли password и password-repeat. если нет, то надпись отрисовывается в html соответствующая, но для начала в console.log будет -->
+            </form>
         </main>
+        <script src="{% static 'scripts/create_new_account_page.js' %}" type="module"></script>
 
     </div>
     <footer>
@@ -78,9 +86,6 @@
             <p class="contacts">(наши контакты)</p>
         </div>
     </footer>
-
-    <script src="{% static 'scripts/passing_poll_page.js' %}" type="module"></script>
-
 </body>
 
 </html>

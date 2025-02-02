@@ -1,6 +1,6 @@
 // добавление вопросов:
 
-import { submitPoll } from './submitPoll.js';
+import {submitPoll} from './submitPoll.js';
 
 
 let questionsId = 0 // увеличивается при добавлении нового вопроса, не уменьшается никогда. нужна для создания уникального id каждому вопросу
@@ -9,7 +9,7 @@ let content = null
 
 
 // удаление вопроса
-$(".deleteQuestion").on('click', function (event) { deleteQuestion(this) });
+$(".deleteQuestion").on('click', function (event) { deleteQuestion(this)});
 const deleteQuestion = function (target) {
     console.log('deleteQuestion activated')
     $(target).parent('.question').remove(); // Удаляем родительский элемент .question
@@ -17,10 +17,10 @@ const deleteQuestion = function (target) {
 
 
 // по нажатию на "добавить вопрос" открываем модальное окно для выбора типа вопроса
-$(".addQuestion").on('click', function () { modalType.show(); });
+$(".addQuestion").on('click', function () { modalType.show();});
 
 // закрытие модального окна
-$('.modal-close').on('click', function () { modalType.hide(); })
+$('.modal-close').on('click', function () { modalType.hide();})
 
 
 // после выбора типа вопроса
@@ -38,7 +38,7 @@ $(".answerType").on('click', function () {
     <span class="questionId">Вопрос #` + questionsId + `</span>
     <input class="questionText" type="text" maxlength="60" placeholder="Задайте вопрос">
     <button class="questionImage">+ Картинка опроса (необязательно)</button>
-    <div class="questionContent">`+ content + `</div>
+    <div class="questionContent">` + content + `</div>
     <button class="deleteQuestion">Удалить вопрос</button>
 </div>
 `)
@@ -46,17 +46,18 @@ $(".answerType").on('click', function () {
     // добавляем новый вопрос
     $(".questions").append(newQuestion);
 
+    // фокус на поле ввода вопроса
+    $(`.questionText`).focus()
+
     //назначаем обработчики событий
-    $(".deleteQuestion").on('click', function (event) {
-        deleteQuestion(this)
-    });
+    $(".deleteQuestion").on('click', function (event) { deleteQuestion(this) });
 
     /* назначаем обработчики событий на button которая добавляет option в checkbox и radiobutton) */
     if (questionType == "radiobutton") {
-        $('#' + questionsId).find('.addOptionRadio').on('click', function () { addOption(this, 'radio') })
+        $('#' + questionsId).find('.addOptionRadio').on('click', function () { addOption(this, 'radio', questionsId) })
     }
     if (questionType == "checkbox") {
-        $('#' + questionsId).find('.addOptionCheckbox').on('click', function () { addOption(this, 'checkbox') })
+        $('#' + questionsId).find('.addOptionCheckbox').on('click', function () { addOption(this, 'checkbox', questionsId) })
     }
     modalType.hide();
     content = null
@@ -65,10 +66,7 @@ $(".answerType").on('click', function () {
 
 
 function answerType(questionType, questionId) {
-    // обработка нажатия на кнопку выбора того или иного типа вопроса: возвращает соответствующий контент, 
-
-
-
+    // обработка нажатия на кнопку выбора того или иного типа вопроса: возвращает соответствующий контент:
     //  - вопрос с развернутым ответом - добавляется надпись "вопрос с развернутым ответом"
     //  - вопрос с кратким текстовым ответом - input для ввода правильного ответа (если пользователь ничего не напишет, то правильного ответа нет. placeholder="введите правильный ответ (необязательно)")
     //  - checkbox: ul (минимум 2 li), после него кнопка "+" для добавления варианта ответа. выбранный(е) вариант(ы) считаются правильными
@@ -84,24 +82,22 @@ function answerType(questionType, questionId) {
         // TODO добавить кнопку "удалить" для option (и в checkbox тоже)
         return `
     <div class="options">
-        <div class="option"><input type="radio" name="1" id="`+ questionId + `_1" class="check"> <input type="text"
-                for="1_1" class="value"></input>
+        <div class="option"><input type="radio" name="1" id="${questionId}_1" class="check"> 
+        <input type="text" for="1_1" id="${questionId}_1-input" class="value"></input>
         </div>
-        <div class="option"><input type="radio" name="1" id="`+ questionId + `_2" class="check"> <input type="text"
-                for="1_2" class="value"></input></div>
+        <div class="option"><input type="radio" name="1" id="${questionId}_2" class="check"> 
+        <input type="text" for="1_2" id="${questionId}_2-input" class="value"></input></div>
     </div>
     <br><button class="addOptionRadio">+</button>
     `
     } else if (questionType == "checkbox") {
         return `
     <div class="options">
-        <div class="option"><input type="checkbox" name="1" id="`+ questionId + `_1" class="check"> 
-        <input type="text"
-                for="`+ questionId + `_1" class="value">
+        <div class="option"><input type="checkbox" name="1" id="${questionId}_1" class="check"> 
+        <input type="text" for="${questionId}_1" id="${questionId}_1-input" class="value">
         </div>
-        <div class="option"><input type="checkbox" name="1" id="`+ questionId + `_2" class="check"> 
-        <input type="text"
-                for="`+ questionId + `_2" class="value"></div>
+        <div class="option"><input type="checkbox" name="1" id="${questionId}_2" class="check"> 
+        <input type="text" for="${questionId}_2" id="${questionId}_2-input" class="value"></div>
     </div>
     <br><button class="addOptionCheckbox">+</button>
     `
@@ -116,20 +112,20 @@ function answerType(questionType, questionId) {
 }
 
 
-
-function addOption(target, type) {
+function addOption(target, type, questionsId) {
     let options = $(target).closest('.question').find('.options'); // closest находит ближайший элемент .question. отличие от метода parent в том, что parent ищет только родительский элемент, а closest - также выше по иерархии.
 
     let optionsCount = options.find('.option').length;
 
     // Создаем новый вариант ответа
     optionsCount++; // Увеличиваем счетчик для нового варианта
+    const id = questionsId + "_" + optionsCount
     options.append($(`<div class="option">
-        <input type="${type}" name="1" id="1_${optionsCount}" class="check">
-        <input type="text" for="1_${optionsCount}" class="value">
+        <input type="${type}" name="${questionsId}" id=${id} class="check">
+        <input type="text" for=${id} id="${id}-input" class="value">
     </div>`));
+    $(`#${id}-input`).focus()
 }
-
 
 
 // отправка опроса на сервер

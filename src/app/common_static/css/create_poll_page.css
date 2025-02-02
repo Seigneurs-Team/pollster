@@ -3,14 +3,11 @@
     --violet: #5863BF;
 }
 
-header h1 {
-    width: 318px;
-    height: 26px;
-    display: block;
-    float: right;
+h1 {
     background-color: white;
-    margin: 10px 10px 10px 0;
-    font-size: 30px;
+    text-align: center;
+    font-size: 24px;
+    padding-bottom: 20px;
 
 }
 

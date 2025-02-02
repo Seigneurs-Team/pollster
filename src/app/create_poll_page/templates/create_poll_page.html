@@ -20,8 +20,12 @@
 <body>
     <div class="content">
         <header>
+            <a href="/" class="go-back">
+                <span>вернуться назад</span>
+                <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
+            </a>
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
-            <h1>СОЗДАНИЕ ОПРОСА</h1>
+            <span>профиль</span>
 
         </header>
 
@@ -29,6 +33,7 @@
         <main>
 
             <div class="form">
+                <h1>СОЗДАНИЕ ОПРОСА</h1>
 
                 <label class="addPollImage">
                     + Добавить картинку
@@ -36,7 +41,7 @@
                 </label>
 
                 <label class="form-label" for="pollTitle">Название опроса (макс. 60 символов):</label>
-                <input type="text" id="pollTitle" maxlength="60">
+                <input type="text" id="pollTitle" maxlength="60" value="Poll">
 
 
                 <label class="form-label" for="pollDescription">Описание опроса (макс. 200 символов):</label>

@@ -8,27 +8,43 @@
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sign_in.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
-    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
 <body>
     <div class="content">
         <header>
+            <a href="/" class="go-back">
+                <span>вернуться назад</span>
+                <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
+            </a>
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+
+
         </header>
 
 
         <main>
-            <h1>sign in</h1>
-
-            <script src="{% static 'scripts/index.js' %}" type="module"></script>
+            <h1>ВХОД</h1>
+            <form action="" id="loginForm">
+                <div>
+                    <label for="login">login:</label>
+                    <input type="text" name="login" id="login">
+                </div>
+                <div>
+                    <label for="password">password:</label>
+                    <input type="text" name="password" id="password">
+                </div>
+                <button type="submit">submit</button>
+            </form>
+            <a href="/create_new_account">Нет аккаунта?</a>
         </main>
+        <script src="{% static 'scripts/sign_in_page.js' %}" type="module"></script>
 
     </div>
     <footer>
