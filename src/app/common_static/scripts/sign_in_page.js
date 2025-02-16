@@ -38,7 +38,7 @@ $('#loginForm').on('submit', function (event) {
 
     }
     else {
-        console.log('логин и пароль не могут быть пустыми') // TODO пока что не alert. да и вообще лучше не alert, а в html выводить
+        console.log('логин и пароль не могут быть пустыми') // TODO в html выводить
     }
 
 })

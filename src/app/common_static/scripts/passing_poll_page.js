@@ -1,40 +1,12 @@
 const questionsDiv = $("#questions");
 
-// временный список вопросов
-// const questionsList = [
-//     {
-//         "id": "1",
-//         "type": "short text",
-//         "text": "ваше имя",
-//         "rightAnswer": ""},
-//     {
-//         "id": "2",
-//         "type": "long text",
-//         "text": "расскажите о себе"
-//     }, {
-//         "id": "3",
-//         "type": "radiobutton",
-//         "text": "ваш пол",
-//         "options": ["м", "ж", "другое"],
-//         "rightAnswersId": []
-//     }, {
-//         "id": "4",
-//         "type": "checkbox",
-//         "text": "домашние животные",
-//         "options": ["нет", "кошка❤️❤️❤️", "собака", "попугай🤔"],
-//         "rightAnswersId": []
-//     }]
-console.log(questionsList)
+// отрисовка вопросов
 questionsList.forEach(question => {
-
     const questionEl = $(`<div id="${question.id}" class="question"></div>`)
-
 
     // <p> текст впороса
     const questionText = $(`<p class="question-text">${question.text}</p>`)
-    // const questionInput = $(`<input type="text" placeholder="Введите ответ">`) //временно
     const questionContent = answerType(question.type, question.id, question);
-
 
     questionEl.append(questionText);
     questionEl.append(questionContent);
@@ -42,13 +14,13 @@ questionsList.forEach(question => {
 
 })
 
-
+// нажатие на кнопку "прохождение опроса"
 $(".start").on('click', function () {
     questionsDiv.show();
     $(this).hide()
 });
 
-
+// отрисовка содержимого вопросов
 function answerType(questionType, questionId, question) {
     // отрисовка вопросов: возвращает соответствующий контент:
     //текст вопроса выводится в любом случае, поэтому он не в этой функции, т.к. не зависит от типа
@@ -83,8 +55,7 @@ function answerType(questionType, questionId, question) {
 
     }
 }
-
-
+// отрисовка вариантов ответов
 function addOption(type, questionId, option, counter) {
     // Создаем новый вариант ответа
 
@@ -96,3 +67,6 @@ function addOption(type, questionId, option, counter) {
         <label type="text" for=${id}>${option}</label>
     </div>`)
 }
+
+
+// TODO отправка результатов опроса на сервер: 1) извлечение из тэгов 2) отправка

@@ -73,7 +73,7 @@ function answerType(questionType, questionId) {
     //  - radiobutton:  тож самое. если картинки, то в ul добавляем поля для загрузки изображений. если не во все поля загружены изображения, будет выходить предупреждение
 
     if (questionType == "short text") {
-        return '<input class="right-answer" type="text" maxlength="60" placeholder="введите правильный ответ (необязательно)">';
+        return '<input class="right-answer" type="text" maxlength="100" placeholder="введите правильный ответ (необязательно)">';
     } else if (questionType == "long text") {
         return '<p>Это вопрос с развернутым ответом</p>';
 
