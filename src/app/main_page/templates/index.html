@@ -22,7 +22,16 @@
     <div class="content">
         <header>
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+            <div class="right-block">
+
             <a href="/sign_in" class="sign-up">Войти</a>
+            <div class="search">
+                <img src="{% static 'img\Filter.svg' %}" alt="logo" class="logo">
+                <input type="text" name="search" id="search" placeholder="Search for polls">
+                <img src="{% static 'img\Search.svg' %}" alt="logo" class="logo">
+            </div>
+
+            </div>
         </header>
         <a href="/create_poll_page" id="createPollBtn">+ Создать опрос</a>
         <!-- Кнопка для создания опроса -->
