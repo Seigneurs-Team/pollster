@@ -15,6 +15,7 @@ class Question(Poll):
     id_of_question: int
     text_of_question: str
     type_of_question: str
+    serial_number: int
 
 
 @dataclass
