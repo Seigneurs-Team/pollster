@@ -1,0 +1,21 @@
+:root {
+    --border-radius: 12px;
+    --violet: #5863BF;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    border: var(--violet) solid 1.5px;
+border-radius: var(--border-radius);
+width: 55px;
+height: 30px;
+
+}
+button:hover {
+    background-color: var(--violet);
+    
+}

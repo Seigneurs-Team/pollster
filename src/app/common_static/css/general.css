@@ -1,0 +1,110 @@
+:root {
+    --font-family: BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-sans;
+}
+
+
+/* reset default styles */
+* {
+    padding: 0px;
+    margin: 0px;
+    font-family: var(--font-family);
+    font-weight: lighter;
+}
+
+a {
+    text-decoration: none;
+    color: unset;
+}
+button {
+    background-color: #fff;
+    border: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+}
+
+.go-back {
+    display: flex;
+    flex-direction: column;
+    width: 143px;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+h1 {
+    font-weight: 500;
+}
+
+button:hover, #createPollBtn:hover {
+    color: #fff;
+    background-color: var(--violet);
+}
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+header .logo {
+    width: 234px;
+}
+
+.content {
+    width: 768px;
+    margin: auto;
+    min-height: 100vh;
+}
+
+footer {
+    margin-top: 30px;
+    padding: 30px 100px;
+    background-color: #5863BF;
+}
+
+footer p {
+    background-color: white;
+    border-radius: 20px;
+    padding: 10px;
+    /* margin временный */
+    margin: 20px;
+}
+
+.footer-content {
+    position: relative;
+    width: 768px;
+    margin: 0 auto;
+    min-height: 350px;
+}
+
+.footer-content .lamp {
+    width: 200px;
+    height: 200px;
+}
+.footer-content p {
+    position: absolute;
+}
+.footer-content p:nth-of-type(1) {
+
+    right: 0;
+    top: 0;
+    float: right;
+    max-width: 390px;
+    min-height: 40px;
+
+    font-size: 34px;
+
+}
+.footer-content p:nth-of-type(2) {
+    top: 100px;
+    right: 0;
+    max-width: 366px;
+    min-height: 180px;
+}
+.footer-content p:nth-of-type(3) {
+    left: 0;
+    top: 250px;
+
+}

@@ -1,12 +1,3 @@
-body {
-    font-family: Arial, sans-serif;
-}
-.poll-item {
-    border: 1px #000 solid;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px;
-}
 .modal {
     display: none;
     /* Скрываем модальное окно по умолчанию */
@@ -27,19 +18,30 @@ body {
 }
 
 .modal-content {
+    width: 310px;
     background-color: #fefefe;
     margin: 15% auto;
-    /* Выравниваем окно по центру */
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    /* Ширина содержимого */
-    max-width: 600px;
-    /* Максимальная ширина */
+    border-radius: 15px;
+
 }
 
-.close {
-    color: #aaa;
+.modal-content>span {
+    font-weight: 500;
+    color: #8D8D8D;
+}
+
+.modal-content>.answerType {
+    width: 100%;
+    border: var(--violet) solid 1.5px;
+
+    border-radius: 15px;
+    margin-top: 10px;
+}
+
+.modal-close {
+    line-height: 20px;
+    color: var(--violet);
     float: right;
     font-size: 28px;
     font-weight: bold;
