@@ -26,7 +26,8 @@ def set_questions(json_data: dict, poll_object: Poll) -> list[Question]:
                 **poll_object.__dict__,
                 id_of_question=get_random_id(),
                 text_of_question=question.get('text', ''),
-                type_of_question=question.get('type', '')
+                type_of_question=question.get('type', ''),
+                serial_number=question.get('id')
             )
         )
     return list_of_questions

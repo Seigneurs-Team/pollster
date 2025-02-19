@@ -46,7 +46,7 @@ class MysqlDB:
 
     def create_table(self):
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, PRIMARY KEY (id))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, PRIMARY KEY(id_of_question))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT, PRIMARY KEY(id_of_question))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED, option_name TEXT, PRIMARY KEY(id_of_option))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED)""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, PRIMARY KEY (id_of_question))""")
@@ -101,9 +101,10 @@ class MysqlDB:
             id_of_question = question[4]
             type_of_question = question[5]
             text_of_question = question[6]
+            serial_number = question[7]
 
             dict_of_poll['questions'].append({
-                'id': id_of_question,
+                'id': serial_number,
                 'type': type_of_question,
                 'text': text_of_question
             })
@@ -118,7 +119,8 @@ class MysqlDB:
 
     def get_questions(self, id_of_poll: int) -> List or None:
         self.cursor.execute(f"""SELECT polls.id, polls.name_of_poll, polls.tags, 
-                 polls.description, questions.id_of_question, questions.type_of_question, questions.text_of_question
+                 polls.description, questions.id_of_question, questions.type_of_question, questions.text_of_question,
+                 questions.serial_number
                  FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
                  WHERE polls.id = {id_of_poll}""")
         response_from_query = self.cursor.fetchall()
@@ -215,8 +217,8 @@ class MysqlDB:
         :return:
         """
         try:
-            self.cursor.execute("""INSERT INTO questions(id_of_question, id_of_poll, text_of_question, type_of_question) VALUES (%s, %s, %s, %s)""",
-                                (question.id_of_question, question.id_of_poll, question.text_of_question, question.type_of_question))
+            self.cursor.execute("""INSERT INTO questions(id_of_question, id_of_poll, text_of_question, type_of_question, serial_number) VALUES (%s, %s, %s, %s, %s)""",
+                                (question.id_of_question, question.id_of_poll, question.text_of_question, question.type_of_question, question.serial_number))
         except mysql.connector.errors.IntegrityError:
             question.id_of_question = get_random_id()
             self.add_new_entry_into_questions_table(question)
