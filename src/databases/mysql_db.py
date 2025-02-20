@@ -1,3 +1,5 @@
+import random
+
 from mysql.connector import connect
 import mysql
 import logging
@@ -45,12 +47,26 @@ class MysqlDB:
             self.connect_to_db()
 
     def create_table(self):
+        #polls
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, PRIMARY KEY (id))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT, PRIMARY KEY(id_of_question))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED, option_name TEXT, PRIMARY KEY(id_of_option))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED)""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, PRIMARY KEY (id_of_question))""")
         self.connection.commit()
+
+        #users
+        #id_of_user состоит из последовательности с длинной 6 цифр со знаком минус
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, PRIMARY KEY (id_of_user))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (cookie))""")
+
+        #superuser
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
+
+        self.connection.commit()
+
+#-----------------------------------------------------------------------------------------------------------------------
+# часть кода связанная с созданием, редактированием и удалением опросов
 
     def get_polls(self, num_of_polls: int = 4) -> list:
         """
@@ -253,6 +269,8 @@ class MysqlDB:
         """
         self.cursor.execute("""INSERT INTO text_rights_answers(id_of_question, text_of_right_answer) VALUES(%s, %s)""",
                             (right_text_answer.id_of_question, right_text_answer.text_of_right_answer))
+#-----------------------------------------------------------------------------------------------------------------------
+# часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
 
     def reconnect(self):
         self.connection, self.cursor = self.connect_to_db()
@@ -260,6 +278,25 @@ class MysqlDB:
     def delete_tables(self):
         self.cursor.execute("""DROP TABLE polls, questions, options, rightAnswers""")
         self.connection.commit()
+#-----------------------------------------------------------------------------------------------------------------------
+# часть кода связанная с методами пользователей
+
+    def create_superuser(self):
+        try:
+            self.cursor.execute("""INSERT INTO superusers (id_of_superusers, login, password) VALUES (%s, %s, %s)""", (random.randint(-9999999, -99999999), 'admin', 'P@ssw0rd'))
+        except mysql.connector.IntegrityError:
+            self.create_superuser()
+        self.connection.commit()
+
+    def create_user(self, login: str, password: str, type_of_user):
+        try:
+            self.cursor.execute("""INSERT INTO users (id_of_users, login, password, type_of_user, login_in_account)""", (random.randint(-999999, -9999999), login, password, type_of_user, True))
+        except mysql.connector.IntegrityError:
+            self.create_user(login, password, type_of_user)
+
+        self.connection.commit()
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 
 client_mysqldb = MysqlDB()
