@@ -15,6 +15,7 @@ from app.create_poll_page.set_poll import get_random_id
 from typing import List
 
 from Configs.Exceptions import NotFoundPoll
+from PoW.generate_random_string import generate_random_string
 logger = logging.getLogger()
 
 
@@ -57,8 +58,9 @@ class MysqlDB:
 
         #users
         #id_of_user состоит из последовательности с длинной 6 цифр со знаком минус
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, PRIMARY KEY (id_of_user))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (nickname))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (cookie))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT, PRIMARY KEY (cookie))""")
 
         #superuser
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
@@ -288,13 +290,38 @@ class MysqlDB:
             self.create_superuser()
         self.connection.commit()
 
-    def create_user(self, login: str, password: str, type_of_user):
+    def create_user(self, login: str, password: str, type_of_user: str, nickname: str):
         try:
-            self.cursor.execute("""INSERT INTO users (id_of_users, login, password, type_of_user, login_in_account)""", (random.randint(-999999, -9999999), login, password, type_of_user, True))
+            id_of_user = random.randint(-999999, -9999999)
+            self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname)""", (id_of_user, login, password, type_of_user, True, nickname))
         except mysql.connector.IntegrityError:
-            self.create_user(login, password, type_of_user)
+            self.create_user(login, password, type_of_user, nickname)
 
         self.connection.commit()
+
+    def create_cookie_into_pow_table(self, cookie: str):
+        try:
+            self.cursor.execute("""INSERT INTO pow_table (cookie) VALUES (%s)""", (cookie, ))
+        except mysql.connector.IntegrityError:
+            raise Exception
+        self.connection.commit()
+
+    def update_pow_in_pow_table(self, cookie: str, pow: int):
+        self.cursor.execute(f"""UPDATE pow_table SET pow = {pow} WHERE cookie = "{cookie}" """)
+        self.connection.commit()
+
+    def get_pow(self, cookie: str):
+        self.cursor.execute(f"""SELECT * pow WHERE cookie = "{cookie}" """)
+        return self.cursor.fetchall()[0][0]
+
+    def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
+        self.cursor.execute(f"""INSERT INTO session (id_of_user, cookie, name_of_cookie, expired), VALUES (%s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired))
+        self.connection.commit()
+
+    def delete_pow_entry_from_pow_table(self, cookie):
+        self.cursor.execute(f"""DELETE FROM pow_table WHERE cookie = "{cookie}" """)
+        self.connection.commit()
+
 
 #-----------------------------------------------------------------------------------------------------------------------
 

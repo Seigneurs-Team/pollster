@@ -21,6 +21,7 @@ from app.create_poll_page.views import request_on_create_poll_page, request_on_c
 from app.passing_poll_page.views import request_on_passing_poll_page
 from app.sign_in_page.views import request_on_sign_in_page
 from app.create_new_account_page.views import request_on_create_new_account_page
+from PoW.captcher_post_challenge import request_on_challenge
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,5 +32,6 @@ urlpatterns = [
     path('create_poll', request_on_create_new_poll, name='create_poll_page'),
     path('sign_in', request_on_sign_in_page, name='sign_in_page'),
     path('create_new_account', request_on_create_new_account_page, name='create_new_account_page'),
+    path('get_challenge', request_on_challenge, name='get_data_of_challenge')
 
 ]

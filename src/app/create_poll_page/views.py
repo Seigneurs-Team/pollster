@@ -18,7 +18,6 @@ def requests_on_get_polls(request, num_of_polls=5):
 
 def request_on_create_new_poll(request: HttpRequest):
     json_data = json.loads(request.body)
-    print(json_data)
     poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer = set_poll(json_data)
     result = client_mysqldb.create_pool(
         poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer

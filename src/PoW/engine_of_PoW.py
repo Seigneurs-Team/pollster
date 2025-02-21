@@ -1,18 +1,19 @@
 from PoW.generate_random_string import generate_random_string
 from PoW.get_timestamp import get_timestamp
 import hashlib
+from typing import Optional
 
 
 class EnginePoW:
-    def __init__(self):
-        self.random_string = generate_random_string()
-        self.timestamp = get_timestamp()
+    def __init__(self, random_string: Optional[str] = None, timestamp: Optional[int] = None):
+        self.random_string = generate_random_string() if random_string is None else random_string
+        self.timestamp = get_timestamp() if timestamp is None else timestamp
         self.count_of_bits = 3
         self.version = 1
         self.resource = 'pollster'
         self.extension = ''
 
-    def hash_cash_algorithm(self):
+    def hash_cash_algorithm(self) -> int:
         count = 0
 
         while True:
