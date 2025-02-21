@@ -1,9 +1,17 @@
 from django.shortcuts import render
 import json
+from databases.mysql_db import client_mysqldb
+from PoW.generate_random_string import generate_random_string
 
 
 def request_on_sign_in_page(requests):
-    return render(requests, 'sign_in_page.html')
+    response = render(requests, 'sign_in_page.html')
+    cookie = generate_random_string(10)
+
+    client_mysqldb.create_cookie_into_pow_table(cookie)
+    response.set_cookie('auth_sessionid', cookie)
+
+    return response
 
 
 def request_on_sign_in_account(request):
@@ -12,8 +20,20 @@ def request_on_sign_in_account(request):
     login = json_data.get('login')
     password = json_data.get('password')
 
+    assert 'auth_sessionid' in request.COOKIES
+
+    cookie = request.COOKIES['auth_sessionid']
+
     pow = json_data.get('pow', '')
+    pow_from_db = client_mysqldb.get_pow(cookie)
 
     assert pow != ''
+    assert pow == pow_from_db
+
+    _, id_of_user = client_mysqldb.get_user_from_table(login)
+    client_mysqldb.update_cookie_in_session_table(cookie, id_of_user)
+
+
+
 
 

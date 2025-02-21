@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 import json
 from PoW.generate_random_string import generate_random_string
@@ -33,6 +35,10 @@ def request_on_create_new_account(request):
         assert pow == pow_from_db
 
         client_mysqldb.create_user(login, password, 'user', nickname)
+        client_mysqldb.delete_pow_entry_from_pow_table(cookie)
+
+        _, id_of_user = client_mysqldb.get_user_from_table(login)
+        client_mysqldb.create_cookie_into_session_table(cookie, 'auth_sessionid', id_of_user, int(datetime.datetime.now().timestamp())+864000)
 
         return JsonResponse({'response': 'ok'})
     except AssertionError:

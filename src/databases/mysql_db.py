@@ -57,8 +57,8 @@ class MysqlDB:
         self.connection.commit()
 
         #users
-        #id_of_user состоит из последовательности с длинной 6 цифр со знаком минус
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (nickname))""")
+        #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (login))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (cookie))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT, PRIMARY KEY (cookie))""")
 
@@ -299,6 +299,14 @@ class MysqlDB:
 
         self.connection.commit()
 
+    def get_user_from_table(self, login):
+        self.cursor.execute(f"""SELECT password, id_of_user FROM users WHERE login = "{login}" """)
+        response = self.cursor.fetchall()
+        if len(response) == 0:
+            return None
+        else:
+            return response[0]
+
     def create_cookie_into_pow_table(self, cookie: str):
         try:
             self.cursor.execute("""INSERT INTO pow_table (cookie) VALUES (%s)""", (cookie, ))
@@ -316,6 +324,10 @@ class MysqlDB:
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
         self.cursor.execute(f"""INSERT INTO session (id_of_user, cookie, name_of_cookie, expired), VALUES (%s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired))
+        self.connection.commit()
+
+    def update_cookie_in_session_table(self, cookie: str, id_of_user):
+        self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}" WHERE id_of_user = {id_of_user} """)
         self.connection.commit()
 
     def delete_pow_entry_from_pow_table(self, cookie):
