@@ -16,27 +16,29 @@ def request_on_sign_in_page(requests):
 
 
 def request_on_sign_in_account(request):
-    json_data = json.loads(request.body)
+    try:
+        json_data = json.loads(request.body)
 
-    login = json_data.get('login')
-    password = json_data.get('password')
+        login = json_data.get('login')
+        password = json_data.get('password')
 
-    assert 'auth_sessionid' in request.COOKIES
+        assert 'auth_sessionid' in request.COOKIES
 
-    cookie = request.COOKIES['auth_sessionid']
+        cookie = request.COOKIES['auth_sessionid']
 
-    pow = json_data.get('pow', '')
-    pow_from_db = client_mysqldb.get_pow(cookie)
+        pow = json_data.get('pow', '')
+        pow_from_db = client_mysqldb.get_pow(cookie)
 
-    assert pow != ''
-    assert pow == pow_from_db
+        assert pow != ''
+        assert pow == pow_from_db
 
-    password_from_db, id_of_user = client_mysqldb.get_user_from_table(login)
-    assert password == password_from_db
-    client_mysqldb.update_cookie_in_session_table(cookie, id_of_user)
+        password_from_db, id_of_user = client_mysqldb.get_user_from_table(login)
+        assert password == password_from_db
+        client_mysqldb.update_cookie_in_session_table(cookie, id_of_user)
 
-    return JsonResponse({'response': 'ok'})
-
+        return JsonResponse({'response': 'ok'})
+    except AssertionError:
+        return JsonResponse({'response': 'not ok'})
 
 
 
