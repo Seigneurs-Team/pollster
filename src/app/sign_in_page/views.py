@@ -2,6 +2,7 @@ from django.shortcuts import render
 import json
 from databases.mysql_db import client_mysqldb
 from PoW.generate_random_string import generate_random_string
+from django.http import JsonResponse
 
 
 def request_on_sign_in_page(requests):
@@ -30,8 +31,11 @@ def request_on_sign_in_account(request):
     assert pow != ''
     assert pow == pow_from_db
 
-    _, id_of_user = client_mysqldb.get_user_from_table(login)
+    password_from_db, id_of_user = client_mysqldb.get_user_from_table(login)
+    assert password == password_from_db
     client_mysqldb.update_cookie_in_session_table(cookie, id_of_user)
+
+    return JsonResponse({'response': 'ok'})
 
 
 
