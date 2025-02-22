@@ -58,9 +58,9 @@ class MysqlDB:
 
         #users
         #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (login))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (cookie))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT, PRIMARY KEY (cookie))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (id_of_user))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, id_of_cookie INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (id_of_cookie))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT)""")
 
         #superuser
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
@@ -323,8 +323,11 @@ class MysqlDB:
         return self.cursor.fetchall()[0][0]
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
-        self.cursor.execute(f"""INSERT INTO session (id_of_user, cookie, name_of_cookie, expired), VALUES (%s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired))
-        self.connection.commit()
+        try:
+            self.cursor.execute(f"""INSERT INTO session (id_of_user, cookie, name_of_cookie, expired, id_of_cookie), VALUES (%s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired, random.randint(0, 10**4)))
+            self.connection.commit()
+        except mysql.connector.IntegrityError:
+            self.create_cookie_into_session_table(cookie, name_of_cookie, id_of_user, expired)
 
     def update_cookie_in_session_table(self, cookie: str, id_of_user):
         self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}" WHERE id_of_user = {id_of_user} """)
