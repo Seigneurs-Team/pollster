@@ -33,6 +33,7 @@ urlpatterns = [
     path('create_poll', request_on_create_new_poll, name='create_poll_page'),
     path('sign_in', request_on_sign_in_page, name='sign_in_page'),
     path('create_new_account', request_on_create_new_account_page, name='create_new_account_page'),
-    path('get_challenge', request_on_challenge, name='get_data_of_challenge')
+    path('profile', request_on_profile_page, name='profile_page'),
+    path('get_challenge', request_on_challenge, name='get_data_of_challenge'),
 
 ]
