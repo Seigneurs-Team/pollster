@@ -11,12 +11,19 @@ del_btns.on("click", function () {
 */
 
 $(window).on("load", function () { getChallenge(); });
+
 function getChallenge() {
+    // Установка куки
+    document.cookie = "auth_sessionid=some_random_value; path=/;";
     console.log('page loaded')
+
+
     var Http = new XMLHttpRequest();
     var url = '/get_challenge'; // Эндпоинт для получения challenge
 
     Http.open('GET', url, true);
+
+    Http.withCredentials = true;
     Http.send();
 
     Http.onload = function () {
