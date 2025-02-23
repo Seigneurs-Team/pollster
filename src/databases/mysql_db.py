@@ -319,7 +319,7 @@ class MysqlDB:
         self.connection.commit()
 
     def get_pow(self, cookie: str):
-        self.cursor.execute(f"""SELECT pow WHERE cookie = "{cookie}" """)
+        self.cursor.execute(f"""SELECT pow FROM pow_table WHERE cookie = "{cookie}" """)
         return self.cursor.fetchall()[0][0]
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
