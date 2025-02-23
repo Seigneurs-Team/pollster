@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/sign_in.css' %}">
+    <link rel="stylesheet" href="{% static 'css/create_new_account_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
@@ -18,41 +19,60 @@
 </head>
 
 <body>
-    <div class="content">
-        <header>
-            <a href="/sign_in" class="go-back">
-                <span>вернуться назад</span>
-                <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
-            </a>
-            <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+<div class="content">
+    <header>
+        <a href="/sign_in" class="go-back">
+            <span>вернуться назад</span>
+            <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
+        </a>
+        <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
 
 
-        </header>
+    </header>
 
 
-        <main>
-            <h1>РЕГИСТРАЦИЯ</h1>
-            <form action="" id="loginForm">
-                <div>
-                    <label for="login">login:</label>
-                    <input type="text" name="login" id="login">
+    <main>
+        <h1>РЕГИСТРАЦИЯ</h1>
+        <form action="" id="loginForm">
+            <div>
+                <label for="login">Логин:</label>
+                <input type="text" name="login" id="login" class="username">
+            </div>
+            <div>
+                <label for="password">Пароль:</label>
+                <div class="password-wrapper">
+                    <input type="new-password" name="password" class="password" id="password"
+                           placeholder="Введите пароль">
+                    <a href="#" class="password-control" data-view="{% static 'img/view.svg' %}"
+                       data-no-view="{% static 'img/no-view.svg' %}"></a>
+
                 </div>
-                <div>
-                    <label for="password">password:</label>
-                    <input type="text" name="password" id="password">
-                </div>
-                <div>
-                    <label for="nickname">nickname:</label>
-                    <input type="text" name="nickname" id="nickname">
-                </div>
-                <button type="submit">submit</button>
-                <!-- TODO сделать поле "введите пароль" еще раз, будет называться password-repeat и в js буду проверять, совпадают ли password и password-repeat. если нет, то надпись отрисовывается в html соответствующая, но для начала в console.log будет -->
-            </form>
-        </main>
-        <script src="{% static 'scripts/create_new_account_page.js' %}" type="module"></script>
+            </div>
+            <div>
+                <label for="password-repeat">Повторите пароль:</label>
 
-    </div>
-    {% include 'footer.html' %}
+                <div class="password-wrapper">
+                    <input type="new-password" name="password-repeat" class="password" id="password-repeat"
+                           placeholder="Повторите пароль">
+                    <a href="#" class="password-control" data-view="{% static 'img/view.svg' %}"
+                       data-no-view="{% static 'img/no-view.svg' %}"></a>
+                </div>
+            </div>
+            <div>
+                <label for="nickname">Ваш ник:</label>
+                <input type="text" name="nickname" id="nickname">
+            </div>
+            <button class="submit" type="submit">submit</button>
+        </form>
+
+        <!-- Место для отображения сообщения об ошибке -->
+        <div id="error-message" style="color: red;"></div>
+    </main>
+    <script src="{% static 'scripts/form.js' %}" type="module"></script>
+    <script src="{% static 'scripts/create_new_account_page.js' %}" type="module"></script>
+
+</div>
+{% include 'footer.html' %}
 </body>
 
 </html>

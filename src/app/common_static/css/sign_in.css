@@ -1,21 +1,50 @@
 :root {
-    --border-radius: 12px;
+    --border-radius: 15px;
     --violet: #5863BF;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
+.password-wrapper {
+    position: relative;
+    width: 250px;
+    border: var(--violet) 1.5px solid;
+    border-radius: 4px;
 }
 
-button {
+input {
+    border: var(--violet) 1.5px solid;
+    border-radius: 4px;
+    display: block;
+
+}
+
+.password-control {
+    position: absolute;
+    top: 5px;
+    right: 2px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.password {
+    outline: none;
+    border: none;
+}
+
+form > * {
+    margin: 10px 0;
+}
+
+.submit {
     border: var(--violet) solid 1.5px;
-border-radius: var(--border-radius);
-width: 55px;
-height: 30px;
+    border-radius: var(--border-radius);
+    width: 100px;
+    height: 30px;
+    text-align: center;
 
 }
-button:hover {
+
+.submitbutton:hover {
     background-color: var(--violet);
-    
+
 }

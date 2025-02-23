@@ -17,36 +17,43 @@
 </head>
 
 <body>
-    <div class="content">
-        <header>
-            <a href="/" class="go-back">
-                <span>вернуться назад</span>
-                <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
-            </a>
-            <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+<div class="content">
+    <header>
+        <a href="/" class="go-back">
+            <span>вернуться назад</span>
+            <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
+        </a>
+        <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
 
 
-        </header>
+    </header>
 
 
-        <main>
-            <h1>ВХОД</h1>
-            <form action="" id="loginForm">
-                <div>
-                    <label for="login">login:</label>
-                    <input type="text" name="login" id="login">
+    <main>
+        <h1>ВХОД</h1>
+        <form action="" id="loginForm">
+            <div>
+                <label for="login">Логин:</label>
+                <input type="text" name="login" id="login" class="username">
+            </div>
+            <div>
+                <label for="password">Пароль:</label>
+                <div class="password-wrapper">
+                    <input type="current-password" name="password" class="password" id="password"
+                           placeholder="Введите пароль">
+                    <a href="#" class="password-control" data-view="{% static 'img/view.svg' %}"
+                       data-no-view="{% static 'img/no-view.svg' %}"></a>
+
                 </div>
-                <div>
-                    <label for="password">password:</label>
-                    <input type="text" name="password" id="password">
-                </div>
-                <button type="submit">submit</button>
-            </form>
-            <a href="/create_new_account">Нет аккаунта?</a>
-        </main>
-        <script src="{% static 'scripts/sign_in_page.js' %}" type="module"></script>
+            </div>
+            <button class="submit" type="submit">submit</button>
+        </form>
+        <a href="/create_new_account">Нет аккаунта?</a>
+    </main>
+    <script src="{% static 'scripts/form.js' %}" type="module"></script>
+    <script src="{% static 'scripts/sign_in_page.js' %}" type="module"></script>
 
-    </div>
+</div>
 {% include 'footer.html' %}
 </body>
 
