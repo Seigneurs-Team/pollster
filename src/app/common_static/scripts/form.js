@@ -24,4 +24,6 @@ $(document).ready(function() {
     $('.password-control').each(function() {
         $(this).css('background-image', 'url(' + $(this).data('no-view') + ')');
     });
+    $('main').css('background-image', 'url(' + $('main').data('background') + ')');
+
 });

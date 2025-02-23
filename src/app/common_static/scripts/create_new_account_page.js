@@ -45,6 +45,7 @@ $('#loginForm').on('submit', async function (event) {
 
             // Шаг 4: Отправляем данные на сервер
             const response = await sendRegistrationRequest(dataJSON);
+
 // отправляем dataJSON на сервер. там проверяется, есть ли уже пользователь с таким логином: если да, то возвращается соответствующий код ошибки, и я в if его нахожу и пишу alert(`пользователь с таким логином уже существует`); если нет, то alert(`добро пожаловать, {login}`). если какая-то другая ошибка (т.е. два if, потом else), то пишу ошибка, попробуйте снова
             // Обработка ответа от сервера
             if (response.success) {
@@ -108,17 +109,16 @@ async function findProof(challenge) {
 
         if (hashValue.startsWith('0'.repeat(difficulty))) {
             console.log('Nonce found:', count);
+
             return count;
         } else {
-            count++;
-            await new Promise(resolve => setTimeout(resolve, 0)); // Асинхронная задержка
+            count ++;
         }
     }
 }
 
 // Шаг 3: Отправить данные регистрации на сервер
 async function sendRegistrationRequest(dataJSON) {
-    const start = performance.now();
     console.log('sending registration data...')
     const response = await fetch('/register', {
         method: 'POST',
@@ -128,9 +128,7 @@ async function sendRegistrationRequest(dataJSON) {
         credentials: 'include', // Отправляем куки
         body: dataJSON,
     });
-    const end = performance.now();
 
-    console.log(`${name} took ${end - start} milliseconds before getting response`);
 
     if (!response.ok) {
         throw new Error('Ошибка при отправке данных регистрации');

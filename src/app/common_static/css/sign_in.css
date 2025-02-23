@@ -3,11 +3,20 @@
     --violet: #5863BF;
 }
 
+main {
+    /*height: 614px;*/
+    background-size: contain;
+    background-repeat: no-repeat;
+    text-align: center;
+    padding: 0px 256px 267px 256px;
+}
+h1 {
+    font-size: 30px;
+}
 .password-wrapper {
     position: relative;
     border: var(--violet) 1.5px solid;
-    border-radius: 4px;
-    padding: 0 5px;
+    border-radius: var(--border-radius);
 
 }
 
@@ -16,9 +25,15 @@ input {
     border-radius: 4px;
     display: block;
     height: 30px;
-    width: 100%;
-}
+    width: calc(100% - 10px);
+    border-radius: var(--border-radius);
+    border: var(--violet) 1.5px solid;
+    padding: 0 5px;
 
+}
+#login {
+
+}
 .password-control {
     position: absolute;
     top: 5px;
@@ -33,8 +48,13 @@ input {
     border: none;
 }
 
-form > * {
+form {
     width: 250px;
+
+}
+
+form > * {
+    width: 100%;
 
     margin: 10px 0;
 }
