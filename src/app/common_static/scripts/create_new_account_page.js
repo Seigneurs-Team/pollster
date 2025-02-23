@@ -1,6 +1,14 @@
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
 
+    // Блокируем форму
+    $('#loginForm').find('input, button').prop('disabled', true);
+
+    // Показываем индикатор загрузки
+    $('#loading-overlay').show();
+    $('#overlay-message').text('Выполняется проверка...');
+    $('#overlay-buttons').hide(); // Скрываем кнопки
+
     // Получаем данные из формы
     let login = $('input[name="login"]').val();
     let password = $('input[name="password"]').val();
@@ -13,7 +21,7 @@ $('#loginForm').on('submit', async function (event) {
     if (!(login && password)) {
         // Если логин или пароль пустые, показываем сообщение об ошибке
         errorMessage.text('Логин и пароль не могут быть пустыми!')
-    } else if (password != passwordRepeat) {
+    } else if (password !== passwordRepeat) {
         // Если пароли не совпадают, показываем сообщение об ошибке
         errorMessage.text('Пароли не совпадают!')
     } else {
@@ -40,17 +48,35 @@ $('#loginForm').on('submit', async function (event) {
 // отправляем dataJSON на сервер. там проверяется, есть ли уже пользователь с таким логином: если да, то возвращается соответствующий код ошибки, и я в if его нахожу и пишу alert(`пользователь с таким логином уже существует`); если нет, то alert(`добро пожаловать, {login}`). если какая-то другая ошибка (т.е. два if, потом else), то пишу ошибка, попробуйте снова
             // Обработка ответа от сервера
             if (response.success) {
-                alert(`Добро пожаловатьЫ, ${login}`);
-                // window.location.href = '/'; // Перенаправление на домашнюю страницу
+                // Успешная регистрация
+                $('#overlay-message').text(`Добро пожаловать, ${login}!`);
+                $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
             } else {
-                alert(response.message || 'Ошибка при регистрации');
+                // Ошибка регистрации
+                $('#overlay-message').text(response.message || 'Ошибка при регистрации');
+                $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
             }
         } catch (error) {
             console.error('Ошибка:', error);
-            alert('Произошла ошибка. Пожалуйста, попробуйте снова.');
+            $('#overlay-message').text('Произошла ошибка. Пожалуйста, попробуйте снова.');
+            $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
+        } finally {
+            // Разблокируем форму
+            $('#loginForm').find('input, button').prop('disabled', false);
         }
     }
 });
+
+// Обработка кнопки "Вернуться на главную"
+$('#loading-overlay').on('click', '#go-home', function () {
+    window.location.href = '/'; // Перенаправление на главную страницу
+});
+
+// Обработка кнопки "Попробовать позже"
+$('#loading-overlay').on('click', '#try-again', function () {
+    $('#loading-overlay').hide(); // Скрываем overlay
+});
+
 
 // Шаг 1: Получить challenge от бэкенда
 async function getChallenge() {
@@ -92,6 +118,8 @@ async function findProof(challenge) {
 
 // Шаг 3: Отправить данные регистрации на сервер
 async function sendRegistrationRequest(dataJSON) {
+    const start = performance.now();
+    console.log('sending registration data...')
     const response = await fetch('/register', {
         method: 'POST',
         headers: {
@@ -100,6 +128,9 @@ async function sendRegistrationRequest(dataJSON) {
         credentials: 'include', // Отправляем куки
         body: dataJSON,
     });
+    const end = performance.now();
+
+    console.log(`${name} took ${end - start} milliseconds before getting response`);
 
     if (!response.ok) {
         throw new Error('Ошибка при отправке данных регистрации');
