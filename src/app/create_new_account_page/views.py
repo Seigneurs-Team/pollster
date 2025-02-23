@@ -23,7 +23,7 @@ def request_on_create_new_account(request):
         login = json_data.get('login')
         password = json_data.get('password')
         pow = json_data.get('pow', '')
-        nickname = json_data.get('nickname')
+        nickname = json_data.get('nickname', '')
 
         assert pow != ''
         assert 'auth_sessionid' in request.COOKIES
