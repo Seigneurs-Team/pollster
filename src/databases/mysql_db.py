@@ -291,8 +291,11 @@ class MysqlDB:
         self.connection.commit()
 
     def create_user(self, login: str, password: str, type_of_user: str, nickname: str):
+        self.cursor.execute(f"""SELECT * FROM users WHERE login = "{login}" """)
+        if len(self.cursor.fetchall()) != 0:
+            raise Exception
         try:
-            id_of_user = random.randint(-999999, -9999999)
+            id_of_user = random.randint(-9999999, -999999)
             self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname)""", (id_of_user, login, password, type_of_user, True, nickname))
         except mysql.connector.IntegrityError:
             self.create_user(login, password, type_of_user, nickname)
@@ -320,7 +323,10 @@ class MysqlDB:
 
     def get_pow(self, cookie: str):
         self.cursor.execute(f"""SELECT pow FROM pow_table WHERE cookie = "{cookie}" """)
-        return self.cursor.fetchall()[0][0]
+        response = self.cursor.fetchall()
+        print(cookie)
+        print(response)
+        return response[0][0]
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
         try:
