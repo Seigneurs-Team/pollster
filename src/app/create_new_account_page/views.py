@@ -38,7 +38,9 @@ def request_on_create_new_account(request):
         client_mysqldb.delete_pow_entry_from_pow_table(cookie)
 
         _, id_of_user = client_mysqldb.get_user_from_table(login)
-        client_mysqldb.create_cookie_into_session_table(cookie, 'auth_sessionid', id_of_user, int(datetime.datetime.now().timestamp())+864000)
+        expired = datetime.datetime.now()
+        expired = expired.replace(day=expired.day + 3)
+        client_mysqldb.create_cookie_into_session_table(cookie, 'auth_sessionid', id_of_user, expired)
 
         return JsonResponse({'response': 'ok'})
     except AssertionError:

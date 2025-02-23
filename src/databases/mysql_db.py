@@ -296,7 +296,7 @@ class MysqlDB:
             raise Exception
         try:
             id_of_user = random.randint(-9999999, -999999)
-            self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname)""", (id_of_user, login, password, type_of_user, True, nickname))
+            self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname) VALUES (%s, %s, %s, %s, %s, %s)""", (id_of_user, login, password, type_of_user, True, nickname))
         except mysql.connector.IntegrityError:
             self.create_user(login, password, type_of_user, nickname)
 
@@ -324,13 +324,11 @@ class MysqlDB:
     def get_pow(self, cookie: str):
         self.cursor.execute(f"""SELECT pow FROM pow_table WHERE cookie = "{cookie}" """)
         response = self.cursor.fetchall()
-        print(cookie)
-        print(response)
         return response[0][0]
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
         try:
-            self.cursor.execute(f"""INSERT INTO session (id_of_user, cookie, name_of_cookie, expired, id_of_cookie), VALUES (%s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired, random.randint(0, 10**4)))
+            self.cursor.execute(f"""INSERT INTO sessions (id_of_user, cookie, name_of_cookie, expired, id_of_cookie) VALUES (%s, %s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired, random.randint(0, 10**4)))
             self.connection.commit()
         except mysql.connector.IntegrityError:
             self.create_cookie_into_session_table(cookie, name_of_cookie, id_of_user, expired)
