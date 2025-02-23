@@ -55,7 +55,6 @@ $('#loginForm').on('submit', async function (event) {
 // Шаг 1: Получить challenge от бэкенда
 async function getChallenge() {
     // Установка куки
-    document.cookie = "auth_sessionid=some_random_value; path=/;";
     console.log('getting challenge...');
 
     const response = await fetch('/get_challenge', {
