@@ -4,15 +4,21 @@ $('#loginForm').on('submit', async function (event) {
     // Получаем данные из формы
     let login = $('input[name="login"]').val();
     let password = $('input[name="password"]').val();
+    let passwordRepeat = $('input[name="password-repeat"]').val();
     let nickname = $('input[name="nickname"]').val();
+    let errorMessage = $('#error-message');
 
-    console.log('логин: ', login);
-    console.log('пароль: ', password);
-    console.log('ник: ', nickname);
+    // проверка данных формы
 
-
-    // проверка данных формы: логин и пароль не пустые
-    if (login && password) {
+    if (!(login && password)) {
+        // Если логин или пароль пустые, показываем сообщение об ошибке
+        errorMessage.text('Логин и пароль не могут быть пустыми!')
+    } else if (password != passwordRepeat) {
+        // Если пароли не совпадают, показываем сообщение об ошибке
+        errorMessage.text('Пароли не совпадают!')
+    } else {
+        // Если пароли совпадают, очищаем сообщение об ошибке
+        errorMessage.text('');
         try {
             // Шаг 1: Получаем challenge от бэкенда
             const challenge = await getChallenge();
@@ -34,7 +40,7 @@ $('#loginForm').on('submit', async function (event) {
 // отправляем dataJSON на сервер. там проверяется, есть ли уже пользователь с таким логином: если да, то возвращается соответствующий код ошибки, и я в if его нахожу и пишу alert(`пользователь с таким логином уже существует`); если нет, то alert(`добро пожаловать, {login}`). если какая-то другая ошибка (т.е. два if, потом else), то пишу ошибка, попробуйте снова
             // Обработка ответа от сервера
             if (response.success) {
-                alert(`Добро пожаловать, ${login}`);
+                alert(`Добро пожаловатьЫ, ${login}`);
                 // window.location.href = '/'; // Перенаправление на домашнюю страницу
             } else {
                 alert(response.message || 'Ошибка при регистрации');
@@ -43,8 +49,6 @@ $('#loginForm').on('submit', async function (event) {
             console.error('Ошибка:', error);
             alert('Произошла ошибка. Пожалуйста, попробуйте снова.');
         }
-    } else {
-        console.log('Логин и пароль не могут быть пустыми'); // TODO лучше в HTML выводить
     }
 });
 
@@ -52,7 +56,7 @@ $('#loginForm').on('submit', async function (event) {
 async function getChallenge() {
     // Установка куки
     document.cookie = "auth_sessionid=some_random_value; path=/;";
-    console.log('page loaded');
+    console.log('getting challenge...');
 
     const response = await fetch('/get_challenge', {
         method: 'GET',
@@ -104,3 +108,24 @@ async function sendRegistrationRequest(dataJSON) {
 
     return await response.json();
 }
+
+$(document).ready(function () {
+    let errorMessage = $('#error-message');
+
+    // Функция для проверки совпадения паролей
+    function checkPasswords() {
+        let password = $('input[name="password"]').val();
+        let passwordRepeat = $('input[name="password-repeat"]').val();
+
+        if (password === passwordRepeat) {
+            // Если пароли совпадают, очищаем сообщение об ошибке
+            errorMessage.text('')
+        } else {
+            // Если пароли не совпадают, показываем сообщение об ошибке
+            errorMessage.text('Пароли не совпадают!')
+        }
+    }
+
+    // Добавляем обработчики событий на поля ввода
+    $('#password, #password-repeat').on('input', checkPasswords);
+});

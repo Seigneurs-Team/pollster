@@ -5,22 +5,24 @@
 
 .password-wrapper {
     position: relative;
-    width: 250px;
     border: var(--violet) 1.5px solid;
     border-radius: 4px;
+    padding: 0 5px;
+
 }
 
 input {
     border: var(--violet) 1.5px solid;
     border-radius: 4px;
     display: block;
-
+    height: 30px;
+    width: 100%;
 }
 
 .password-control {
     position: absolute;
     top: 5px;
-    right: 2px;
+    right: 5px;
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -32,6 +34,8 @@ input {
 }
 
 form > * {
+    width: 250px;
+
     margin: 10px 0;
 }
 

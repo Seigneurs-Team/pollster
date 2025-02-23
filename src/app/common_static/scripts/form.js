@@ -1,23 +1,4 @@
-$(document).ready(function () {
-    // Функция для проверки совпадения паролей
-    function checkPasswords() {
-        var password = $('#password').val();
-        var passwordRepeat = $('#password-repeat').val();
-        var errorMessage = $('#error-message');
-
-        if (password !== passwordRepeat) {
-            // Если пароли не совпадают, показываем сообщение об ошибке
-            errorMessage.text('Пароли не совпадают!');
-        } else {
-            // Если пароли совпадают, очищаем сообщение об ошибке
-            errorMessage.text('');
-        }
-    }
-
-    // Добавляем обработчики событий на поля ввода
-    $('#password, #password-repeat').on('input', checkPasswords);
-});
-
+// переключение видимости пароля
 $('body').on('click', '.password-control', function () {
     console.log('.password-control clicked')
 
@@ -37,7 +18,8 @@ $('body').on('click', '.password-control', function () {
     }
     return false;
 })
-// Инициализация фона при загрузке страницы
+
+// Инициализация кнопки для показа пароля при загрузке страницы
 $(document).ready(function() {
     $('.password-control').each(function() {
         $(this).css('background-image', 'url(' + $(this).data('no-view') + ')');
