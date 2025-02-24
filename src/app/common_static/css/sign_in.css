@@ -9,6 +9,10 @@ main {
     background-repeat: no-repeat;
     text-align: center;
     padding: 0px 256px 267px 256px;
+    position: relative;
+}
+form.registration {
+    height:
 }
 h1 {
     font-size: 30px;
@@ -58,19 +62,46 @@ form > * {
 
     margin: 10px 0;
 }
-
+#error-message {
+color:red;
+    position: absolute;
+    width: 256px;
+}
 .submit {
-    border: var(--violet) solid 1.5px;
     border-radius: var(--border-radius);
-    width: 100px;
+    width: 97px;
     height: 30px;
     text-align: center;
+    position: absolute;
+    bottom: 149px;
+    left: 205px;
+color: white;
+    background: transparent;
+    font-weight: 400;
+    font-size: 14px;
+
+}
+.second-circle {
+    text-align: center;
+    position: absolute;
+    bottom: 101px;
+    left: 446px;
+    width: 126px;
+background: transparent;
+    color: var(--violet);
+    font-weight: 400;
+    font-size: 18px;
 
 }
 
-.submitbutton:hover {
-    background-color: var(--violet);
+.submit:hover {
+    text-decoration: underline;
+    background-color: transparent;
 
+}
+.second-circle:hover {
+    text-decoration: underline;
+    background-color: transparent;
 }
 
 #loading-overlay {
