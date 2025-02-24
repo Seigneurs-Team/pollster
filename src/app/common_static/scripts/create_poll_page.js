@@ -9,7 +9,9 @@ let content = null
 
 
 // удаление вопроса
-$(".deleteQuestion").on('click', function (event) { deleteQuestion(this)});
+$(".deleteQuestion").on('click', function (event) {
+    deleteQuestion(this)
+});
 const deleteQuestion = function (target) {
     console.log('deleteQuestion activated')
     $(target).parent('.question').remove(); // Удаляем родительский элемент .question
@@ -17,10 +19,14 @@ const deleteQuestion = function (target) {
 
 
 // по нажатию на "добавить вопрос" открываем модальное окно для выбора типа вопроса
-$(".addQuestion").on('click', function () { modalType.show();});
+$(".addQuestion").on('click', function () {
+    modalType.show();
+});
 
 // закрытие модального окна
-$('.modal-close').on('click', function () { modalType.hide();})
+$('.modal-close').on('click', function () {
+    modalType.hide();
+})
 
 
 // после выбора типа вопроса
@@ -50,15 +56,27 @@ $(".answerType").on('click', function () {
     $(`.questionText`).focus()
 
     //назначаем обработчики событий
-    $(".deleteQuestion").on('click', function (event) { deleteQuestion(this) });
+    $(".deleteQuestion").on('click', function (event) {
+        deleteQuestion(this)
+    });
 
     /* назначаем обработчики событий на button которая добавляет option в checkbox и radiobutton) */
     if (questionType == "radiobutton") {
-        $('#' + questionsId).find('.addOptionRadio').on('click', function () { addOption(this, 'radio', questionsId) })
+        $('#' + questionsId).find('.addOptionRadio').on('click', function () {
+            addOption(this, 'radio', questionsId)
+        })
     }
     if (questionType == "checkbox") {
-        $('#' + questionsId).find('.addOptionCheckbox').on('click', function () { addOption(this, 'checkbox', questionsId) })
+        $('#' + questionsId).find('.addOptionCheckbox').on('click', function () {
+            addOption(this, 'checkbox', questionsId)
+        })
     }
+
+    // удаление варианта ответа
+    $('#' + questionsId).on('click', '.delOption', function (event) {
+        delOption(this);
+    });
+
     modalType.hide();
     content = null
 
@@ -83,23 +101,23 @@ function answerType(questionType, questionId) {
         return `
     <div class="options">
         <div class="option"><input type="radio" name="1" id="${questionId}_1" class="check"> 
-        <input type="text" for="1_1" id="${questionId}_1-input" class="value"></input>
+       <input type="text" for="1_1" id="${questionId}_1-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button> <!-- TODO назначить обработчик на delOption. добавить эту кнопку везде. прописать стили -->
         </div>
         <div class="option"><input type="radio" name="1" id="${questionId}_2" class="check"> 
-        <input type="text" for="1_2" id="${questionId}_2-input" class="value"></input></div>
+        <input type="text" for="1_2" id="${questionId}_2-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button></div>
     </div>
-    <br><button class="addOptionRadio">+</button>
+    <button class="addOptionRadio">+</button>
     `
     } else if (questionType == "checkbox") {
         return `
     <div class="options">
         <div class="option"><input type="checkbox" name="1" id="${questionId}_1" class="check"> 
-        <input type="text" for="${questionId}_1" id="${questionId}_1-input" class="value">
+        <input type="text" for="${questionId}_1" id="${questionId}_1-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
         </div>
         <div class="option"><input type="checkbox" name="1" id="${questionId}_2" class="check"> 
-        <input type="text" for="${questionId}_2" id="${questionId}_2-input" class="value"></div>
+        <input type="text" for="${questionId}_2" id="${questionId}_2-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button></div>
     </div>
-    <br><button class="addOptionCheckbox">+</button>
+    <button class="addOptionCheckbox">+</button>
     `
         // TODO загрузка изображений
     } else if (questionType == "radiobutton img") {
@@ -122,11 +140,18 @@ function addOption(target, type, questionsId) {
     const id = questionsId + "_" + optionsCount
     options.append($(`<div class="option">
         <input type="${type}" name="${questionsId}" id=${id} class="check">
-        <input type="text" for=${id} id="${id}-input" class="value">
+        <input type="text" for=${id} id="${id}-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
     </div>`));
     $(`#${id}-input`).focus()
 }
 
+function delOption(target) {
+    console.log('deleteOption activated')
+
+    // Создаем новый вариант ответа
+    // console.log('target.id:', target.id)
+    $(target).parent('.option').remove(); // Удаляем родительский элемент .option
+}
 
 // отправка опроса на сервер
 $("#submitPollBtn").on('click', submitPoll);

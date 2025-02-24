@@ -1,14 +1,6 @@
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
 
-    // Блокируем форму
-    $('#loginForm').find('input, button').prop('disabled', true);
-
-    // Показываем индикатор загрузки
-    $('#loading-overlay').show();
-    $('#overlay-message').text('Выполняется проверка...');
-    $('#overlay-buttons').hide(); // Скрываем кнопки
-
     // Получаем данные из формы
     let login = $('input[name="login"]').val();
     let password = $('input[name="password"]').val();
@@ -17,7 +9,8 @@ $('#loginForm').on('submit', async function (event) {
     let errorMessage = $('#error-message');
 
     // проверка данных формы
-
+console.log('!(login && password)', !(login && password))
+    console.log('password !== passwordRepeat', password !== passwordRepeat)
     if (!(login && password)) {
         // Если логин или пароль пустые, показываем сообщение об ошибке
         errorMessage.text('Логин и пароль не могут быть пустыми!')
@@ -27,6 +20,15 @@ $('#loginForm').on('submit', async function (event) {
     } else {
         // Если пароли совпадают, очищаем сообщение об ошибке
         errorMessage.text('');
+
+        // Блокируем форму
+        $('#loginForm').find('input, button').prop('disabled', true);
+
+        // Показываем индикатор загрузки
+        $('#loading-overlay').show();
+        $('#overlay-message').text('Выполняется проверка...');
+        $('#overlay-buttons').hide(); // Скрываем кнопки
+
         try {
             // Шаг 1: Получаем challenge от бэкенда
             const challenge = await getChallenge();
@@ -45,8 +47,7 @@ $('#loginForm').on('submit', async function (event) {
 
             // Шаг 4: Отправляем данные на сервер
             const response = await sendRegistrationRequest(dataJSON);
-
-// отправляем dataJSON на сервер. там проверяется, есть ли уже пользователь с таким логином: если да, то возвращается соответствующий код ошибки, и я в if его нахожу и пишу alert(`пользователь с таким логином уже существует`); если нет, то alert(`добро пожаловать, {login}`). если какая-то другая ошибка (т.е. два if, потом else), то пишу ошибка, попробуйте снова
+            // отправляем dataJSON на сервер. там проверяется, есть ли уже пользователь с таким логином: если да, то возвращается соответствующий код ошибки, и я в if его нахожу и пишу alert(`пользователь с таким логином уже существует`); если нет, то alert(`добро пожаловать, {login}`). если какая-то другая ошибка (т.е. два if, потом else), то пишу ошибка, попробуйте снова
             // Обработка ответа от сервера
             if (response.success) {
                 // Успешная регистрация
