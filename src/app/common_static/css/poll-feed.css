@@ -66,7 +66,7 @@ li.poll-item .delete-poll svg {
     width: 20px;
 }
 
-h2.poll-name, .poll-description {
+h2.poll-name, .poll-author {
     font-weight: 500;
 
 }
@@ -74,28 +74,34 @@ h2.poll-name, .poll-description {
 h2.poll-name {
     margin: 0;
     font-size: 22px;
+    text-align: center;
 }
 
 .poll-description {
     height: 55px;
+    font-weight: 400;
     overflow: hidden;
     position: relative;
     font-size: 14px;
 }
 
-/* Псевдоэлемент для создания эффекта градиента */
-.poll-description::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-    /* Высота градиентной части */
-    background: linear-gradient(to bottom, transparent, white);
-    /* Или используйте цвет фона карточки */
-    /* display: none; Скрыть по умолчанию */
+.poll-author {
+    font-size: 14px;
 }
+
+/*!* Псевдоэлемент для создания эффекта градиента *!*/
+/*.poll-description::after {*/
+/*    content: '';*/
+/*    position: absolute;*/
+/*    bottom: 0;*/
+/*    left: 0;*/
+/*    right: 0;*/
+/*    height: 30px;*/
+/*    !* Высота градиентной части *!*/
+/*    background: linear-gradient(to bottom, transparent, white);*/
+/*    !* Или используйте цвет фона карточки *!*/
+/*    !* display: none; Скрыть по умолчанию *!*/
+/*}*/
 
 .poll-tags {
     font-size: 14px;
