@@ -9,7 +9,7 @@ from random import randint
 
 def request_on_main_page(requests):
     polls = client_mysqldb.get_polls()
-    return render(requests, 'index.html', context={'all_objects': polls})
+    return render(requests, 'index.html', context={'all_objects': polls, 'tags': ['first tag', 'second tag', 'third tag', 'fourth tag', 'fifth tag', 'sixth tag', 'seventh tag']})
 
 
 def requests_on_get_polls(request, num_of_polls=5):
