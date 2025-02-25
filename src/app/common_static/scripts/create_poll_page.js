@@ -97,14 +97,13 @@ function answerType(questionType, questionId) {
 
     } else if (questionType == "radiobutton") {
         // name равно индексу question, id должно быть уникально как в кажодой радиокнопке, так и в каждом вопросе, поэтому оно будет составляться из номера вопроса и номера кнопки {question_id}-{radiobutton_id}. пока что question_id по умолчанию 1. в checkbox то же самое
-        // TODO добавить кнопку "удалить" для option (и в checkbox тоже)
         return `
     <div class="options">
         <div class="option"><input type="radio" name="1" id="${questionId}_1" class="check"> 
-       <input type="text" for="1_1" id="${questionId}_1-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button> <!-- TODO назначить обработчик на delOption. добавить эту кнопку везде. прописать стили -->
+       <input type="text" for="${questionId}_1" id="${questionId}_1-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
         </div>
         <div class="option"><input type="radio" name="1" id="${questionId}_2" class="check"> 
-        <input type="text" for="1_2" id="${questionId}_2-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button></div>
+        <input type="text" for="${questionId}_2" id="${questionId}_2-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button></div>
     </div>
     <button class="addOptionRadio">+</button>
     `
