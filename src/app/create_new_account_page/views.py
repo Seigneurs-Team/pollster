@@ -39,7 +39,7 @@ def request_on_create_new_account(request):
 
         _, id_of_user = client_mysqldb.get_user_from_table(login)
         expired = datetime.datetime.now()
-        expired = expired.replace(day=expired.day + 3)
+        expired = expired + datetime.timedelta(days=3)
         client_mysqldb.create_cookie_into_session_table(cookie, 'auth_sessionid', id_of_user, expired)
 
         return JsonResponse({'response': 'ok'})
