@@ -1,8 +1,10 @@
 // вход в аккаунт
+import {getChallenge, findProof} from './POW.js';
+
 
 const host = 'http://127.0.0.1:8000';
 
-$('#loginForm').on('submit', function (event) {
+$('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
 
     // Получаем данные из формы
@@ -11,9 +13,15 @@ $('#loginForm').on('submit', function (event) {
 
     // проверка данных формы: логин и пароль не пустые
     if (login && password) {
+// Шаг 1: Получаем challenge от бэкенда
+        const challenge = await getChallenge();
+
+        // Шаг 2: Находим nonce
+        const nonce = await findProof(challenge);
 
         let dataJSON = JSON.stringify({
             login: login,
+            pow: nonce,
             password: password,
         })
         console.log('dataJSON', dataJSON)
