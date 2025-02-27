@@ -124,7 +124,8 @@ form > * {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-#try-again {
+
+#try-again, #go-home {
     border: var(--violet) solid 1.5px;
     border-radius: var(--border-radius);
     padding: 3px 16px;

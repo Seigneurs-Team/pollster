@@ -56,14 +56,8 @@ $('#loginForm').on('submit', async function (event) {
                 $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
             } else {
                 // Ошибка регистрации
-                let errorText = 'Ошибка при регистрации';
-                if (response.response === 1) {
-                    errorText = 'Ошибка проверки данных (AssertionError)';
-                } else if (response.response === 2) {
-                    errorText = 'Пользователь с таким логином уже существует';
-                } else if (response.response === 3) {
-                    errorText = 'Сессия устарела или не найдена';
-                }
+                let errorText = `Ошибка при регистрации: ${response.message}`;
+
                 $('#overlay-message').text(errorText);
                 $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
             }
@@ -94,7 +88,7 @@ async function sendRegistrationRequest(dataJSON) {
     console.log('sending registration data...');
     const response = await fetch('/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         credentials: 'include', // Отправляем куки
         body: dataJSON,
     });
