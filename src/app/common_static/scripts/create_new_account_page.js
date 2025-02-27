@@ -9,14 +9,12 @@ $('#loginForm').on('submit', async function (event) {
     let errorMessage = $('#error-message');
 
     // проверка данных формы
-console.log('!(login && password)', !(login && password))
-    console.log('password !== passwordRepeat', password !== passwordRepeat)
     if (!(login && password)) {
         // Если логин или пароль пустые, показываем сообщение об ошибке
-        errorMessage.text('Логин и пароль не могут быть пустыми!')
+        errorMessage.text('Логин и пароль не могут быть пустыми!');
     } else if (password !== passwordRepeat) {
         // Если пароли не совпадают, показываем сообщение об ошибке
-        errorMessage.text('Пароли не совпадают!')
+        errorMessage.text('Пароли не совпадают!');
     } else {
         // Если пароли совпадают, очищаем сообщение об ошибке
         errorMessage.text('');
@@ -47,21 +45,29 @@ console.log('!(login && password)', !(login && password))
 
             // Шаг 4: Отправляем данные на сервер
             const response = await sendRegistrationRequest(dataJSON);
-            // отправляем dataJSON на сервер. там проверяется, есть ли уже пользователь с таким логином: если да, то возвращается соответствующий код ошибки, и я в if его нахожу и пишу alert(`пользователь с таким логином уже существует`); если нет, то alert(`добро пожаловать, {login}`). если какая-то другая ошибка (т.е. два if, потом else), то пишу ошибка, попробуйте снова
+
             // Обработка ответа от сервера
-            if (response.success) {
+            if (response.response === 200) {
                 // Успешная регистрация
                 $('#overlay-message').text(`Добро пожаловать, ${login}!`);
                 $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
             } else {
                 // Ошибка регистрации
-                $('#overlay-message').text(response.message || 'Ошибка при регистрации');
+                let errorText = 'Ошибка при регистрации';
+                if (response.response === 1) {
+                    errorText = 'Ошибка проверки данных (AssertionError)';
+                } else if (response.response === 2) {
+                    errorText = 'Пользователь с таким логином уже существует';
+                } else if (response.response === 3) {
+                    errorText = 'Сессия устарела или не найдена';
+                }
+                $('#overlay-message').text(errorText);
                 $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
             }
         } catch (error) {
             console.error('Ошибка:', error);
             $('#overlay-message').text('Произошла ошибка. Пожалуйста, попробуйте снова.');
-            $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
+            $('#overlay-buttons').html('<button id="try-again">Попробовать снова</button>').show();
         } finally {
             // Разблокируем форму
             $('#loginForm').find('input, button').prop('disabled', false);
@@ -79,10 +85,8 @@ $('#loading-overlay').on('click', '#try-again', function () {
     $('#loading-overlay').hide(); // Скрываем overlay
 });
 
-
 // Шаг 1: Получить challenge от бэкенда
 async function getChallenge() {
-    // Установка куки
     console.log('getting challenge...');
 
     const response = await fetch('/get_challenge', {
@@ -110,32 +114,32 @@ async function findProof(challenge) {
 
         if (hashValue.startsWith('0'.repeat(difficulty))) {
             console.log('Nonce found:', count);
-
             return count;
         } else {
-            count ++;
+            count++;
         }
     }
 }
 
 // Шаг 3: Отправить данные регистрации на сервер
 async function sendRegistrationRequest(dataJSON) {
-    console.log('sending registration data...')
+    console.log('sending registration data...');
     const response = await fetch('/register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Отправляем куки
         body: dataJSON,
     });
 
+    const responseData = await response.json();
+    console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
     if (!response.ok) {
-        throw new Error('Ошибка при отправке данных регистрации');
+        console.error('Ошибка при регистрации:', responseData);
+        throw new Error('Ошибка при регистрации');
     }
 
-    return await response.json();
+    return responseData;
 }
 
 $(document).ready(function () {
@@ -148,10 +152,10 @@ $(document).ready(function () {
 
         if (password === passwordRepeat) {
             // Если пароли совпадают, очищаем сообщение об ошибке
-            errorMessage.text('')
+            errorMessage.text('');
         } else {
             // Если пароли не совпадают, показываем сообщение об ошибке
-            errorMessage.text('Пароли не совпадают!')
+            errorMessage.text('Пароли не совпадают!');
         }
     }
 

@@ -14,3 +14,6 @@ del_btns.on("click", function () {
 $(".opn-filter").on('click', function () {
     $(".popup").toggle();
 });
+$("#applyFilters").on('click', function () {
+    $(".popup").toggle();
+});
