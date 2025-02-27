@@ -4,6 +4,7 @@ from django.shortcuts import render
 import json
 from PoW.generate_random_string import generate_random_string
 from databases.mysql_db import client_mysqldb
+from Configs.Exceptions import ErrorSameLogins, NotFoundCookieIntoPowTable
 from django.http import JsonResponse
 
 
@@ -42,6 +43,10 @@ def request_on_create_new_account(request):
         expired = expired + datetime.timedelta(days=3)
         client_mysqldb.create_cookie_into_session_table(cookie, 'auth_sessionid', id_of_user, expired)
 
-        return JsonResponse({'response': 'ok'})
+        return JsonResponse({'response': 200})
     except AssertionError:
-        return JsonResponse({'response': 'not ok'})
+        return JsonResponse({'response': 1})
+    except ErrorSameLogins:
+        return JsonResponse({'response': 2})
+    except NotFoundCookieIntoPowTable:
+        return JsonResponse({'response': 3})

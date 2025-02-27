@@ -14,7 +14,7 @@ from Configs.Poll import (
 from app.create_poll_page.set_poll import get_random_id
 from typing import List
 
-from Configs.Exceptions import NotFoundPoll
+from Configs.Exceptions import NotFoundPoll, ErrorSameLogins, NotFoundCookieIntoPowTable
 from PoW.generate_random_string import generate_random_string
 logger = logging.getLogger()
 
@@ -293,7 +293,7 @@ class MysqlDB:
     def create_user(self, login: str, password: str, type_of_user: str, nickname: str):
         self.cursor.execute(f"""SELECT * FROM users WHERE login = "{login}" """)
         if len(self.cursor.fetchall()) != 0:
-            raise Exception
+            raise ErrorSameLogins('одинаковый логин')
         try:
             id_of_user = random.randint(-9999999, -999999)
             self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname) VALUES (%s, %s, %s, %s, %s, %s)""", (id_of_user, login, password, type_of_user, True, nickname))
@@ -324,7 +324,10 @@ class MysqlDB:
     def get_pow(self, cookie: str):
         self.cursor.execute(f"""SELECT pow FROM pow_table WHERE cookie = "{cookie}" """)
         response = self.cursor.fetchall()
-        return response[0][0]
+        if len(response) != 0:
+            return response[0][0]
+        else:
+            raise NotFoundCookieIntoPowTable('не найден куки в таблице')
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
         try:
