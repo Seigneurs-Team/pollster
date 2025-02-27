@@ -45,7 +45,7 @@ def request_on_create_new_account(request):
 
         return JsonResponse({'response': 200})
     except AssertionError:
-        return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе.'})
+        return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'})
     except ErrorSameLogins:
         return JsonResponse({'response': 2, 'message': 'Данный логин уже занят.'})
     except NotFoundCookieIntoPowTable:
