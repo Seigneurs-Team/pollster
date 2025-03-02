@@ -1,9 +1,8 @@
-$("#your-polls-btn").on('click', function (event) { console.log('hi'); openTab(event,'your-polls');});
-$("#completed-polls-btn").on('click', function (event) { console.log('hi'); openTab(event,'completed-polls');});
+$("#your-polls-btn").on('click', function (event) { openTab(event,'your-polls');});
+$("#completed-polls-btn").on('click', function (event) { openTab(event,'completed-polls');});
 
 
 function openTab(event, tabName) {
-
     // Hide all elements with class "tabcontent"
     $(".tabcontent").hide();
 
@@ -14,3 +13,9 @@ function openTab(event, tabName) {
     $(`#${tabName}`).show();
     $(event.currentTarget).addClass("active");
 }
+
+$(document).ready(function() {
+    // по умолчанию вкладка "ваши опросы"
+    $("#your-polls-btn").addClass("active");
+    $("#your-polls").show()
+})

@@ -12,7 +12,7 @@ def request_on_main_page(requests):
     # tags - это для фильтров
     tags = ['first tag', 'second tag', 'third tag', 'fourth tag', 'fifth tag', 'sixth tag', 'seventh tag']
     # этот user временный. в реале через куки проверяется, выполнен ли вход в аккаунт, и из БД извлекается user.
-    user = {'is_authenticated' : True, 'id' : 123, 'username' : "DikayaKakEnot"}
+    user = {'is_authenticated' : True, 'id' : 123, 'username' : "DikayaKakEnot"} # поменять 'is_authenticated' на False, чтобы увидеть кнопку "войти"
     return render(requests, 'index.html', context={'all_objects': polls, 'tags': tags, 'user': user})
 
 
