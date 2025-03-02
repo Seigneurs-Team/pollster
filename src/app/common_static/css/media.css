@@ -1,32 +1,148 @@
+/* media.css - Адаптивные стили для всех страниц */
 
-@media (max-width: 770px) {
-     .form input, .form textarea, .form button, .questionImage, .addPollImage {
-        font-size: unset;
-    } 
-    main {
-        margin: 30px;
+@media (max-width: 768px) {
+    /* Общие стили */
+    .content {
+        width: 100% !important;
+        padding: 0 15px;
     }
-    .form {
+
+    header {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+        max-width: 150px;
+    }
+
+    /* Страница регистрации/входа */
+    .registration, #loginForm {
+        width: 100% !important;
+        padding: 0 15px;
+    }
+
+    .password-wrapper {
         width: 100%;
-        /*font-size: unset;*/
-    }
-    * {
-        /*font-size: unset;*/
     }
 
+    .submit {
+        width: 100%;
+        max-width: 200px;
+        margin: 20px auto !important;
+    }
 
+    /* Страница опросов */
+    .poll-item {
+        width: 100% !important;
+        max-width: 340px;
+        margin: 0 auto 20px;
+    }
+    #createPollBtn {
+        width: 100%;
+    }
+    .right-block {
+        float: none;
+    }
+    .profile-link {
+        position: absolute;
+        top: 0;
+
+    }
+    .poll-img img {
+        max-width: 90%;
+        height: auto;
+    }
+
+    .poll-name {
+        font-size: 22px !important;
+    }
+
+    /* Профиль пользователя */
+    .profile-photo {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .about-you {
+        width: 90% !important;
+        margin: 30px auto !important;
+        padding: 15px !important;
+    }
+
+    .tab button {
+        width: 100%;
+        padding: 12px;
+    }
+
+    /* Создание опроса */
+    .addPollImage {
+        height: 100px !important;
+        line-height: 100px !important;
+        font-size: 16px !important;
+    }
+
+    .form {
+        width: 90% !important;
+        padding: 0 10px !important;
+    }
+
+    .addQuestion {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    /* Модальные окна */
+    .modal-content {
+        width: 90% !important;
+        padding: 15px !important;
+    }
+
+    /* Лента опросов */
+    ul.polls {
+        flex-direction: column;
+        row-gap: 20px;
+    }
+
+    /* Формы */
+    input, textarea {
+        font-size: 16px;
+        max-width: 100% !important;
+    }
+
+    /* Футер */
+    footer {
+        padding: 20px 15px !important;
+    }
+    .footer-content {
+        width: 100% !important;
+
+    }
+    .footer-content p {
+        position: static !important;
+        width: 100% !important;
+        margin: 15px 0 !important;
+    }
 }
 
-/* @media (orientation: landscape) {
-    body {
-      background: #000;
-
+@media (max-width: 480px) {
+    /* Дополнительные правки для маленьких экранов */
+    h1 {
+        font-size: 24px !important;
     }
-  }
 
-  @media (orientation: portrait) and (max-width: 770px) {
-    body {
-      background: red;
-
+    .poll-description {
+        font-size: 14px !important;
     }
-  } */
+
+    .start, .submit {
+        height: 50px !important;
+        line-height: 50px !important;
+    }
+
+    .profile-link span {
+        display: none;
+    }
+}
