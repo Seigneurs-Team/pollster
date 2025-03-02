@@ -69,7 +69,6 @@ function addOption(type, questionId, option, counter) {
 }
 
 
-// TODO отправка результатов опроса на сервер: 1) извлечение из тэгов 2) отправка
 // Извлечение и отправка результатов
 $(".submit").on('click', function () {
     const results = {

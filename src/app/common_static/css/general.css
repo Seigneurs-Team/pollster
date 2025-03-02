@@ -46,10 +46,12 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    height:100px;
+    margin: 8px 0;
 }
 
 header .logo {
-    width: 234px;
+    height: 100%;
 }
 
 .content {
