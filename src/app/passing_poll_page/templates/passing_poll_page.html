@@ -28,7 +28,7 @@
                 <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
             </a>
             <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
-            <span>профиль</span>
+            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="profile-photo" src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
 
