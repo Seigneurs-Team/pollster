@@ -3,7 +3,7 @@
 @media (max-width: 768px) {
     /* Общие стили */
     .content {
-        width: 100% !important;
+        width: 100%;
         padding: 0 15px;
     }
 
@@ -12,7 +12,8 @@
         height: auto;
         padding: 15px;
     }
-
+.search {    width: 90%;
+    margin: auto;
     .logo {
         margin-bottom: 15px;
         max-width: 150px;
@@ -20,7 +21,7 @@
 
     /* Страница регистрации/входа */
     .registration, #loginForm {
-        width: 100% !important;
+        width: 100%;
         padding: 0 15px;
     }
 
@@ -31,12 +32,12 @@
     .submit {
         width: 100%;
         max-width: 200px;
-        margin: 20px auto !important;
+        margin: 20px auto;
     }
 
     /* Страница опросов */
     .poll-item {
-        width: 100% !important;
+        width: 100%;
         max-width: 340px;
         margin: 0 auto 20px;
     }
@@ -45,11 +46,12 @@
     }
     .right-block {
         float: none;
+        align-items: normal;
     }
     .profile-link {
         position: absolute;
         top: 0;
-
+        right: 0;
     }
     .poll-img img {
         max-width: 90%;
@@ -57,19 +59,19 @@
     }
 
     .poll-name {
-        font-size: 22px !important;
+        font-size: 22px;
     }
 
     /* Профиль пользователя */
     .profile-photo {
-        width: 80px !important;
-        height: 80px !important;
+        width: 80px;
+        height: 80px;
     }
 
     .about-you {
-        width: 90% !important;
-        margin: 30px auto !important;
-        padding: 15px !important;
+        width: 90%;
+        margin: 30px auto;
+        padding: 15px;
     }
 
     .tab button {
@@ -79,14 +81,14 @@
 
     /* Создание опроса */
     .addPollImage {
-        height: 100px !important;
-        line-height: 100px !important;
-        font-size: 16px !important;
+        height: 100px;
+        line-height: 100px;
+        font-size: 16px;
     }
 
     .form {
-        width: 90% !important;
-        padding: 0 10px !important;
+        width: 90%;
+        padding: 0 10px;
     }
 
     .addQuestion {
@@ -96,8 +98,8 @@
 
     /* Модальные окна */
     .modal-content {
-        width: 90% !important;
-        padding: 15px !important;
+        width: 90%;
+        padding: 15px;
     }
 
     /* Лента опросов */
@@ -109,40 +111,47 @@
     /* Формы */
     input, textarea {
         font-size: 16px;
-        max-width: 100% !important;
+        max-width: 100%;
     }
 
     /* Футер */
     footer {
-        padding: 20px 15px !important;
+        padding: 20px 15px;
     }
     .footer-content {
-        width: 100% !important;
+        width: 100%;
 
     }
     .footer-content p {
-        position: static !important;
-        width: 100% !important;
-        margin: 15px 0 !important;
+        position: static;
+        width: 100%;
+        margin: 15px 0;
     }
+    * {
+        max-width: 100%;
+    }
+
 }
 
 @media (max-width: 480px) {
     /* Дополнительные правки для маленьких экранов */
     h1 {
-        font-size: 24px !important;
+        font-size: 24px;
     }
 
     .poll-description {
-        font-size: 14px !important;
+        font-size: 14px;
     }
 
     .start, .submit {
-        height: 50px !important;
-        line-height: 50px !important;
+        height: 50px;
+        line-height: 50px;
     }
 
     .profile-link span {
         display: none;
+    }
+    .circles {
+        display:none;
     }
 }
