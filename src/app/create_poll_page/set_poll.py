@@ -7,7 +7,7 @@ def get_random_id():
 
 
 def set_poll(json_data: dict) -> tuple[Poll, list[Question], list[Option], list[RightAnswer], list[RightTextAnswer]]:
-    poll: Poll = Poll(json_data.get("description", ''), json_data.get("name_of_poll", ''), json_data.get("tags", ""), get_random_id())
+    poll: Poll = Poll(json_data.get("name_of_poll", ''), json_data.get("description", ''), json_data.get("tags", ""), get_random_id())
     print(poll.id_of_poll)
     list_of_questions: list[Question] = set_questions(json_data, poll)
     list_of_options: list[Option] = set_options(json_data, list_of_questions)

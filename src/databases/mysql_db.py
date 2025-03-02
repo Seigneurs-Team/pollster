@@ -1,3 +1,4 @@
+import datetime
 import random
 
 from mysql.connector import connect
@@ -14,7 +15,7 @@ from Configs.Poll import (
 from app.create_poll_page.set_poll import get_random_id
 from typing import List
 
-from Configs.Exceptions import NotFoundPoll, ErrorSameLogins, NotFoundCookieIntoPowTable
+from Configs.Exceptions import NotFoundPoll, ErrorSameLogins, NotFoundCookieIntoPowTable, CookieWasExpired
 from PoW.generate_random_string import generate_random_string
 logger = logging.getLogger()
 
@@ -64,6 +65,8 @@ class MysqlDB:
 
         #superuser
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
+        #данные, которые пользователь ввел в ответах на опрос
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll(id_of_user INT, id_of_poll INT)""")
 
         self.connection.commit()
 
@@ -76,11 +79,11 @@ class MysqlDB:
         :param num_of_polls: количество опросов, которые должна вернуть функция
         :return: list
         """
-        self.cursor.execute("""SELECT * FROM polls""")
+        self.cursor.execute("""SELECT name_of_poll, description, tags, id FROM polls""")
         result = self.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
         for poll in result:
-            polls_list.append(Poll(poll[3], poll[2], poll[1], poll[0]))
+            polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3]))
         return polls_list
 
     def get_poll(self, id_of_poll: int) -> dict or None:
@@ -106,7 +109,6 @@ class MysqlDB:
         return dict_of_poll
 
     def set_dict_poll(self, questions_entries: list, id_of_poll: int) -> dict:
-        print(questions_entries)
         dict_of_poll: dict = {
             'id_of_poll': id_of_poll,
             'name_of_poll': questions_entries[0][1],
@@ -310,6 +312,21 @@ class MysqlDB:
         else:
             return response[0]
 
+    def get_user_from_table_with_cookie(self, cookie: str, name_of_cookie: str):
+        self.cursor.execute(f"""SELECT expired, id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
+        session = self.cursor.fetchone()
+        now = datetime.datetime.now()
+
+        if now < session[0]:
+            self.cursor.execute(f"""SELECT nickname FROM users WHERE id_of_user = {session[1]}""")
+            user = self.cursor.fetchone()
+            if user is not None:
+                return user
+            return None
+
+        else:
+            raise CookieWasExpired("время жизни куки файлов кончилось")
+
     def create_cookie_into_pow_table(self, cookie: str):
         try:
             self.cursor.execute("""INSERT INTO pow_table (cookie) VALUES (%s)""", (cookie, ))
@@ -330,6 +347,7 @@ class MysqlDB:
             raise NotFoundCookieIntoPowTable('не найден куки в таблице')
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
+        # TODO: сделать проверку на то, существует ли одинаковое значение cookie в таблице sessions
         try:
             self.cursor.execute(f"""INSERT INTO sessions (id_of_user, cookie, name_of_cookie, expired, id_of_cookie) VALUES (%s, %s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired, random.randint(0, 10**4)))
             self.connection.commit()
@@ -337,8 +355,10 @@ class MysqlDB:
             self.create_cookie_into_session_table(cookie, name_of_cookie, id_of_user, expired)
 
     def update_cookie_in_session_table(self, cookie: str, id_of_user):
+        # TODO: добавить в условие name_of_cookie, чтобы получать конкретный куки
         self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}" WHERE id_of_user = {id_of_user} """)
         self.connection.commit()
+
 
     def delete_pow_entry_from_pow_table(self, cookie):
         self.cursor.execute(f"""DELETE FROM pow_table WHERE cookie = "{cookie}" """)
@@ -346,6 +366,9 @@ class MysqlDB:
 
 
 #-----------------------------------------------------------------------------------------------------------------------
+# Сохранение данных, которые пользователь ввел в ответах на опрос
 
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 client_mysqldb = MysqlDB()
