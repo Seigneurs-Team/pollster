@@ -319,6 +319,8 @@ class MysqlDB:
         session = self.cursor.fetchone()
         now = datetime.datetime.now()
 
+        assert session is not None
+
         if now < session[0]:
             self.cursor.execute(f"""SELECT nickname FROM users WHERE id_of_user = {session[1]}""")
             user = self.cursor.fetchone()
