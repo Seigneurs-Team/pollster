@@ -325,7 +325,7 @@ class MysqlDB:
             self.cursor.execute(f"""SELECT nickname FROM users WHERE id_of_user = {session[1]}""")
             user = self.cursor.fetchone()
             if user is not None:
-                return user
+                return user[0]
             return None
 
         else:

@@ -14,9 +14,14 @@ from django.http import JsonResponse, HttpResponseForbidden
 @authentication
 def request_on_passing_poll_page(requests, poll_id):
     # получение опроса по id
+    auth_sessionid = requests.COOKIES['auth_sessionid']
+    id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(auth_sessionid, 'auth_sessionid')
+    nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(auth_sessionid, 'auth_sessionid')
+
+    user = {'id': id_of_user, 'username': nickname}
     try:
         poll = client_mysqldb.get_poll(poll_id)
-        return render(requests, 'passing_poll_page.html', context={'poll': poll})
+        return render(requests, 'passing_poll_page.html', context={'user': user, 'poll': poll})
     except NotFoundPoll as _ex:
         return render(requests, 'NotFound.html')
 
