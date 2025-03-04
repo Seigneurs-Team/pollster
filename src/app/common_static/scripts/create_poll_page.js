@@ -40,14 +40,17 @@ $(".answerType").on('click', function () {
 
     // сам вопрос, в который вставляется content
     let newQuestion = $(`
-<div class="question" id="` + questionsId + `" data-type="` + questionType + `">
+<div class="question" id="${questionsId}" data-type="{questionType}">
     <span class="questionId">Вопрос #` + questionsId + `</span>
-    <input class="questionText" type="text" maxlength="60" placeholder="Задайте вопрос">
+    <div class="input-wrapper">
+        <input class="questionText" type="text" maxlength="60" placeholder="Задайте вопрос">
+        <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
+    </div>
     <button class="questionImage">+ Картинка опроса (необязательно)</button>
     <div class="questionContent">` + content + `</div>
     <button class="deleteQuestion">Удалить вопрос</button>
 </div>
-`)
+    `)
 
     // добавляем новый вопрос
     $(".questions").append(newQuestion);
@@ -77,6 +80,20 @@ $(".answerType").on('click', function () {
         delOption(this);
     });
 
+    // Проверяем все текстовые поля
+    $('#' + questionsId).find(`input[type="text"], textarea`).each(function () {
+        $(this).on("input", function (e) {
+            showHasHTMLTagsMessage(e)
+        })
+    })
+
+// Проверяем все текстовые поля на наличие html тэгов (защита от xss)
+    $('#' + questionsId).on('input', `input[type="text"], textarea`, function (event) {
+        console.log('HI')
+        showHasHTMLTagsMessage(event)
+    });
+
+
     modalType.hide();
     content = null
 
@@ -90,36 +107,27 @@ function answerType(questionType, questionId) {
     //  - checkbox: ul (минимум 2 li), после него кнопка "+" для добавления варианта ответа. выбранный(е) вариант(ы) считаются правильными
     //  - radiobutton:  тож самое. если картинки, то в ul добавляем поля для загрузки изображений. если не во все поля загружены изображения, будет выходить предупреждение
 
-    if (questionType == "short text") {
-        return '<input class="right-answer" type="text" maxlength="100" placeholder="введите правильный ответ (необязательно)">';
-    } else if (questionType == "long text") {
+    if (questionType === "short text") {
+        return `
+            <div class="input-wrapper">
+                <input class="right-answer" type="text" maxlength="100" placeholder="введите правильный ответ (необязательно)">
+                <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
+            </div>`;
+    } else if (questionType === "long text") {
         return '<p>Это вопрос с развернутым ответом</p>';
-
-    } else if (questionType == "radiobutton") {
-        // name равно индексу question, id должно быть уникально как в кажодой радиокнопке, так и в каждом вопросе, поэтому оно будет составляться из номера вопроса и номера кнопки {question_id}-{radiobutton_id}. пока что question_id по умолчанию 1. в checkbox то же самое
+    } else if (questionType === "radiobutton" || questionType === "checkbox") {
+        const type = questionType === "checkbox" ? "checkbox" : "radio"
         return `
     <div class="options">
-        <div class="option"><input type="radio" name="1" id="${questionId}_1" class="check"> 
-       <input type="text" for="${questionId}_1" id="${questionId}_1-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
-        </div>
-        <div class="option"><input type="radio" name="1" id="${questionId}_2" class="check"> 
-        <input type="text" for="${questionId}_2" id="${questionId}_2-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button></div>
+        ${renderOption(type, questionsId, 1)}
+        ${renderOption(type, questionsId, 2)}
     </div>
-    <button class="addOptionRadio">+</button>
-    `
-    } else if (questionType == "checkbox") {
-        return `
-    <div class="options">
-        <div class="option"><input type="checkbox" name="1" id="${questionId}_1" class="check"> 
-        <input type="text" for="${questionId}_1" id="${questionId}_1-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
-        </div>
-        <div class="option"><input type="checkbox" name="1" id="${questionId}_2" class="check"> 
-        <input type="text" for="${questionId}_2" id="${questionId}_2-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button></div>
-    </div>
-    <button class="addOptionCheckbox">+</button>
-    `
+    <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}">+</button>
+`
         // TODO загрузка изображений
-    } else if (questionType == "radiobutton img") {
+    }
+else
+    if (questionType == "radiobutton img") {
         return 0
 
     } else if (questionType == "checkbox img") {
@@ -129,6 +137,16 @@ function answerType(questionType, questionId) {
 }
 
 
+function renderOption(type, questionId, optionId) {
+    return `<div class="option">
+        <input type="${type}" name="${questionId}" id="${questionId}_${optionId}" class="check">
+            <div class="input-wrapper">
+                <input type="text" for="${questionId}_${optionId}" id="${questionId}_${optionId}-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
+                    <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
+            </div>
+    </div>`
+}
+
 function addOption(target, type, questionsId) {
     let options = $(target).closest('.question').find('.options'); // closest находит ближайший элемент .question. отличие от метода parent в том, что parent ищет только родительский элемент, а closest - также выше по иерархии.
 
@@ -136,12 +154,9 @@ function addOption(target, type, questionsId) {
 
     // Создаем новый вариант ответа
     optionsCount++; // Увеличиваем счетчик для нового варианта
-    const id = questionsId + "_" + optionsCount
-    options.append($(`<div class="option">
-        <input type="${type}" name="${questionsId}" id=${id} class="check">
-        <input type="text" for=${id} id="${id}-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
-    </div>`));
-    $(`#${id}-input`).focus()
+    // const id = questionsId + "_" + optionsCount
+    options.append($(`${renderOption(type, questionsId, optionsCount)}`));
+    $(`#${questionsId + "_" + optionsCount}-input`).focus()
 }
 
 function delOption(target) {
@@ -149,8 +164,42 @@ function delOption(target) {
 
     // Создаем новый вариант ответа
     // console.log('target.id:', target.id)
-    $(target).parent('.option').remove(); // Удаляем родительский элемент .option
+    $(target).closest('.option').remove(); // Удаляем родительский элемент .option
 }
 
 // отправка опроса на сервер
 $("#submitPollBtn").on('click', submitPoll);
+
+// Функция для проверки на HTML-теги
+export function hasHTMLTags(input) {
+    const htmlPattern = /<[^>]*>/; // Ищет любые HTML-теги
+    return htmlPattern.test(input);
+}
+
+function showHasHTMLTagsMessage(e) {
+    console.log('checking if has html...')
+    const target = e.target;
+    const value = $(target).val();
+    if (hasHTMLTags(value)) {
+        console.log($(target).parent().find('.error-message').first(), 'yes')
+        $(target).parent().find('.error-message').first().css('display', 'inline-block')
+    } else {
+        console.log('no')
+        $(target).parent().find('.error-message').first().hide()
+
+    }
+}
+
+// Проверяем все текстовые поля
+$(`input[type="text"], textarea`).each(function () {
+    $(this).on("input", function (e) {
+        showHasHTMLTagsMessage(e)
+    })
+
+})
+
+$(document).ready(function () {
+    $(`.error-message`).each(function () {
+        $(this).hide()
+    })
+})

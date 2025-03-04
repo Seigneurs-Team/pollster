@@ -69,4 +69,59 @@ function addOption(type, questionId, option, counter) {
 }
 
 
-// TODO отправка результатов опроса на сервер: 1) извлечение из тэгов 2) отправка
+// Извлечение и отправка результатов
+$(".submit").on('click', function () {
+    const results = {
+        poll_id: "{{ poll.id_of_poll }}",
+        answers: []
+    };
+
+    questionsList.forEach(question => {
+        const answer = {
+            question_id: question.id,
+            type: question.type,
+            value: null
+        };
+
+        // Обработка разных типов вопросов
+        const questionEl = $(`#${question.id}`);
+        switch (question.type) {
+            case 'short text':
+                answer.value = questionEl.find('.answerShort').val();
+                break;
+
+            case 'long text':
+                answer.value = questionEl.find('.answerLong').val();
+                break;
+
+            case 'radiobutton':
+                const selectedRadio = questionEl.find('input[type="radio"]:checked');
+                answer.value = selectedRadio.length ? selectedRadio.next('label').text() : null;
+                break;
+
+            case 'checkbox':
+                const checkedBoxes = questionEl.find('input[type="checkbox"]:checked');
+                answer.value = checkedBoxes.map(function() {
+                    return $(this).next('label').text();
+                }).get();
+                break;
+        }
+
+        results.answers.push(answer);
+    });
+console.log(results)
+    // Отправка на сервер
+    // $.ajax({
+    //     url: '/submit-poll/',  // Указать правильный URL
+    //     method: 'POST',
+    //     contentType: 'application/json',
+    //     data: JSON.stringify(results),
+    //     success: function(response) {
+    //         alert('Ответы успешно отправлены!');
+    //         window.location.href = '/';  // Перенаправление после успеха
+    //     },
+    //     error: function(xhr) {
+    //         alert('Ошибка отправки: ' + xhr.responseText);
+    //     }
+    // });
+});

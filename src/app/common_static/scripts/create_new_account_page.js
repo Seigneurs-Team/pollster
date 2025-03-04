@@ -1,3 +1,6 @@
+import {getChallenge, findProof} from './POW.js';
+
+
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
 
@@ -9,14 +12,12 @@ $('#loginForm').on('submit', async function (event) {
     let errorMessage = $('#error-message');
 
     // проверка данных формы
-console.log('!(login && password)', !(login && password))
-    console.log('password !== passwordRepeat', password !== passwordRepeat)
     if (!(login && password)) {
         // Если логин или пароль пустые, показываем сообщение об ошибке
-        errorMessage.text('Логин и пароль не могут быть пустыми!')
+        errorMessage.text('Логин и пароль не могут быть пустыми!');
     } else if (password !== passwordRepeat) {
         // Если пароли не совпадают, показываем сообщение об ошибке
-        errorMessage.text('Пароли не совпадают!')
+        errorMessage.text('Пароли не совпадают!');
     } else {
         // Если пароли совпадают, очищаем сообщение об ошибке
         errorMessage.text('');
@@ -47,21 +48,23 @@ console.log('!(login && password)', !(login && password))
 
             // Шаг 4: Отправляем данные на сервер
             const response = await sendRegistrationRequest(dataJSON);
-            // отправляем dataJSON на сервер. там проверяется, есть ли уже пользователь с таким логином: если да, то возвращается соответствующий код ошибки, и я в if его нахожу и пишу alert(`пользователь с таким логином уже существует`); если нет, то alert(`добро пожаловать, {login}`). если какая-то другая ошибка (т.е. два if, потом else), то пишу ошибка, попробуйте снова
+
             // Обработка ответа от сервера
-            if (response.success) {
+            if (response.response === 200) {
                 // Успешная регистрация
                 $('#overlay-message').text(`Добро пожаловать, ${login}!`);
                 $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
             } else {
                 // Ошибка регистрации
-                $('#overlay-message').text(response.message || 'Ошибка при регистрации');
+                let errorText = `Ошибка при регистрации: ${response.message}`;
+
+                $('#overlay-message').text(errorText);
                 $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
             }
         } catch (error) {
             console.error('Ошибка:', error);
             $('#overlay-message').text('Произошла ошибка. Пожалуйста, попробуйте снова.');
-            $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
+            $('#overlay-buttons').html('<button id="try-again">Попробовать снова</button>').show();
         } finally {
             // Разблокируем форму
             $('#loginForm').find('input, button').prop('disabled', false);
@@ -80,62 +83,25 @@ $('#loading-overlay').on('click', '#try-again', function () {
 });
 
 
-// Шаг 1: Получить challenge от бэкенда
-async function getChallenge() {
-    // Установка куки
-    console.log('getting challenge...');
-
-    const response = await fetch('/get_challenge', {
-        method: 'GET',
-        credentials: 'include', // Отправляем куки
-    });
-
-    if (!response.ok) {
-        throw new Error('Ошибка при получении challenge');
-    }
-
-    const data = await response.json();
-    console.log('Challenge received:', data);
-    return data;
-}
-
-// Шаг 2: Найти nonce
-async function findProof(challenge) {
-    let count = 0;
-    const difficulty = challenge.count_of_bits;
-
-    while (true) {
-        const stringForHash = `${challenge.version}:${challenge.count_of_bits}:${challenge.timestamp}:${challenge.resource}:${challenge.extension}:${challenge.random_string}:${count}`;
-        const hashValue = sha256(stringForHash); // Используй библиотеку для SHA-256
-
-        if (hashValue.startsWith('0'.repeat(difficulty))) {
-            console.log('Nonce found:', count);
-
-            return count;
-        } else {
-            count ++;
-        }
-    }
-}
-
 // Шаг 3: Отправить данные регистрации на сервер
 async function sendRegistrationRequest(dataJSON) {
-    console.log('sending registration data...')
+    console.log('sending registration data...');
     const response = await fetch('/register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         credentials: 'include', // Отправляем куки
         body: dataJSON,
     });
 
+    const responseData = await response.json();
+    console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
     if (!response.ok) {
-        throw new Error('Ошибка при отправке данных регистрации');
+        console.error('Ошибка при регистрации:', responseData);
+        throw new Error('Ошибка при регистрации');
     }
 
-    return await response.json();
+    return responseData;
 }
 
 $(document).ready(function () {
@@ -148,10 +114,10 @@ $(document).ready(function () {
 
         if (password === passwordRepeat) {
             // Если пароли совпадают, очищаем сообщение об ошибке
-            errorMessage.text('')
+            errorMessage.text('');
         } else {
             // Если пароли не совпадают, показываем сообщение об ошибке
-            errorMessage.text('Пароли не совпадают!')
+            errorMessage.text('Пароли не совпадают!');
         }
     }
 
