@@ -68,7 +68,7 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
         #данные, которые пользователь ввел в ответах на опрос
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_users_who_pass_the_poll(id_of_user INT, id_of_poll INT)""")
-        self.cursor.execute("""CREATE TABLE IF NIT EXISTS data_of_passing_poll_from_user(id INT, id_of_poll, id_of_user INT, serial_number_of_question, type_of_question TEXT, value TEXT, PRIMARY KEY (id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT, id_of_poll INT, id_of_user INT, serial_number_of_question INT, type_of_question TEXT, value TEXT, PRIMARY KEY (id))""")
 
         self.connection.commit()
 
@@ -306,13 +306,13 @@ class MysqlDB:
 
         self.connection.commit()
 
-    def get_user_password_from_table(self, login):
+    def get_user_password_and_id_of_user_from_table(self, login):
         self.cursor.execute(f"""SELECT password, id_of_user FROM users WHERE login = "{login}" """)
-        response = self.cursor.fetchall()
+        response = self.cursor.fetchone()
         if len(response) == 0:
             return None
         else:
-            return response[0]
+            return response[0], response[1]
 
     def get_user_nickname_from_table_with_cookie(self, cookie: str, name_of_cookie: str):
         self.cursor.execute(f"""SELECT expired, id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
@@ -356,7 +356,7 @@ class MysqlDB:
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
         try:
-            self.cursor.execute(f"""SELECT id_of_cookie FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}""")
+            self.cursor.execute(f"""SELECT id_of_cookie FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
             if self.cursor.fetchone() is not None:
                 raise Exception
 
@@ -365,8 +365,8 @@ class MysqlDB:
         except mysql.connector.IntegrityError:
             self.create_cookie_into_session_table(cookie, name_of_cookie, id_of_user, expired)
         except Exception:
-            cookie = generate_random_string(10)
-            self.create_cookie_into_session_table(cookie, name_of_cookie, id_of_user, expired)
+            new_cookie = generate_random_string(10)
+            self.create_cookie_into_session_table(new_cookie, name_of_cookie, id_of_user, expired)
 
     def delete_cookie_from_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int):
         self.cursor.execute(f"""DELETE FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" AND id_of_user = {id_of_user}""")
@@ -382,11 +382,14 @@ class MysqlDB:
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 
-    def add_answer_into_table_data_of_passing_poll_from_user(self, serial_number: int, type_of_question: str, value: str, id_of_user: int, id_of_poll: int):
+    def add_users_into_table_for_users_who_pass_the_poll(self, id_of_user, id_of_poll):
         try:
             self.cursor.execute("""INSERT INTO table_of_users_who_pass_the_poll(id_of_user, id_of_poll) VALUES(%s, %s)""", (id_of_user, id_of_poll))
+            self.connection.commit()
         except mysql.connector.IntegrityError:
             raise RepeatPollError("Попытка повторного прохождения опроса")
+
+    def add_answer_into_table_data_of_passing_poll_from_user(self, serial_number: int, type_of_question: str, value: str, id_of_user: int, id_of_poll: int):
         try:
             self.cursor.execute("""INSERT INTO data_of_passing_poll_from_user (id, id_of_poll, id_of_user, serial_number_of_question, type_of_question, value) VALUES (%s, %s, %s, %s, %s, %s)""", (random.randint(0, 9999999), id_of_poll, id_of_user, serial_number, type_of_question, value))
             self.connection.commit()

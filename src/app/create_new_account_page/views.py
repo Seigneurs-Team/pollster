@@ -38,7 +38,7 @@ def request_on_create_new_account(request):
         client_mysqldb.create_user(login, password, 'user', nickname)
         client_mysqldb.delete_pow_entry_from_pow_table(cookie)
 
-        _, id_of_user = client_mysqldb.get_user_from_table(login)
+        _, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         expired = datetime.datetime.now()
         expired = expired + datetime.timedelta(days=3)
         client_mysqldb.create_cookie_into_session_table(cookie, 'auth_sessionid', id_of_user, expired)

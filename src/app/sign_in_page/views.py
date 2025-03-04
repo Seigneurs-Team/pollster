@@ -33,7 +33,7 @@ def request_on_sign_in_account(request):
         assert pow != ''
         assert pow == pow_from_db
 
-        password_from_db, id_of_user = client_mysqldb.get_user_password_from_table(login)
+        password_from_db, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         assert password == password_from_db
 
         expired = datetime.datetime.now()
