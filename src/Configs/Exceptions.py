@@ -16,3 +16,8 @@ class NotFoundCookieIntoPowTable(Exception):
 class CookieWasExpired(Exception):
     def __init__(self, message):
         super(CookieWasExpired, self).__init__(message)
+
+
+class RepeatPollError(Exception):
+    def __init__(self, message):
+        super(RepeatPollError, self).__init__(message)

@@ -3,6 +3,7 @@ import json
 from databases.mysql_db import client_mysqldb
 from PoW.generate_random_string import generate_random_string
 from django.http import JsonResponse
+import datetime
 
 
 def request_on_sign_in_page(requests):
@@ -32,9 +33,13 @@ def request_on_sign_in_account(request):
         assert pow != ''
         assert pow == pow_from_db
 
-        password_from_db, id_of_user = client_mysqldb.get_user_from_table(login)
+        password_from_db, id_of_user = client_mysqldb.get_user_password_from_table(login)
         assert password == password_from_db
-        client_mysqldb.update_cookie_in_session_table(cookie, id_of_user)
+
+        expired = datetime.datetime.now()
+        expired = expired + datetime.timedelta(days=3)
+
+        client_mysqldb.update_cookie_in_session_table(cookie, id_of_user, 'auth_sessionid', expired)
 
         return JsonResponse({'response': 'ok'})
     except AssertionError:
