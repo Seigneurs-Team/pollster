@@ -21,3 +21,8 @@ class CookieWasExpired(Exception):
 class RepeatPollError(Exception):
     def __init__(self, message):
         super(RepeatPollError, self).__init__(message)
+
+
+class TryToXSS(Exception):
+    def __init__(self, message):
+        super(TryToXSS, self).__init__(message)

@@ -49,4 +49,4 @@ def request_on_create_new_account(request):
     except ErrorSameLogins:
         return JsonResponse({'response': 2, 'message': 'Данный логин уже занят.'})
     except NotFoundCookieIntoPowTable:
-        return JsonResponse({'response': 3, 'message': 'Нет куки файлов в БД соответствующих данному'})
+        return JsonResponse({'response': 3, 'message': 'Повторите попытку'})

@@ -1,5 +1,6 @@
 from Configs.Poll import (Poll, Question, Option, RightAnswer, RightTextAnswer)
 from random import randint
+from app.passing_poll_page.views import check_the_type
 
 
 def get_random_id():
@@ -8,7 +9,6 @@ def get_random_id():
 
 def set_poll(json_data: dict) -> tuple[Poll, list[Question], list[Option], list[RightAnswer], list[RightTextAnswer]]:
     poll: Poll = Poll(json_data.get("name_of_poll", ''), json_data.get("description", ''), json_data.get("tags", ""), get_random_id())
-    print(poll.id_of_poll)
     list_of_questions: list[Question] = set_questions(json_data, poll)
     list_of_options: list[Option] = set_options(json_data, list_of_questions)
     list_of_right_answers: list[RightAnswer] = set_right_answers(json_data, list_of_questions)
@@ -21,6 +21,7 @@ def set_poll(json_data: dict) -> tuple[Poll, list[Question], list[Option], list[
 def set_questions(json_data: dict, poll_object: Poll) -> list[Question]:
     list_of_questions: list[Question] = []
     for question in json_data.get('questions', ''):
+        check_the_type(question.get('type', ''))
         list_of_questions.append(
             Question(
                 **poll_object.__dict__,

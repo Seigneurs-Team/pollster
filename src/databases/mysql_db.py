@@ -12,7 +12,7 @@ from Configs.Poll import (
     RightAnswer,
     RightTextAnswer
 )
-from app.create_poll_page.set_poll import get_random_id
+from app.create_poll_page.random_id import get_random_id
 from typing import List
 
 from Configs.Exceptions import NotFoundPoll, ErrorSameLogins, NotFoundCookieIntoPowTable, CookieWasExpired, RepeatPollError
@@ -55,7 +55,7 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED, option_name TEXT, PRIMARY KEY(id_of_option))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED)""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, PRIMARY KEY (id_of_question))""")
-        self.connection.commit()
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS types_of_question(id INT, type TEXT, PRIMARY KEY (id))""")
 
         #users
         #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
@@ -71,6 +71,7 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT, id_of_poll INT, id_of_user INT, serial_number_of_question INT, type_of_question TEXT, value TEXT, PRIMARY KEY (id))""")
 
         self.connection.commit()
+        self.set_types_of_questions()
 
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с созданием, редактированием и удалением опросов
@@ -275,6 +276,22 @@ class MysqlDB:
         """
         self.cursor.execute("""INSERT INTO text_rights_answers(id_of_question, text_of_right_answer) VALUES(%s, %s)""",
                             (right_text_answer.id_of_question, right_text_answer.text_of_right_answer))
+
+    def set_types_of_questions(self):
+        self.cursor.execute("""SELECT id FROM types_of_question""")
+        types_of_question = ['long text', 'short text', 'radiobutton', 'checkbox']
+        if self.cursor.fetchall() is None:
+            for i, type_of_question in enumerate(types_of_question):
+                self.cursor.execute("""INSERT INTO types_of_question(id, type) VALUES (%s, %s)""", (i, type_of_question))
+            self.connection.commit()
+        else:
+            return None
+
+    def get_types_of_question(self):
+        self.cursor.execute("""SELECT type FROM types_of_question""")
+        result = self.cursor.fetchall()
+        return [type_of_question[0] for type_of_question in result]
+
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
 
@@ -309,8 +326,8 @@ class MysqlDB:
     def get_user_password_and_id_of_user_from_table(self, login):
         self.cursor.execute(f"""SELECT password, id_of_user FROM users WHERE login = "{login}" """)
         response = self.cursor.fetchone()
-        if len(response) == 0:
-            return None
+        if response is None:
+            return None, None
         else:
             return response[0], response[1]
 
@@ -375,7 +392,7 @@ class MysqlDB:
         self.connection.commit()
 
     def update_cookie_in_session_table(self, cookie: str, id_of_user: int, name_of_cookie: str, expired: int):
-        self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}", expired = {expired} WHERE id_of_user = {id_of_user} AND name_of_cookie = "{name_of_cookie}" """)
+        self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}", expired = "{expired}" WHERE id_of_user = {id_of_user} AND name_of_cookie = "{name_of_cookie}" """)
         self.connection.commit()
 
     def delete_pow_entry_from_pow_table(self, cookie):
