@@ -80,11 +80,14 @@ h1 {
     border: var(--violet) dashed 1.5px;
 }
 
-.form>input,
-.form>textarea,
+.form>.input-wrapper,
 .form>button {
     margin-bottom: 35px;
 
+}
+
+.options .input-wrapper {
+    display:inline-block;
 }
 
 .form .question {
@@ -143,29 +146,15 @@ div.option * {
     font-size: 12px;
     min-height: auto;
 }
+.addOptionRadio {
+    border: none;
+    font-weight: 700;
+    color: var(--violet);
+    padding: 0;
+}
 
-/* @media (max-width: 770px) {
-
-
-    .form input, .form textarea, .form button, .questionImage {
-        font-size: unset;
-    }
-    main {
-        width: 100%;
-        color: red;
-
-    }
-
-    .form {
-        width: 100%;
-        color: red;
-
-    }
-
-    * {
-        color: red;
-        font-size: unset;
-    }
-
-
-} */
+.error-message {
+    font-size: 12px;
+display: none;
+    color: red;
+}

@@ -1,51 +1,26 @@
 const questionsDiv = $("#questions");
 
-// временный список вопросов
-const questionsList = [{"id": "1", "type": "short text", "text": "ваше имя", "rightAnswer": ""}, {
-    "id": "2",
-    "type": "long text",
-    "text": "расскажите о себе"
-}, {
-    "id": "3",
-    "type": "radiobutton",
-    "text": "ваш пол",
-    "options": ["м", "ж", "другое"],
-    "rightAnswersId": []
-}, {
-    "id": "4",
-    "type": "checkbox",
-    "text": "домашние животные",
-    "options": ["нет", "кошка❤️❤️❤️", "собака", "попугай🤔"],
-    "rightAnswersId": []
-}]
-
+// отрисовка вопросов
 questionsList.forEach(question => {
-
-    console.log(question.type, question.id)
     const questionEl = $(`<div id="${question.id}" class="question"></div>`)
-
 
     // <p> текст впороса
     const questionText = $(`<p class="question-text">${question.text}</p>`)
-    // const questionInput = $(`<input type="text" placeholder="Введите ответ">`) //временно
     const questionContent = answerType(question.type, question.id, question);
-
 
     questionEl.append(questionText);
     questionEl.append(questionContent);
-    console.log('questionEl', questionEl)
     questionsDiv.append(questionEl);
 
 })
 
-
+// нажатие на кнопку "прохождение опроса"
 $(".start").on('click', function () {
-    console.log('showing questions...');
     questionsDiv.show();
     $(this).hide()
 });
 
-
+// отрисовка содержимого вопросов
 function answerType(questionType, questionId, question) {
     // отрисовка вопросов: возвращает соответствующий контент:
     //текст вопроса выводится в любом случае, поэтому он не в этой функции, т.к. не зависит от типа
@@ -80,8 +55,7 @@ function answerType(questionType, questionId, question) {
 
     }
 }
-
-
+// отрисовка вариантов ответов
 function addOption(type, questionId, option, counter) {
     // Создаем новый вариант ответа
 
@@ -93,3 +67,61 @@ function addOption(type, questionId, option, counter) {
         <label type="text" for=${id}>${option}</label>
     </div>`)
 }
+
+
+// Извлечение и отправка результатов
+$(".submit").on('click', function () {
+    const results = {
+        poll_id: "{{ poll.id_of_poll }}",
+        answers: []
+    };
+
+    questionsList.forEach(question => {
+        const answer = {
+            question_id: question.id,
+            type: question.type,
+            value: null
+        };
+
+        // Обработка разных типов вопросов
+        const questionEl = $(`#${question.id}`);
+        switch (question.type) {
+            case 'short text':
+                answer.value = questionEl.find('.answerShort').val();
+                break;
+
+            case 'long text':
+                answer.value = questionEl.find('.answerLong').val();
+                break;
+
+            case 'radiobutton':
+                const selectedRadio = questionEl.find('input[type="radio"]:checked');
+                answer.value = selectedRadio.length ? selectedRadio.next('label').text() : null;
+                break;
+
+            case 'checkbox':
+                const checkedBoxes = questionEl.find('input[type="checkbox"]:checked');
+                answer.value = checkedBoxes.map(function() {
+                    return $(this).next('label').text();
+                }).get();
+                break;
+        }
+
+        results.answers.push(answer);
+    });
+console.log(results)
+    // Отправка на сервер
+    // $.ajax({
+    //     url: '/submit-poll/',  // Указать правильный URL
+    //     method: 'POST',
+    //     contentType: 'application/json',
+    //     data: JSON.stringify(results),
+    //     success: function(response) {
+    //         alert('Ответы успешно отправлены!');
+    //         window.location.href = '/';  // Перенаправление после успеха
+    //     },
+    //     error: function(xhr) {
+    //         alert('Ошибка отправки: ' + xhr.responseText);
+    //     }
+    // });
+});

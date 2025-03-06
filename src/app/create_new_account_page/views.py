@@ -1,5 +1,52 @@
+import datetime
+
 from django.shortcuts import render
+import json
+from PoW.generate_random_string import generate_random_string
+from databases.mysql_db import client_mysqldb
+from Configs.Exceptions import ErrorSameLogins, NotFoundCookieIntoPowTable
+from django.http import JsonResponse
+
 
 def request_on_create_new_account_page(requests):
     print('rendering create_new_account_page...')
-    return render(requests, 'create_new_account_page.html')
+    response = render(requests, 'create_new_account_page.html')
+    cookie = generate_random_string(10)
+
+    client_mysqldb.create_cookie_into_pow_table(cookie)
+    response.set_cookie('auth_sessionid', cookie)
+    return response
+
+
+def request_on_create_new_account(request):
+    try:
+        json_data = json.loads(request.body)
+        login = json_data.get('login')
+        password = json_data.get('password')
+        pow = json_data.get('pow', '')
+        nickname = json_data.get('nickname', '')
+
+        assert pow != ''
+        assert 'auth_sessionid' in request.COOKIES
+
+        cookie = request.COOKIES['auth_sessionid']
+
+        pow_from_db = client_mysqldb.get_pow(cookie)
+
+        assert pow == pow_from_db
+
+        client_mysqldb.create_user(login, password, 'user', nickname)
+        client_mysqldb.delete_pow_entry_from_pow_table(cookie)
+
+        _, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
+        expired = datetime.datetime.now()
+        expired = expired + datetime.timedelta(days=3)
+        client_mysqldb.create_cookie_into_session_table(cookie, 'auth_sessionid', id_of_user, expired)
+
+        return JsonResponse({'response': 200})
+    except AssertionError:
+        return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'})
+    except ErrorSameLogins:
+        return JsonResponse({'response': 2, 'message': 'Данный логин уже занят.'})
+    except NotFoundCookieIntoPowTable:
+        return JsonResponse({'response': 3, 'message': 'Повторите попытку'})

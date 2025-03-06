@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +42,7 @@ INSTALLED_APPS = [
     'app.passing_poll_page',
     'app.sign_in_page',
     'app.create_new_account_page',
-
+    'app.profile_page',
 ]
 
 MIDDLEWARE = [
@@ -56,12 +55,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True  # Разрешить запросы со всех доменов
+CORS_ALLOW_CREDENTIALS = True  # Разрешить отправку кук
+
 ROOT_URLCONF = 'app.pollster.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'components')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,7 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-print(BASE_DIR)
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'common_static'), # все статические файлы общие
 ]

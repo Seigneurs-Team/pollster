@@ -1,15 +1,11 @@
 // отправка опроса на сервер
 const host = 'http://127.0.0.1:8000';
+import {hasHTMLTags} from './create_poll_page.js';
 
 
-export function submitPoll(event) {
-    // список вопросов будет при отправке формы формироваться посредством перебора всех элементов с классом .question и извлечения оттуда данных
-    console.log('submitPollBtn clicked')
-
-    event.preventDefault(); // Prevent default form submission behavior
+export function submitPoll() {
 
     // Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
-
     let questions = $('.question').map(function () {
         let type = $(this).attr('data-type')
         let options = []
@@ -103,10 +99,29 @@ function sendData(pollData) {
 
 
 function checkCorrectData(pollData) { // проверка на корректные данные в форме перед ее отправкой. пока что тут только проверка на пустое название. TODO сделать проверку на ненулевое количество вопросов, на ненулевое количество вариантов ответа в radio и checkbox. не непустой текст вопросов
-    if (pollData.name_of_poll) {
-        return true
+    if (!pollData.name_of_poll) {
+        // если поле имени опроса пустое
+        const msg = 'Некорректно заполнена форма: Имя опроса не может быть пустым!'
+        console.log(msg)
+        $('.error-message.submit').text(msg)
+
     } else {
-        // если поле имени опроса пустое, надо сообщить об этом пользователю. пока что в консоль
-        console.log('имя опроса не может быть пустым!')
+        let isInvalid = false;
+        // Проверяем все текстовые поля
+        $(`input[type="text"], textarea`).each(function () {
+            const value = $(this).val();
+            if (hasHTMLTags(value)) {
+                isInvalid = true;
+                const msg = 'Некорректно заполнена форма: Недопустимые символы (например, < или >)!'
+                $('.error-message.submit').text(msg).show()
+                // $('.error-message.submit')
+                console.log(msg)
+                return false;
+            }
+        });
+        if (!isInvalid) {
+            $('.error-message.submit').hide()
+            return true
+        }
     }
 }

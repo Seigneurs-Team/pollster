@@ -21,6 +21,11 @@ from app.create_poll_page.views import request_on_create_poll_page, request_on_c
 from app.passing_poll_page.views import request_on_passing_poll_page
 from app.sign_in_page.views import request_on_sign_in_page
 from app.create_new_account_page.views import request_on_create_new_account_page
+from app.create_new_account_page.views import request_on_create_new_account
+from app.sign_in_page.views import request_on_sign_in_account
+from app.profile_page.views import request_on_profile_page
+from PoW.captcher_post_challenge import request_on_challenge
+from app.passing_poll_page.views import request_on_passing_poll
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,5 +36,10 @@ urlpatterns = [
     path('create_poll', request_on_create_new_poll, name='create_poll_page'),
     path('sign_in', request_on_sign_in_page, name='sign_in_page'),
     path('create_new_account', request_on_create_new_account_page, name='create_new_account_page'),
-
+    path('register', request_on_create_new_account, name='create_new_account'),
+    path('log_in', request_on_sign_in_account, name='sign_in_account'),
+    path('profile', request_on_profile_page, name='profile_page'),
+    path('profile/<int:id>/', request_on_profile_page, name='profile_page'),
+    path('get_challenge', request_on_challenge, name='get_data_of_challenge'),
+    path('post_pass_poll', request_on_passing_poll, name="save_answers_in_db")
 ]

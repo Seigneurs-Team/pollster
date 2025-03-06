@@ -3,6 +3,12 @@
     --violet: #5863BF;
 }
 
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 main {
     display: flex;
     justify-content: center;
@@ -16,9 +22,109 @@ main {
     margin: 10px 10px 10px 0;
     border: var(--violet) solid 2px;
     border-radius: 4px;
-    float: right;
     background-color: white;
     text-align: center;
+}
+
+header {
+    display: block;
+}
+
+.right-block {
+    float: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.search {
+    position: relative;
+    width: 360px;
+    height: 30px;
+    border: var(--violet) solid 1.5px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    float: right;
+    text-align: left;
+    padding: 3px 10px;
+}
+
+.search input[type="text"] {
+    width: 300px;
+    /*background: white;*/
+    border: none;
+    outline: none;
+}
+
+.search input[type="checkbox"]. .search input[type="radio"] {
+    margin-right: 10px;
+}
+
+#close {
+    float: right;
+}
+
+.search h2 {
+    font-size: 24px;
+}
+
+.popup {
+    display: none; /* Скрыто по умолчанию */
+    position: absolute;
+    left: 0;
+    top: 42px;
+    width: calc(100% - 20px);
+    background-color: white;
+    border-radius: 6px;
+    border: var(--violet) solid 1.5px;
+    padding: 10px;
+    text-align: center;
+
+}
+
+input[type="checkbox"], input[type="radio"] {
+    margin-right: 10px;
+}
+
+.filters {
+    text-align: left;
+}
+.filters > ul {
+    margin-bottom: 10px;
+}
+
+.age {
+    padding-left: 20px;
+}
+
+.tags {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+}
+
+.tag {
+    font-size: 14px;
+    padding: 5px;
+    margin: 2px;
+    border: var(--violet) solid 1.5px;
+
+}
+
+#applyFilters {
+    border: var(--violet) solid 1.5px;
+    border-radius: var(--border-radius);
+    padding: 6px 10px;
+    margin-top: 10px;
+}
+
+
+.search img {
+    width: 18px;
 }
 
 #createPollBtn {
@@ -36,117 +142,15 @@ main {
     text-decoration: none;
 
 }
+
 #createPollBtn:hover {
     color: #fff;
 }
- 
+
 .circles {
-    width: 100%
+    width: 100%;
 }
 
 h1 {
     font-size: 36px;
-}
-
-ul.polls {
-    /* обнуление стилей списка опросов */
-    padding: 0;
-    text-indent: 0;
-    list-style-type: none;
-
-    margin: 30px 0 70px 0;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    column-gap: 30px;
-    row-gap: 30px;
-
-}
-
-li.poll-item {
-    width: 340px;
-
-}
-
-li.poll-item .poll-img img {
-    width: 100%;
-    /* Ширина изображений */
-    height: 100%;
-    /* Высота изображении */
-    object-fit: cover;
-    /* Вписываем фотографию в область */
-    border-radius: var(--border-radius);
-
-}
-
-li.poll-item .poll_id {
-    float: right;
-    font-size: 13px;
-    font-weight: 500;
-    color: #8D8D8D;
-}
-
-
-li.poll-item .delete-poll {
-    background-color: white;
-    border: none;
-    vertical-align: text-top;
-    line-height: 12px;
-}
-
-li.poll-item .till-the-end {
-    float: right;
-    font-size: 14px;
-    line-height: 12px;
-    vertical-align: text-top;
-
-}
-
-li.poll-item .till-the-end svg {
-    width: 20px;
-}
-
-li.poll-item .delete-poll:hover {
-    background-color: rgb(253, 244, 255);
-}
-
-li.poll-item .delete-poll svg {
-    display: inline;
-    width: 20px;
-}
-
-h2.poll-name, .poll-description {
-    font-weight: 500;
-
-}
-
-h2.poll-name {
-    margin: 0;
-    font-size: 22px;
-}
-
-.poll-description {
-    height: 55px;
-    overflow: hidden;
-    position: relative;
-    font-size: 14px;
-}
-
-/* Псевдоэлемент для создания эффекта градиента */
-.poll-description::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-    /* Высота градиентной части */
-    background: linear-gradient(to bottom, transparent, white);
-    /* Или используйте цвет фона карточки */
-    /* display: none; Скрыть по умолчанию */
-}
-
-.poll-tags {
-    font-size: 14px;
-    color: rgb(52, 115, 242);
 }

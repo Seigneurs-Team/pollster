@@ -10,3 +10,10 @@ del_btns.on("click", function () {
 }); 
 */
 
+// нажатие на кнопку filter
+$(".opn-filter").on('click', function () {
+    $(".popup").toggle();
+});
+$("#applyFilters").on('click', function () {
+    $(".popup").toggle();
+});
