@@ -1,3 +1,4 @@
+import datetime
 import random
 
 from mysql.connector import connect
@@ -14,7 +15,7 @@ from Configs.Poll import (
 from app.create_poll_page.set_poll import get_random_id
 from typing import List
 
-from Configs.Exceptions import NotFoundPoll, ErrorSameLogins, NotFoundCookieIntoPowTable
+from Configs.Exceptions import NotFoundPoll, ErrorSameLogins, NotFoundCookieIntoPowTable, CookieWasExpired, RepeatPollError
 from PoW.generate_random_string import generate_random_string
 logger = logging.getLogger()
 
@@ -61,9 +62,13 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (id_of_user))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, id_of_cookie INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (id_of_cookie))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type TEXT, PRIMARY KEY (id_of_type))""")
 
         #superuser
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
+        #данные, которые пользователь ввел в ответах на опрос
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_users_who_pass_the_poll(id_of_user INT, id_of_poll INT)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT, id_of_poll INT, id_of_user INT, serial_number_of_question INT, type_of_question TEXT, value TEXT, PRIMARY KEY (id))""")
 
         self.connection.commit()
 
@@ -76,11 +81,11 @@ class MysqlDB:
         :param num_of_polls: количество опросов, которые должна вернуть функция
         :return: list
         """
-        self.cursor.execute("""SELECT * FROM polls""")
+        self.cursor.execute("""SELECT name_of_poll, description, tags, id FROM polls""")
         result = self.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
         for poll in result:
-            polls_list.append(Poll(poll[3], poll[2], poll[1], poll[0]))
+            polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3]))
         return polls_list
 
     def get_poll(self, id_of_poll: int) -> dict or None:
@@ -106,7 +111,6 @@ class MysqlDB:
         return dict_of_poll
 
     def set_dict_poll(self, questions_entries: list, id_of_poll: int) -> dict:
-        print(questions_entries)
         dict_of_poll: dict = {
             'id_of_poll': id_of_poll,
             'name_of_poll': questions_entries[0][1],
@@ -302,13 +306,36 @@ class MysqlDB:
 
         self.connection.commit()
 
-    def get_user_from_table(self, login):
+    def get_user_password_and_id_of_user_from_table(self, login):
         self.cursor.execute(f"""SELECT password, id_of_user FROM users WHERE login = "{login}" """)
-        response = self.cursor.fetchall()
+        response = self.cursor.fetchone()
         if len(response) == 0:
             return None
         else:
-            return response[0]
+            return response[0], response[1]
+
+    def get_user_nickname_from_table_with_cookie(self, cookie: str, name_of_cookie: str):
+        self.cursor.execute(f"""SELECT expired, id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
+        session = self.cursor.fetchone()
+        now = datetime.datetime.now()
+
+        assert session is not None
+
+        if now < session[0]:
+            self.cursor.execute(f"""SELECT nickname FROM users WHERE id_of_user = {session[1]}""")
+            user = self.cursor.fetchone()
+            if user is not None:
+                return user[0]
+            return None
+
+        else:
+            self.delete_cookie_from_session_table(cookie, name_of_cookie, session[1])
+            raise CookieWasExpired("время жизни куки файлов кончилось")
+
+    def get_id_of_user_from_table_with_cookies(self, cookie: str, name_of_cookie: str) -> str:
+        self.cursor.execute(f"""SELECT id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
+        session = self.cursor.fetchone()
+        return session[0]
 
     def create_cookie_into_pow_table(self, cookie: str):
         try:
@@ -331,20 +358,45 @@ class MysqlDB:
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
         try:
+            self.cursor.execute(f"""SELECT id_of_cookie FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
+            if self.cursor.fetchone() is not None:
+                raise Exception
+
             self.cursor.execute(f"""INSERT INTO sessions (id_of_user, cookie, name_of_cookie, expired, id_of_cookie) VALUES (%s, %s, %s, %s, %s)""", (id_of_user, cookie, name_of_cookie, expired, random.randint(0, 10**4)))
             self.connection.commit()
         except mysql.connector.IntegrityError:
             self.create_cookie_into_session_table(cookie, name_of_cookie, id_of_user, expired)
+        except Exception:
+            new_cookie = generate_random_string(10)
+            self.create_cookie_into_session_table(new_cookie, name_of_cookie, id_of_user, expired)
 
-    def update_cookie_in_session_table(self, cookie: str, id_of_user):
-        self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}" WHERE id_of_user = {id_of_user} """)
+    def delete_cookie_from_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int):
+        self.cursor.execute(f"""DELETE FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" AND id_of_user = {id_of_user}""")
+        self.connection.commit()
+
+    def update_cookie_in_session_table(self, cookie: str, id_of_user: int, name_of_cookie: str, expired: int):
+        self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}", expired = {expired} WHERE id_of_user = {id_of_user} AND name_of_cookie = "{name_of_cookie}" """)
         self.connection.commit()
 
     def delete_pow_entry_from_pow_table(self, cookie):
         self.cursor.execute(f"""DELETE FROM pow_table WHERE cookie = "{cookie}" """)
         self.connection.commit()
+#-----------------------------------------------------------------------------------------------------------------------
+# Сохранение данных, которые пользователь ввел в ответах на опрос
 
+    def add_users_into_table_for_users_who_pass_the_poll(self, id_of_user, id_of_poll):
+        try:
+            self.cursor.execute("""INSERT INTO table_of_users_who_pass_the_poll(id_of_user, id_of_poll) VALUES(%s, %s)""", (id_of_user, id_of_poll))
+            self.connection.commit()
+        except mysql.connector.IntegrityError:
+            raise RepeatPollError("Попытка повторного прохождения опроса")
 
+    def add_answer_into_table_data_of_passing_poll_from_user(self, serial_number: int, type_of_question: str, value: str, id_of_user: int, id_of_poll: int):
+        try:
+            self.cursor.execute("""INSERT INTO data_of_passing_poll_from_user (id, id_of_poll, id_of_user, serial_number_of_question, type_of_question, value) VALUES (%s, %s, %s, %s, %s, %s)""", (random.randint(0, 9999999), id_of_poll, id_of_user, serial_number, type_of_question, value))
+            self.connection.commit()
+        except mysql.connector.IntegrityError:
+            self.add_answer_into_table_data_of_passing_poll_from_user(serial_number, type_of_question, value, id_of_user, id_of_poll)
 #-----------------------------------------------------------------------------------------------------------------------
 
 
