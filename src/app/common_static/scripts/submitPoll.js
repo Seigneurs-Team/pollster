@@ -11,9 +11,9 @@ export function submitPoll() {
         let options = []
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
-        if (type == 'radiobutton' | type == 'checkbox') {
-        let rightAnswersId = []
-                        
+        if (type === 'radiobutton' || type === 'checkbox') {
+            let rightAnswersId = []
+
             // id ответов начинаются с 0
             let counter = -1
             $(this).find('.option').each(function () {
@@ -37,28 +37,26 @@ export function submitPoll() {
                 options: options,
                 rightAnswersId: rightAnswersId,
             }
-        } else if (type == 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
+        } else if (type === 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
             let answer = $(this).find('.right-answer').val()
-
             
             return {
                 id: $(this).attr('id'),
                 type: type,
                 text: $(this).find('.questionText').val(),
                 rightAnswer: answer,
-            }   
-        } else if (type == 'long text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
-            
+            }
+        } else if (type === 'long text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
+
             return {
                 id: $(this).attr('id'),
                 type: type,
                 text: $(this).find('.questionText').val(),
-            }   
-        } 
+            }
+        }
 
 
     }).get() // Преобразуем результат в массив
-
 
 
     // Собираем данные
@@ -71,7 +69,9 @@ export function submitPoll() {
     console.log("pollData:", pollData)
 
     // если введенные данные корректны, отправляем опрос на сервер
-    if (checkCorrectData(pollData)) { sendData(pollData); }
+    if (checkCorrectData(pollData)) {
+        sendData(pollData);
+    }
 }
 
 
@@ -99,29 +99,46 @@ function sendData(pollData) {
 
 
 function checkCorrectData(pollData) { // проверка на корректные данные в форме перед ее отправкой. пока что тут только проверка на пустое название. TODO сделать проверку на ненулевое количество вопросов, на ненулевое количество вариантов ответа в radio и checkbox. не непустой текст вопросов
+    let isInvalid = false;
+    let msg = ''
     if (!pollData.name_of_poll) {
         // если поле имени опроса пустое
-        const msg = 'Некорректно заполнена форма: Имя опроса не может быть пустым!'
-        console.log(msg)
-        $('.error-message.submit').text(msg)
+        msg = 'Некорректно заполнена форма: Название опроса не может быть пустым!'
+        isInvalid = true;
+
+    } else if (!(pollData.questions.length)) {
+        // если нет ни одного вопроса
+        msg = 'Некорректно заполнена форма: Вы не добавили ни одного вопроса!'
+        isInvalid = true;
 
     } else {
-        let isInvalid = false;
-        // Проверяем все текстовые поля
+        // Проверяем все текстовые поля на 1) не пустоту 2) наличие html тэгов
+        $(`.questions input[type="text"], .questions textarea`).each(function () {
+            const value = $(this).val();
+            if (!value.trim() && $(this).attr('class') !== 'right-answer') {
+                isInvalid = true;
+                msg = 'Некорректно заполнена форма: Пустые поля!'
+                return false;
+            }
+        })
+
         $(`input[type="text"], textarea`).each(function () {
             const value = $(this).val();
             if (hasHTMLTags(value)) {
                 isInvalid = true;
-                const msg = 'Некорректно заполнена форма: Недопустимые символы (например, < или >)!'
-                $('.error-message.submit').text(msg).show()
-                // $('.error-message.submit')
-                console.log(msg)
+                msg = 'Некорректно заполнена форма: Недопустимые символы (например, < или >)!'
                 return false;
             }
         });
-        if (!isInvalid) {
-            $('.error-message.submit').hide()
-            return true
-        }
+    }
+
+    if (isInvalid) {
+        $('.error-message.submit').text(msg).show()
+        console.log(msg)
+        return false
+
+    } else {
+        $('.error-message.submit').hide()
+        return true
     }
 }
