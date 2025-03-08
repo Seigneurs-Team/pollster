@@ -39,7 +39,7 @@ urlpatterns = [
     path('register', request_on_create_new_account, name='create_new_account'),
     path('log_in', request_on_sign_in_account, name='sign_in_account'),
     path('profile', request_on_profile_page, name='profile_page'),
-    path('profile/<int:id>/', request_on_profile_page, name='profile_page'),
+    path('profile/<slug:id_of_user>/', request_on_profile_page, name='profile_page'),
     path('get_challenge', request_on_challenge, name='get_data_of_challenge'),
     path('post_pass_poll', request_on_passing_poll, name="save_answers_in_db")
 ]

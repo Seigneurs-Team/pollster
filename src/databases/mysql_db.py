@@ -50,7 +50,7 @@ class MysqlDB:
 
     def create_table(self):
         #polls
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, PRIMARY KEY (id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT, PRIMARY KEY(id_of_question))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED, option_name TEXT, PRIMARY KEY(id_of_option))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED)""")
@@ -76,17 +76,21 @@ class MysqlDB:
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с созданием, редактированием и удалением опросов
 
-    def get_polls(self, num_of_polls: int = 4) -> list:
+    def get_polls(self, num_of_polls: int = 4, id_of_user: int = None) -> list:
         """
         Функция возвращает list, состоящий из id: int, tags: string, name_of_poll: string, description: string
         :param num_of_polls: количество опросов, которые должна вернуть функция
+        :param id_of_user: уникальный идентификатор пользователя
         :return: list
         """
-        self.cursor.execute("""SELECT name_of_poll, description, tags, id FROM polls""")
+        transaction = """SELECT name_of_poll, description, tags, id FROM polls"""
+        if id_of_user is not None:
+            transaction += f" WHERE id_of_author = {id_of_user}" if id_of_user is not None else ''
+        self.cursor.execute(transaction)
         result = self.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
         for poll in result:
-            polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3]))
+            polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3], id_of_user))
         return polls_list
 
     def get_poll(self, id_of_poll: int) -> dict or None:
@@ -96,17 +100,6 @@ class MysqlDB:
         :param id_of_poll: идентификатор опроса
         :return: None
         """
-        # self.cursor.execute(f"""SELECT polls.name_of_poll, polls.description, polls.tags, polls.description,
-        #  questions.text_of_question, questions.type_of_question, options.option_name, rightAnswers.rightAnswerId
-        #  FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
-        #  INNER JOIN options ON questions.id_of_question = options.id_of_question
-        #  INNER JOIN rightAnswers ON options.id_of_option = rightAnswers.id_of_option
-        #  WHERE polls.id = {id_of_poll}""")
-
-        # self.cursor.execute(f"""SELECT polls.id, questions.id_of_question
-        #          FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
-        #          WHERE polls.id = {id_of_poll}""")
-
         questions_entries = self.get_questions(id_of_poll)
         dict_of_poll = self.set_dict_poll(questions_entries, id_of_poll)
         return dict_of_poll
@@ -147,6 +140,7 @@ class MysqlDB:
                  FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
                  WHERE polls.id = {id_of_poll}""")
         response_from_query = self.cursor.fetchall()
+        print(response_from_query)
 
         if len(response_from_query) == 0:
             raise NotFoundPoll('Опрос не найден')
@@ -227,8 +221,8 @@ class MysqlDB:
         :return:
         """
         try:
-            self.cursor.execute("""INSERT INTO polls(id, tags, name_of_poll, description) VALUES (%s, %s, %s, %s)""",
-                                (poll.id_of_poll, poll.tags, poll.name_of_poll, poll.description))
+            self.cursor.execute("""INSERT INTO polls(id, tags, name_of_poll, description, id_of_author) VALUES (%s, %s, %s, %s, %s)""",
+                                (poll.id_of_poll, poll.tags, poll.name_of_poll, poll.description, poll.id_of_author))
         except mysql.connector.errors.IntegrityError:
             poll.id_of_poll = get_random_id()
             self.add_new_entry_into_polls_table(poll)
@@ -354,6 +348,10 @@ class MysqlDB:
         session = self.cursor.fetchone()
         return session[0]
 
+    def get_user_data_from_table(self, id_of_user: int) -> tuple:
+        self.cursor.execute(f"""SELECT nickname, login FROM users WHERE id_of_user={id_of_user}""")
+        return self.cursor.fetchone()
+
     def create_cookie_into_pow_table(self, cookie: str):
         try:
             self.cursor.execute("""INSERT INTO pow_table (cookie) VALUES (%s)""", (cookie, ))
@@ -398,6 +396,21 @@ class MysqlDB:
     def delete_pow_entry_from_pow_table(self, cookie):
         self.cursor.execute(f"""DELETE FROM pow_table WHERE cookie = "{cookie}" """)
         self.connection.commit()
+
+    def get_pass_user_polls(self, id_of_user: int, num_of_polls: int = 4):
+        self.cursor.execute(f"""SELECT id_of_poll FROM table_of_users_who_pass_the_poll WHERE id_of_user = {id_of_user}""")
+        id_of_polls = [poll[0] for poll in self.cursor.fetchmany(num_of_polls)]
+
+        polls_list: list[Poll] = []
+
+        for id_of_poll in id_of_polls:
+            transaction = f"""SELECT name_of_poll, description, tags FROM polls WHERE id = {id_of_poll}"""
+            self.cursor.execute(transaction)
+            result = self.cursor.fetchall()
+            for poll in result:
+                polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3], id_of_user))
+        return polls_list
+
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 

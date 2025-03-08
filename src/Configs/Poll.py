@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from random import randint
+from typing import Union
 
 
 @dataclass
@@ -8,6 +8,7 @@ class Poll:
     description: str
     tags: str
     id_of_poll: int
+    id_of_author: Union[None, int]
 
 
 @dataclass
