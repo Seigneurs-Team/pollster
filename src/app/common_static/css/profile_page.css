@@ -78,13 +78,13 @@
     border-top: none;
 }
 
-.delete-account {
+.log-out {
     background-color: white;
     border: solid 1px red;
     border-radius: 10px;
     width: 200px;
 }
-.delete-account:hover {
+.log-out:hover {
     background-color: red;
     border: solid 2px red;
 }
