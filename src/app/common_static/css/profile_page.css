@@ -88,3 +88,11 @@
     background-color: red;
     border: solid 2px red;
 }
+.delete-account {
+    background-color: red;
+    border-radius: 10px;
+    width: 200px;
+}
+.delete-account:hover {
+    background-color: #910000;
+}

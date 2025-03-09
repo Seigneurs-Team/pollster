@@ -16,6 +16,23 @@ $(".log-out").on('click',  async function () {
     }
 });
 
+$(".delete-account").on('click',  async function () {
+    console.log('sending delete account request...');
+    const response = await fetch('/delete_account', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include', // Отправляем куки
+    });
+    const responseData = await response.json();
+    console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
+
+    if (!response.ok) {
+        console.error('Ошибка при удалении аккаунта:', responseData);
+        throw new Error('Ошибка при удалении аккаунта');
+    }
+});
+
+
 function openTab(event, tabName) {
     // Hide all elements with class "tabcontent"
     $(".tabcontent").hide();
