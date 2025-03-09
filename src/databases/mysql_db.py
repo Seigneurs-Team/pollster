@@ -371,7 +371,7 @@ class MysqlDB:
         else:
             raise NotFoundCookieIntoPowTable('не найден куки в таблице')
 
-    def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: int):
+    def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: datetime.datetime):
         try:
             self.cursor.execute(f"""SELECT id_of_cookie FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
             if self.cursor.fetchone() is not None:
@@ -414,6 +414,17 @@ class MysqlDB:
     def delete_entry_from_users(self, id_of_user: int):
         self.cursor.execute(f"""DELETE FROM users WHERE id_of_user={id_of_user}""")
         self.connection.commit()
+
+    def check_availability_entry_in_sessions(self, id_of_user) -> bool:
+        self.cursor.execute(f"""SELECT id_of_user FROM sessions WHERE id_of_user = {id_of_user}""")
+        if self.cursor.fetchone() is None:
+            return False
+        return True
+
+    def create_entry_into_sessions_table(self, cookie: str, cookie_name: str, id_of_user: int,  days: int = 3):
+        expired = datetime.datetime.now()
+        expired = expired + datetime.timedelta(days=days)
+        self.create_cookie_into_session_table(cookie, cookie_name, id_of_user, expired)
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос

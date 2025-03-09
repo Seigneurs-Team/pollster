@@ -39,12 +39,11 @@ def request_on_sign_in_account(request):
         expired = datetime.datetime.now()
         expired = expired + datetime.timedelta(days=3)
 
-        client_mysqldb.update_cookie_in_session_table(cookie, id_of_user, 'auth_sessionid', expired)
+        if client_mysqldb.check_availability_entry_in_sessions(id_of_user):
+            client_mysqldb.update_cookie_in_session_table(cookie, id_of_user, 'auth_sessionid', expired)
+        else:
+            client_mysqldb.create_entry_into_sessions_table(cookie, 'auth_sessionid', id_of_user)
 
         return JsonResponse({'response': 'ok'})
     except AssertionError:
         return JsonResponse({'response': 'not ok'})
-
-
-
-
