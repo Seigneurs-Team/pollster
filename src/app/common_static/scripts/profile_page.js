@@ -1,6 +1,20 @@
 $("#your-polls-btn").on('click', function (event) { openTab(event,'your-polls');});
 $("#completed-polls-btn").on('click', function (event) { openTab(event,'completed-polls');});
+$(".delete-account").on('click',  async function () {
+    console.log('sending log out request...');
+    const response = await fetch('/log_out', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include', // Отправляем куки
+    });
+    const responseData = await response.json();
+    console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
+    if (!response.ok) {
+        console.error('Ошибка при выходе из аккаунта:', responseData);
+        throw new Error('Ошибка при выходе из аккаунта');
+    }
+});
 
 function openTab(event, tabName) {
     // Hide all elements with class "tabcontent"
