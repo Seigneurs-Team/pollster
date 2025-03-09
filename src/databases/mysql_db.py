@@ -411,6 +411,10 @@ class MysqlDB:
                 polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3], id_of_user))
         return polls_list
 
+    def delete_entry_from_users(self, id_of_user: int):
+        self.cursor.execute(f"""DELETE FROM users WHERE id_of_user={id_of_user}""")
+        self.connection.commit()
+
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 
