@@ -274,7 +274,7 @@ class MysqlDB:
     def set_types_of_questions(self):
         self.cursor.execute("""SELECT id FROM types_of_question""")
         types_of_question = ['long text', 'short text', 'radiobutton', 'checkbox']
-        if self.cursor.fetchall() is None:
+        if self.cursor.fetchone() is None:
             for i, type_of_question in enumerate(types_of_question):
                 self.cursor.execute("""INSERT INTO types_of_question(id, type) VALUES (%s, %s)""", (i, type_of_question))
             self.connection.commit()
