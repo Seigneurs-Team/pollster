@@ -55,6 +55,7 @@ function answerType(questionType, questionId, question) {
 
     }
 }
+
 // отрисовка вариантов ответов
 function addOption(type, questionId, option, counter) {
     // Создаем новый вариант ответа
@@ -70,9 +71,11 @@ function addOption(type, questionId, option, counter) {
 
 
 // Извлечение и отправка результатов
-$(".submit").on('click', function () {
+$(".submit").on('click', async function () {
+    let poll_id = $(event.currentTarget).attr('data-poll-id')
+
     const results = {
-        poll_id: "{{ poll.id_of_poll }}",
+        poll_id: poll_id,
         answers: []
     };
 
@@ -101,7 +104,7 @@ $(".submit").on('click', function () {
 
             case 'checkbox':
                 const checkedBoxes = questionEl.find('input[type="checkbox"]:checked');
-                answer.value = checkedBoxes.map(function() {
+                answer.value = checkedBoxes.map(function () {
                     return $(this).next('label').text();
                 }).get();
                 break;
@@ -109,19 +112,27 @@ $(".submit").on('click', function () {
 
         results.answers.push(answer);
     });
-console.log(results)
-    // Отправка на сервер
-    // $.ajax({
-    //     url: '/submit-poll/',  // Указать правильный URL
-    //     method: 'POST',
-    //     contentType: 'application/json',
-    //     data: JSON.stringify(results),
-    //     success: function(response) {
-    //         alert('Ответы успешно отправлены!');
-    //         window.location.href = '/';  // Перенаправление после успеха
-    //     },
-    //     error: function(xhr) {
-    //         alert('Ошибка отправки: ' + xhr.responseText);
-    //     }
-    // });
+    console.log(results)
+    const response = await sendPassedPoll(results);
 });
+
+// Отправить данные пройденного опроса
+async function sendPassedPoll(results) {
+    console.log('sending registration data...');
+    const response = await fetch('/post_pass_poll', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include', // Отправляем куки
+        body: results,
+    });
+
+    const responseData = await response.json();
+    console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
+
+    if (!response.ok) {
+        console.error('Ошибка при отправке данных:', responseData);
+        throw new Error('Ошибка при отправке данных');
+    }
+
+    return responseData;
+}

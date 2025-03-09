@@ -64,12 +64,12 @@ $(".answerType").on('click', function () {
     });
 
     /* назначаем обработчики событий на button которая добавляет option в checkbox и radiobutton) */
-    if (questionType == "radiobutton") {
+    if (questionType === "radiobutton") {
         $('#' + questionsId).find('.addOptionRadio').on('click', function () {
             addOption(this, 'radio', questionsId)
         })
     }
-    if (questionType == "checkbox") {
+    if (questionType === "checkbox") {
         $('#' + questionsId).find('.addOptionCheckbox').on('click', function () {
             addOption(this, 'checkbox', questionsId)
         })
@@ -126,10 +126,10 @@ function answerType(questionType, questionId) {
         // TODO загрузка изображений
     }
 else
-    if (questionType == "radiobutton img") {
+    if (questionType === "radiobutton img") {
         return 0
 
-    } else if (questionType == "checkbox img") {
+    } else if (questionType === "checkbox img") {
         return 0
 
     }
