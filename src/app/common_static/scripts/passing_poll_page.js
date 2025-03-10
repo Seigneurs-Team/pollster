@@ -123,7 +123,7 @@ async function sendPassedPoll(results) {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include', // Отправляем куки
-        body: results,
+        body: JSON.stringify(results),
     });
 
     const responseData = await response.json();
