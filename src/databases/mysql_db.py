@@ -286,6 +286,18 @@ class MysqlDB:
         result = self.cursor.fetchall()
         return [type_of_question[0] for type_of_question in result]
 
+    def get_id_of_author_of_poll(self, id_of_poll):
+        self.cursor.execute(f"""SELECT id_of_author FROM polls WHERE id={id_of_poll}""")
+        data_of_query = self.cursor.fetchone()
+        if data_of_query is None:
+            raise NotFoundPoll('Не найден опрос с данным id')
+
+        return data_of_query[0]
+
+    def delete_poll(self, id_of_poll: int):
+        self.cursor.execute(f"""DELETE FROM polls WHERE id={id_of_poll}""")
+        self.connection.commit()
+
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
 
@@ -300,7 +312,7 @@ class MysqlDB:
 
     def create_superuser(self):
         try:
-            self.cursor.execute("""INSERT INTO superusers (id_of_superusers, login, password) VALUES (%s, %s, %s)""", (random.randint(-9999999, -99999999), 'admin', 'P@ssw0rd'))
+            self.cursor.execute("""INSERT INTO superusers (id_of_superusers, login, password) VALUES (%s, %s, %s)""", (random.randint(-99999999, -9999999), 'admin', 'P@ssw0rd'))
         except mysql.connector.IntegrityError:
             self.create_superuser()
         self.connection.commit()
@@ -425,6 +437,19 @@ class MysqlDB:
         expired = datetime.datetime.now()
         expired = expired + datetime.timedelta(days=days)
         self.create_cookie_into_session_table(cookie, cookie_name, id_of_user, expired)
+
+    def check_user_into_superusers(self, id_of_user: int) -> bool:
+        if id_of_user in self.get_id_of_superusers():
+            return True
+        return False
+
+    def get_id_of_superusers(self):
+        self.cursor.execute("""SELECT id_of_superuser FROM superusers""")
+        data_of_query = self.cursor.fetchall()
+
+        id_of_superusers = [idx[0] for idx in data_of_query]
+
+        return id_of_superusers
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
