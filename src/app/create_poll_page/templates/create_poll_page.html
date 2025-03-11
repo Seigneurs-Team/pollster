@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pollster</title>
     {% load static %}
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
@@ -13,9 +14,11 @@
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+          rel="stylesheet">
 
 </head>
 
@@ -27,11 +30,13 @@
             <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
         </a>
         <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
-        <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo" src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+        <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
+                                                                                     src="{% static 'img\profile img.png' %}"
+                                                                                     alt="profile photo"></a>
     </header>
 
 
-    <main>
+    <main data-deloption="{% static 'img/delOption.svg' %}">
 
         <div class="form">
             <h1>Создание опроса</h1>
@@ -53,7 +58,7 @@
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
             </div>
 
-                <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
+            <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
 
             <div class="input-wrapper">
                 <label class="form-label" for="pollTags">Тэги:</label>
