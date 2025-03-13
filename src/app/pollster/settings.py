@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'app.sign_in_page',
     'app.create_new_account_page',
     'app.profile_page',
+    'app.log_out'
 ]
 
 MIDDLEWARE = [

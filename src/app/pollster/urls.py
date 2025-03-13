@@ -26,6 +26,10 @@ from app.sign_in_page.views import request_on_sign_in_account
 from app.profile_page.views import request_on_profile_page
 from PoW.captcher_post_challenge import request_on_challenge
 from app.passing_poll_page.views import request_on_passing_poll
+from app.log_out.views import request_on_log_out
+from app.delete_account.views import request_on_delete_account
+from app.delete_poll.views import request_on_delete_poll
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,7 +43,10 @@ urlpatterns = [
     path('register', request_on_create_new_account, name='create_new_account'),
     path('log_in', request_on_sign_in_account, name='sign_in_account'),
     path('profile', request_on_profile_page, name='profile_page'),
-    path('profile/<int:id>/', request_on_profile_page, name='profile_page'),
+    path('profile/<slug:id_of_user>/', request_on_profile_page, name='profile_page'),
     path('get_challenge', request_on_challenge, name='get_data_of_challenge'),
-    path('post_pass_poll', request_on_passing_poll, name="save_answers_in_db")
+    path('post_pass_poll', request_on_passing_poll, name="save_answers_in_db"),
+    path('log_out', request_on_log_out, name='log_out'),
+    path('delete_account', request_on_delete_account, name='delete_account'),
+    path('delete_poll/<int:id_of_poll>/', request_on_delete_poll, name='delete_poll')
 ]

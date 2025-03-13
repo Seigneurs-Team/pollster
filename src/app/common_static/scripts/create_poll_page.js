@@ -40,7 +40,7 @@ $(".answerType").on('click', function () {
 
     // сам вопрос, в который вставляется content
     let newQuestion = $(`
-<div class="question" id="${questionsId}" data-type="{questionType}">
+<div class="question" id="${questionsId}" data-type="${questionType}">
     <span class="questionId">Вопрос #` + questionsId + `</span>
     <div class="input-wrapper">
         <input class="questionText" type="text" maxlength="60" placeholder="Задайте вопрос">
@@ -64,12 +64,12 @@ $(".answerType").on('click', function () {
     });
 
     /* назначаем обработчики событий на button которая добавляет option в checkbox и radiobutton) */
-    if (questionType == "radiobutton") {
+    if (questionType === "radiobutton") {
         $('#' + questionsId).find('.addOptionRadio').on('click', function () {
             addOption(this, 'radio', questionsId)
         })
     }
-    if (questionType == "checkbox") {
+    if (questionType === "checkbox") {
         $('#' + questionsId).find('.addOptionCheckbox').on('click', function () {
             addOption(this, 'checkbox', questionsId)
         })
@@ -89,7 +89,6 @@ $(".answerType").on('click', function () {
 
 // Проверяем все текстовые поля на наличие html тэгов (защита от xss)
     $('#' + questionsId).on('input', `input[type="text"], textarea`, function (event) {
-        console.log('HI')
         showHasHTMLTagsMessage(event)
     });
 
@@ -127,10 +126,10 @@ function answerType(questionType, questionId) {
         // TODO загрузка изображений
     }
 else
-    if (questionType == "radiobutton img") {
+    if (questionType === "radiobutton img") {
         return 0
 
-    } else if (questionType == "checkbox img") {
+    } else if (questionType === "checkbox img") {
         return 0
 
     }
@@ -177,14 +176,11 @@ export function hasHTMLTags(input) {
 }
 
 function showHasHTMLTagsMessage(e) {
-    console.log('checking if has html...')
     const target = e.target;
     const value = $(target).val();
     if (hasHTMLTags(value)) {
-        console.log($(target).parent().find('.error-message').first(), 'yes')
         $(target).parent().find('.error-message').first().css('display', 'inline-block')
     } else {
-        console.log('no')
         $(target).parent().find('.error-message').first().hide()
 
     }
