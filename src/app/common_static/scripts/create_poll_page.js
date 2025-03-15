@@ -137,10 +137,11 @@ else
 
 
 function renderOption(type, questionId, optionId) {
+    console.log("$('main').data('deloption'): ", $('main').data('deloption'))
     return `<div class="option">
         <input type="${type}" name="${questionId}" id="${questionId}_${optionId}" class="check">
             <div class="input-wrapper">
-                <input type="text" for="${questionId}_${optionId}" id="${questionId}_${optionId}-input" class="value" placeholder="Вариант ответа"><button class="delOption">-</button>
+                <input type="text" for="${questionId}_${optionId}" id="${questionId}_${optionId}-input" class="value" placeholder="Вариант ответа"><button class="delOption"><img src="${$('main').data('deloption')}" alt="удалить вариант ответа"></button>
                     <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
             </div>
     </div>`
@@ -198,4 +199,8 @@ $(document).ready(function () {
     $(`.error-message`).each(function () {
         $(this).hide()
     })
+
+    // крести
+    $('.delOption').css('background-image', 'url(' + $('main').data('deloption') + ')');
+
 })

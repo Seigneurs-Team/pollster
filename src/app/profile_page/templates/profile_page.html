@@ -2,7 +2,9 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <title>Pollster</title>
     {% load static %}
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
@@ -69,7 +71,7 @@
                     <p class="poll-description">{{item.description}}</p>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
                     <p class="poll-tags">{{item.tags}} </p>
-                    <button class="delete-poll" data-poll="{{item.id_of_poll}}">
+                    <a href="/delete_poll/{{item.id_of_poll}}" class="delete-poll" data-poll="{{item.id_of_poll}}">
                         <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 59 59"
                              style="enable-background:new 0 0 59 59;" xml:space="preserve">
@@ -91,7 +93,7 @@
                         <span>Удалить</span>
 
 
-                    </button>
+                    </a>
                     <div class="till-the-end">
                         <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.003 512.003"
