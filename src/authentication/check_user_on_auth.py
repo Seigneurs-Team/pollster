@@ -57,7 +57,7 @@ def authentication_for_delete_polls(func):
 
             assert (id_of_user == id_of_author) or client_mysqldb.check_user_into_superusers(id_of_user)
 
-            return func(request, *args, **kwargs)
+            return func(request, id_of_poll, *args, **kwargs)
 
         except AssertionError:
             return HttpResponseForbidden()
