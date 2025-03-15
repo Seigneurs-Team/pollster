@@ -26,3 +26,8 @@ class RepeatPollError(Exception):
 class TryToXSS(Exception):
     def __init__(self, message):
         super(TryToXSS, self).__init__(message)
+        
+        
+class WronglyResponse(Exception):
+    def __init__(self, message):
+        super(WronglyResponse, self).__init__(message)

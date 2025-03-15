@@ -51,11 +51,13 @@ class MysqlDB:
     def create_table(self):
         #polls
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT, PRIMARY KEY(id_of_question))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED, option_name TEXT, PRIMARY KEY(id_of_option))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, PRIMARY KEY (id_of_question))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT, FOREIGN KEY (id_of_question) REFERENCES polls (id) ON DELETE CASCADE)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED, option_name TEXT, FOREIGN KEY (id_of_option) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS types_of_question(id INT, type TEXT, PRIMARY KEY (id))""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table(id_of_poll INT, vector_of_poll BLOB, FOREIGN KEY(id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
         #users
         #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
@@ -75,6 +77,14 @@ class MysqlDB:
 
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с созданием, редактированием и удалением опросов
+
+    def get_polls_tags(self, id_of_poll: int):
+        self.cursor.execute(f"""SELECT tags FROM polls WHERE id={id_of_poll}""")
+        response_of_query = self.cursor.fetchone()
+
+        assert response_of_query is not None
+
+        return response_of_query[0]
 
     def get_polls(self, num_of_polls: int = 4, id_of_user: int = None) -> list:
         """
@@ -295,8 +305,21 @@ class MysqlDB:
         return data_of_query[0]
 
     def delete_poll(self, id_of_poll: int):
-        self.cursor.execute(f"""DELETE FROM polls WHERE id={id_of_poll}""")
+        self.cursor.execute(f"""DELETE FROM polls, questions, options,  WHERE id={id_of_poll}""")
         self.connection.commit()
+
+    def create_entry_into_ranking_table(self, id_of_poll: int, vector_of_poll: bytes):
+        self.cursor.execute("""INSERT INTO ranking_table(id_of_poll, vector_of_poll) VALUES(%s, %s)""", (id_of_poll, vector_of_poll))
+        self.connection.commit()
+
+    def get_vectorization_polls(self, id_of_user: int):
+        self.cursor.execute(f"""SELECT ranking_table.id_of_poll, ranking_table.vector_of_poll 
+        FROM ranking_table INNER JOIN table_of_users_who_pass_the_poll 
+        ON table_of_users_who_pass_the_poll.id_of_user != {id_of_user}""")
+
+        response_of_query = self.cursor.fetchall()
+
+        return response_of_query
 
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
