@@ -1,11 +1,13 @@
-import datetime
-
 from django.shortcuts import render
 import json
 from PoW.generate_random_string import generate_random_string
 from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import ErrorSameLogins, NotFoundCookieIntoPowTable
 from django.http import JsonResponse
+
+from Tools_for_rabbitmq.producer import producer
+from Configs.Commands_For_RMQ import Commands
+from Configs.Responses_from_consumer import Responses
 
 
 def request_on_create_new_account_page(requests):
@@ -41,6 +43,7 @@ def request_on_create_new_account(request):
         _, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         client_mysqldb.create_entry_into_sessions_table(cookie, 'auth_sessionid', id_of_user)
 
+        producer.publish(Commands.get_vector_user % id_of_user)
         return JsonResponse({'response': 200})
     except AssertionError:
         return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'})

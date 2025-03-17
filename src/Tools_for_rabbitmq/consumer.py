@@ -49,7 +49,13 @@ class Consumer:
         if re.search(Commands.get_vector_poll, body.decode()):
             result = self.engine_of_dionysus.set_vectorization_of_poll(id_of_poll=int(body.decode().split('=')[1]))
         elif re.search(Commands.get_similar_polls, body.decode()):
-            pass
+            num_of_polls = re.findall(r'(\d+)', body.decode())[0]
+            id_of_user = int(re.findall(r'(-?\d+)', body.decode())[0])
+
+            result = self.engine_of_dionysus.get_similar_polls(id_of_user=id_of_user, num_of_polls=num_of_polls)
+        elif re.search(Commands.get_vector_user, body.decode()):
+            id_of_user = int(body.decode().split('=')[1])
+            result = self.engine_of_dionysus.set_vectorization_user(id_of_user)
         logger.info(f'Получил сообщение: {body.decode()}')
         channel.basic_publish(
             exchange=self.exchange,

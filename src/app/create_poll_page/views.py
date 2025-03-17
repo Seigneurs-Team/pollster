@@ -35,3 +35,5 @@ def request_on_create_new_poll(request: HttpRequest):
         return JsonResponse({"result": result})
     except TryToXSS:
         return HttpResponseForbidden()
+    except AssertionError:
+        return HttpResponseForbidden()

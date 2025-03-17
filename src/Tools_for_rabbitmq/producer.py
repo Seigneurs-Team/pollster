@@ -1,3 +1,5 @@
+import json
+
 import pika
 from typing import Any, Optional, Union
 import re
@@ -43,7 +45,7 @@ class Producer:
             else:
                 response = self.response
                 self.response = None
-                return response
+                return json.loads(response)
         except exceptions.ChannelWrongStateError:
             self.reconnect()
             self.publish(message=message, properties=properties, queue=queue)

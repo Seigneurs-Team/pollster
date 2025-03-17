@@ -1,4 +1,5 @@
 import datetime
+import json
 import random
 
 from mysql.connector import connect
@@ -37,39 +38,52 @@ class MysqlDB:
             logger.info('Успешное подключение')
             return connection, connection.cursor(buffered=True)
         except (mysql.connector.errors.ProgrammingError, mysql.connector.errors.DatabaseError):
-            connection = connect(
-                host=Hosts.mysql_db,
-                user='root',
-                password='root1234567890',
-                auth_plugin='mysql_native_password',
-            )
-            cursor = connection.cursor()
-            cursor.execute('CREATE DATABASE Pollster_DB')
-            connection.commit()
-            self.connect_to_db()
+            try:
+                connection = connect(
+                    host=Hosts.mysql_db,
+                    user='root',
+                    password='root1234567890',
+                    auth_plugin='mysql_native_password',
+                )
+                cursor = connection.cursor()
+                cursor.execute('CREATE DATABASE Pollster_DB')
+                connection.commit()
+                self.connect_to_db()
+            except (mysql.connector.errors.ProgrammingError, mysql.connector.errors.DatabaseError):
+                self.connect_to_db()
 
     def create_table(self):
         #polls
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
+
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, 
         id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT,
         PRIMARY KEY (id_of_question),
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED PRIMARY KEY, 
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED PRIMARY KEY, id_of_question INT UNSIGNED, 
         option_name TEXT,
         FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, 
+        PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, 
+        PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS types_of_question(id INT, type TEXT, PRIMARY KEY (id))""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table(id_of_poll INT UNSIGNED, vector_of_poll BLOB, PRIMARY KEY (id_of_poll), FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table(id_of_poll INT UNSIGNED, vector_of_poll BLOB, 
+        PRIMARY KEY (id_of_poll), FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
         #users
         #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (id_of_user))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, tags TEXT, PRIMARY KEY (id_of_user))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, id_of_cookie INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (id_of_cookie))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT)""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type TEXT, PRIMARY KEY (id_of_type))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table_of_users(id_of_user INT PRIMARY KEY, vector_of_user BLOB,
+        FOREIGN KEY (id_of_user) REFERENCE users (id_of_user) ON DELETE CASCADE)""")
 
         #superuser
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
@@ -89,7 +103,7 @@ class MysqlDB:
 
         assert response_of_query is not None
 
-        return response_of_query[0]
+        return json.loads(response_of_query[0])
 
     def get_polls(self, num_of_polls: int = 4, id_of_user: int = None) -> list:
         """
@@ -324,6 +338,8 @@ class MysqlDB:
 
         response_of_query = self.cursor.fetchall()
 
+        assert len(response_of_query) != 0
+
         return response_of_query
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -351,7 +367,7 @@ class MysqlDB:
             raise ErrorSameLogins('одинаковый логин')
         try:
             id_of_user = random.randint(-9999999, -999999)
-            self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname) VALUES (%s, %s, %s, %s, %s, %s)""", (id_of_user, login, password, type_of_user, True, nickname))
+            self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname, tags) VALUES (%s, %s, %s, %s, %s, %s, %s)""", (id_of_user, login, password, type_of_user, True, nickname, json.dumps([" "])))
         except mysql.connector.IntegrityError:
             self.create_user(login, password, type_of_user, nickname)
 
@@ -479,6 +495,26 @@ class MysqlDB:
         id_of_superusers = [idx[0] for idx in data_of_query]
 
         return id_of_superusers
+
+    def add_entry_in_ranking_table_of_users(self, id_of_user: int, vector_of_user: bytes):
+        self.cursor.execute("""INSERT INTO ranking_table_of_users (id_of_user, vector_of_user) VALUES (%s, %s)""", (id_of_user, vector_of_user))
+        self.connection.commit()
+
+    def get_vector_of_user(self, id_of_user: int):
+        self.cursor.execute(f"""SELECT vector_of_user FROM ranking_table_of_users WHERE id_of_user = {id_of_user}""")
+        response_of_query = self.cursor.fetchone()
+
+        assert response_of_query is not None
+
+        return response_of_query[0]
+
+    def get_tags_of_user(self, id_of_user: int) -> list:
+        self.cursor.execute(f"""SELECT tags FROM users WHERE id_of_user = {id_of_user}""")
+        response_of_query = self.cursor.fetchone()
+
+        assert response_of_query is not None
+
+        return json.loads(response_of_query[0])
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
