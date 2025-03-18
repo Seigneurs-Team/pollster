@@ -58,12 +58,21 @@ export function submitPoll() {
 
     }).get() // Преобразуем результат в массив
 
+    let tags = [];
 
+    // Перебираем все элементы, у которых id начинается с "tag-"
+    $('.selected-tags [id^="tag-"]').each(function () {
+        // Извлекаем id с помощью регулярного выражения, добавляем его в массив tags
+        tags.push(Number($(this).attr('id').match(/\d+/)[0])); // Преобразуем строку в число и добавляем в массив
+    });
+
+    // Выводим массив tags в консоль для проверки
+    console.log('tags: ', tags);
     // Собираем данные
     let pollData = {
         name_of_poll: $('#pollTitle').val(),
         description: $('#pollDescription').val(),
-        tags: $('#pollTags').val(),
+        tags: tags,
         questions: questions,
     };
     console.log("pollData:", pollData)

@@ -187,7 +187,7 @@ function showHasHTMLTagsMessage(e) {
     }
 }
 
-// Проверяем все текстовые поля
+// Проверяем все текстовые поля на наличие html кода
 $(`input[type="text"], textarea`).each(function () {
     $(this).on("input", function (e) {
         showHasHTMLTagsMessage(e)
