@@ -31,15 +31,19 @@
 
 }
 
-.about-you input {
+.about-you input{
     border: solid 2px #8D8D8D;
     border-radius: 3px;
     width: 294px;
     height: 30px;
     margin: 7px 0 20px 0;
 }
+.tags-wrapper, .save-changes {
+    margin: 7px 0 20px 0;
 
-/* Style the buttons that are used to open the tab content */
+}
+
+      /* Style the buttons that are used to open the tab content */
 .tab button {
     background-color: inherit;
     /*float: left;*/
@@ -81,6 +85,16 @@
     width: 30px;
 }
 
+.save-changes {
+    background-color: white;
+    border: solid 1px var(--violet);
+    border-radius: 10px;
+    width: 200px;
+}
+.delete-account:hover {
+    background-color: var(--violet);
+}
+
 .delete-account {
     background-color: white;
     border: solid 1px red;
@@ -92,4 +106,25 @@
 }
 header {
     align-items: flex-start;
+}
+
+
+.tags, .selected-tags, .not-selected-tags {
+    display: inline;
+}
+
+.tag {
+    font-size: 14px;
+    padding: 5px;
+    margin: 2px;
+    border: var(--violet) solid 1.5px;
+}
+
+.selected-tags > .tag{
+    background: var(--violet);
+    color: #FFF;
+}
+
+label {
+    display: block;
 }

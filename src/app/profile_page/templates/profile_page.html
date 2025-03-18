@@ -22,12 +22,8 @@
 
 <body>
 <div class="content">
-    <header>
-        <a href="/" class="go-back">
-            <span>вернуться назад</span>
-            <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
-        </a>
-        <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+    <header data-background="{% static 'img\header.png' %}">
+        <button class="log-out"><img src="{% static 'img\Log out.svg' %}" alt="log out"></button>
     </header>
 
     <img class="profile-photo" src="{% static 'img\profile img.png' %}" alt="profile photo">
@@ -50,7 +46,20 @@
         <input type="text" name="" id="phone" value="{{user.phone}}">
         <label for="date-of-birth">Дата рождения</label>
         <input type="date" name="" id="date-of-birth" value="{{user.date_of_birth}}">
-        <button class="log-out">Выйти из аккаунта</button>
+        <div class="tags-wrapper">
+            <label class="form-label">Ваши интересы:</label>
+            <div class="tags">
+                <div class="selected-tags"></div>
+                <div class="not-selected-tags">
+                    {% for id, tag in tags %}
+                    <button class="tag" id="tag-{{id}}">
+                        <span>{{tag}}</span>
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <button class="save-changes">Сохранить изменения</button>
         <button class="delete-account">Удалить аккаунт</button>
 
     </div>
@@ -66,12 +75,12 @@
         <ul class="polls">
             {% for item in user.usersPolls %}
             <li class="poll-item">
-                <a href="passing_poll/{{item.id_of_poll}}/">
+                <a href="/passing_poll/{{item.id_of_poll}}/">
                     <h2 class="poll-name">{{item.name_of_poll}}</h2> <span class="poll_id">#{{item.id_of_poll}}</span>
                     <p class="poll-description">{{item.description}}</p>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
                     <p class="poll-tags">{{item.tags}} </p>
-                    <a href="/delete_poll/{{item.id_of_poll}}" class="delete-poll" data-poll="{{item.id_of_poll}}">
+                    <button class="delete-poll" data-poll="{{item.id_of_poll}}">
                         <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 59 59"
                              style="enable-background:new 0 0 59 59;" xml:space="preserve">
@@ -93,7 +102,7 @@
                         <span>Удалить</span>
 
 
-                    </a>
+                    </button>
                     <div class="till-the-end">
                         <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.003 512.003"
