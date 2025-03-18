@@ -60,10 +60,18 @@
 
             <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
 
-            <div class="input-wrapper">
-                <label class="form-label" for="pollTags">Тэги:</label>
-                <input type="text" id="pollTags" maxlength="60">
-                <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
+            <div class="tags-wrapper">
+                <label class="form-label">Тэги:</label>
+                <div class="tags">
+                    <div class="selected-tags"></div>
+                    <div class="not-selected-tags">
+                        {% for id, tag in tags %}
+                        <button class="tag" id="tag-{{id}}">
+                            <span>{{tag}}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
 
             <label class="form-label">Вопросы</label>

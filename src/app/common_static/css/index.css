@@ -100,11 +100,8 @@ input[type="checkbox"], input[type="radio"] {
     padding-left: 20px;
 }
 
-.tags {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
+.tags, .selected-tags, .not-selected-tags {
+    display: inline;
 }
 
 .tag {
@@ -112,7 +109,11 @@ input[type="checkbox"], input[type="radio"] {
     padding: 5px;
     margin: 2px;
     border: var(--violet) solid 1.5px;
+}
 
+.selected-tags > .tag{
+    background: var(--violet);
+    color: #FFF;
 }
 
 #applyFilters {
@@ -121,6 +122,7 @@ input[type="checkbox"], input[type="radio"] {
     padding: 6px 10px;
     margin-top: 10px;
 }
+
 
 
 .search img {

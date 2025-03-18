@@ -55,11 +55,14 @@
                             </ul>
                             <p>По тэгам:</p>
                             <div class="tags">
-                                {% for item in tags %}
-                                <button class="tag">
-                                    <span>{{item}}</span>
-                                </button>
-                                {% endfor %}
+                                <div class="selected-tags"></div>
+                                <div class="not-selected-tags">
+                                    {% for id, tag in tags %}
+                                    <button class="tag" id="tag-{{id}}">
+                                        <span>{{tag}}</span>
+                                    </button>
+                                    {% endfor %}
+                                </div>
                             </div>
 
                         </div>

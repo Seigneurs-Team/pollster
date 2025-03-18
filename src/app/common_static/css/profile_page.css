@@ -2,7 +2,6 @@
     --border-radius: 12px;
     --violet: #5863BF;
 
-    --light-violet: #7688ff;
 }
 
 .profile-photo {
@@ -53,7 +52,7 @@
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-    background-color: var(--light-violet);
+    background-color: var(--violet);
 }
 
 /* Create an active/current tablink class */

@@ -15,7 +15,8 @@ def request_on_create_poll_page(requests):
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
 
     user = {'id': id_of_user, 'username': nickname}
-    return render(requests, 'create_poll_page.html', context={'user': user})
+    tags = {  1: 'развлечения',  2: 'наука',  3: 'животные',  4: 'кухня',  5: 'искусство',  6: 'дети',  7: 'музыка',  8: 'кино и сериалы',  9: 'путешествия',  10: 'игры',  11: 'мода и стиль',  12: 'здоровье',  13: 'образование'}
+    return render(requests, 'create_poll_page.html', context={'user': user, 'tags': tags.items()})
 
 
 def requests_on_get_polls(request, num_of_polls=5):
