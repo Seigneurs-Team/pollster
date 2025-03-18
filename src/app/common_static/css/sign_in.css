@@ -10,8 +10,12 @@ main {
     text-align: center;
     padding: 0px 256px 267px 256px;
     position: relative;
-}
 
+    margin-top: 30px
+}
+header {
+    display:none;
+}
 h1 {
     font-size: 30px;
 }

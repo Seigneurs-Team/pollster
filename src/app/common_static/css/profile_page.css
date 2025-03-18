@@ -77,21 +77,19 @@
     border-top: none;
 }
 
-.log-out {
+.log-out img {
+    width: 30px;
+}
+
+.delete-account {
     background-color: white;
     border: solid 1px red;
     border-radius: 10px;
     width: 200px;
 }
-.log-out:hover {
-    background-color: red;
-    border: solid 2px red;
-}
-.delete-account {
-    background-color: red;
-    border-radius: 10px;
-    width: 200px;
-}
 .delete-account:hover {
-    background-color: #910000;
+    background-color: red;
+}
+header {
+    align-items: flex-start;
 }

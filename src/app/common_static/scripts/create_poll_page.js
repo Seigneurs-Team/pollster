@@ -215,3 +215,8 @@ $('.tag').click(function() {
         $(this).appendTo('.not-selected-tags');
     }
 });
+
+// Фон шапки
+$(document).ready(function() {
+    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
+});

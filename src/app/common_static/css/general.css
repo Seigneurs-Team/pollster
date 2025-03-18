@@ -57,13 +57,15 @@ button:hover, #createPollBtn:hover {
 header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    height: 100px;
+    justify-content: flex-end;
+    height: 131px;
     margin: 8px 0;
+
+    background-size: cover;
 }
 
 header .logo {
-    height: 100%;
+    width: 100%;
 }
 
 .profile-link {

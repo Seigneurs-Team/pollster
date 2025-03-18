@@ -24,12 +24,7 @@
 
 <body>
 <div class="content">
-    <header>
-        <a href="/" class="go-back">
-            <span>вернуться назад</span>
-            <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
-        </a>
-        <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+    <header data-background="{% static 'img\header.png' %}">
         <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
                                                                                      src="{% static 'img\profile img.png' %}"
                                                                                      alt="profile photo"></a>
@@ -57,8 +52,6 @@
                 <textarea id="pollDescription" maxlength="200"></textarea>
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
             </div>
-
-            <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
 
             <div class="tags-wrapper">
                 <label class="form-label">Тэги:</label>
