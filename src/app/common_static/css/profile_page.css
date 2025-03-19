@@ -31,19 +31,20 @@
 
 }
 
-.about-you input{
+.about-you input {
     border: solid 2px #8D8D8D;
     border-radius: 3px;
     width: 294px;
     height: 30px;
     margin: 7px 0 20px 0;
 }
+
 .tags-wrapper, .save-changes {
-    margin: 7px 0 20px 0;
+    margin: 0px 0 20px 0;
 
 }
 
-      /* Style the buttons that are used to open the tab content */
+/* Style the buttons that are used to open the tab content */
 .tab button {
     background-color: inherit;
     /*float: left;*/
@@ -66,6 +67,7 @@
     color: #fff;
     font-weight: 400;
 }
+
 #your-polls-btn {
     border-top-left-radius: 10px;
 }
@@ -85,25 +87,32 @@
     width: 30px;
 }
 
+.about-you-btns {
+    display: flex;
+}
+
 .save-changes {
     background-color: white;
     border: solid 1px var(--violet);
     border-radius: 10px;
-    width: 200px;
-}
-.delete-account:hover {
-    background-color: var(--violet);
 }
 
-.delete-account {
+.save-changes, .delete-account, .log-out {
+    width: 200px;
+    height: 28px;
+}
+
+.delete-account, .log-out {
     background-color: white;
     border: solid 1px red;
     border-radius: 10px;
-    width: 200px;
+    color: red;
 }
-.delete-account:hover {
+
+.delete-account:hover, .log-out:hover {
     background-color: red;
 }
+
 header {
     align-items: flex-start;
 }
@@ -120,7 +129,7 @@ header {
     border: var(--violet) solid 1.5px;
 }
 
-.selected-tags > .tag{
+.selected-tags > .tag {
     background: var(--violet);
     color: #FFF;
 }

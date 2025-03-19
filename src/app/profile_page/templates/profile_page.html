@@ -23,7 +23,7 @@
 <body>
 <div class="content">
     <header data-background="{% static 'img\header.png' %}">
-        <button class="log-out"><img src="{% static 'img\Log out.svg' %}" alt="log out"></button>
+        <button class="log-out">Выйти из аккаунта</button>
     </header>
 
     <img class="profile-photo" src="{% static 'img\profile img.png' %}" alt="profile photo">
@@ -59,8 +59,11 @@
                 </div>
             </div>
         </div>
-        <button class="save-changes">Сохранить изменения</button>
-        <button class="delete-account">Удалить аккаунт</button>
+        <div class="about-you-btns">
+            <button class="save-changes">Сохранить изменения</button>
+            <button class="delete-account">Удалить аккаунт</button>
+        </div>
+
 
     </div>
     <!-- Tab links -->
