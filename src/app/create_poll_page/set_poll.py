@@ -47,7 +47,7 @@ def set_options(json_data: dict, question_object: list[Question]) -> list[Option
             list_of_options.append(
                 Option(
                     **question_object[index].__dict__,
-                    id_of_option=get_random_id(),
+                    id_of_option=1,
                     option=option
                 )
             )

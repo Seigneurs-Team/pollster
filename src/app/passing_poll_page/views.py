@@ -12,10 +12,9 @@ from django.http import JsonResponse, HttpResponseForbidden
 
 
 @authentication
-def request_on_passing_poll_page(requests, poll_id):
+def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None):
     # получение опроса по id
     auth_sessionid = requests.COOKIES['auth_sessionid']
-    id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(auth_sessionid, 'auth_sessionid')
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(auth_sessionid, 'auth_sessionid')
 
     user = {'id': id_of_user, 'username': nickname}
@@ -27,7 +26,7 @@ def request_on_passing_poll_page(requests, poll_id):
 
 
 @authentication
-def request_on_passing_poll(request, id_of_user: int):
+def request_on_passing_poll(request, id_of_user: int = None):
     data_of_passing_poll = json.loads(request.body)
     auth_sessionid = request.COOKIES['auth_sessionid']
     id_of_poll = data_of_passing_poll['poll_id']

@@ -55,14 +55,14 @@ class MysqlDB:
 
     def create_table(self):
         #polls
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED AUTO_INCREMENT, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED AUTO_INCREMENT, 
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, 
         id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT,
         PRIMARY KEY (id_of_question),
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, id_of_question INT UNSIGNED, 
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED PRIMARY KEY, id_of_question INT UNSIGNED, 
         option_name TEXT,
         FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
@@ -120,7 +120,7 @@ class MysqlDB:
         result = self.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
         for poll in result:
-            polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3], id_of_user))
+            polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user))
         return polls_list
 
     def get_poll(self, id_of_poll: int) -> dict or None:
@@ -139,7 +139,7 @@ class MysqlDB:
             'id_of_poll': id_of_poll,
             'name_of_poll': questions_entries[0][1],
             'description': questions_entries[0][3],
-            'tags': questions_entries[0][2],
+            'tags': json.loads(questions_entries[0][2]),
             'questions': []
         }
 
@@ -170,7 +170,6 @@ class MysqlDB:
                  FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
                  WHERE polls.id = {id_of_poll}""")
         response_from_query = self.cursor.fetchall()
-        print(response_from_query)
 
         if len(response_from_query) == 0:
             raise NotFoundPoll('Опрос не найден')
@@ -281,6 +280,7 @@ class MysqlDB:
                                 (option.id_of_option, option.id_of_question, option.option))
         except mysql.connector.errors.IntegrityError:
             option.id_of_option = get_random_id()
+            print(option.id_of_option)
             self.add_new_entry_into_options_table(option)
 
     def add_new_entry_into_right_answers_table(self, right_answer: RightAnswer) -> None:
@@ -467,7 +467,7 @@ class MysqlDB:
             self.cursor.execute(transaction)
             result = self.cursor.fetchall()
             for poll in result:
-                polls_list.append(Poll(poll[0], poll[1], poll[2], id_of_poll, id_of_user))
+                polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), id_of_poll, id_of_user))
         return polls_list
 
     def delete_entry_from_users(self, id_of_user: int):

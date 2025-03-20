@@ -10,8 +10,7 @@ from authentication.check_user_on_auth import authentication
 
 
 @authentication
-def request_on_create_poll_page(requests):
-    id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
+def request_on_create_poll_page(requests, id_of_user: int = None):
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
 
     user = {'id': id_of_user, 'username': nickname}
@@ -24,8 +23,7 @@ def requests_on_get_polls(request, num_of_polls=5):
 
 
 @authentication
-def request_on_create_new_poll(request: HttpRequest):
-    id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(request.COOKIES['auth_sessionid'], 'auth_sessionid')
+def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
     try:
         poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer = set_poll(json_data, id_of_user)

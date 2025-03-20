@@ -6,7 +6,7 @@ from databases.mysql_db import client_mysqldb
 
 
 @authentication
-def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int):
+def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
     assert 'nickname' in json_data
 
