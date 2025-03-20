@@ -1,6 +1,7 @@
 import datetime
 import json
 import random
+import typing
 
 from mysql.connector import connect
 import mysql
@@ -54,14 +55,14 @@ class MysqlDB:
 
     def create_table(self):
         #polls
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED AUTO_INCREMENT, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, 
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED AUTO_INCREMENT, 
         id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT,
         PRIMARY KEY (id_of_question),
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED PRIMARY KEY, id_of_question INT UNSIGNED, 
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, id_of_question INT UNSIGNED, 
         option_name TEXT,
         FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
@@ -83,7 +84,7 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT)""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type TEXT, PRIMARY KEY (id_of_type))""")
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table_of_users(id_of_user INT PRIMARY KEY, vector_of_user BLOB,
-        FOREIGN KEY (id_of_user) REFERENCE users (id_of_user) ON DELETE CASCADE)""")
+        FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE)""")
 
         #superuser
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
@@ -402,6 +403,7 @@ class MysqlDB:
     def get_id_of_user_from_table_with_cookies(self, cookie: str, name_of_cookie: str) -> str:
         self.cursor.execute(f"""SELECT id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
         session = self.cursor.fetchone()
+        assert session is not None
         return session[0]
 
     def get_user_data_from_table(self, id_of_user: int) -> tuple:
@@ -516,6 +518,16 @@ class MysqlDB:
 
         return json.loads(response_of_query[0])
 
+    def update_the_filed_into_users(self, id_of_user: int, field: str, value: typing.Union[str, int, datetime.date]):
+        transaction = f"""UPDATE users SET {field} ="""
+        if isinstance(value, (int, datetime.date)):
+            transaction += f""" {value} """
+        elif isinstance(value, str):
+            transaction += f""" "{value}" """
+        transaction += f"""WHERE id_of_user = {id_of_user}"""
+
+        self.cursor.execute(transaction)
+        self.connection.commit()
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 
