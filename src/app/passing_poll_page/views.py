@@ -27,12 +27,10 @@ def request_on_passing_poll_page(requests, poll_id):
 
 
 @authentication
-def request_on_passing_poll(request):
+def request_on_passing_poll(request, id_of_user: int):
     data_of_passing_poll = json.loads(request.body)
     auth_sessionid = request.COOKIES['auth_sessionid']
-    id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(auth_sessionid, 'auth_sessionid')
     id_of_poll = data_of_passing_poll['poll_id']
-    print(id_of_user, id_of_poll)
     try:
         client_mysqldb.add_users_into_table_for_users_who_pass_the_poll(id_of_user, id_of_poll)
         for answer in data_of_passing_poll['answers']:

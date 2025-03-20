@@ -1,8 +1,8 @@
 import json
 
 import mysql.connector
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+from transformers import AutoTokenizer, TFAutoModel
+from tensorflow import cast, expand_dims, float32, reduce_sum, maximum, math, clip_by_value
 import numpy as np
 import pickle
 
@@ -13,10 +13,32 @@ from Configs.Responses_from_consumer import Responses
 
 class EngineOfDionysus:
     def __init__(self):
-        self.model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.tokenizer = AutoTokenizer.from_pretrained('all-MiniLM-L6-v2')
+        self.model = TFAutoModel.from_pretrained('all-MiniLM-L6-v2')
 
-    def vectorization_of_text(self, tags: str):
-        return self.model.encode(tags)
+    @staticmethod
+    def cosine_similarity(x1, x2, axis=1, eps=1e-3):
+        x1_normalize = math.l2_normalize(x1, axis=axis)
+        x2_normalize = math.l2_normalize(x2, axis=axis)
+
+        cosine_sim = reduce_sum(x1_normalize * x2_normalize, axis=axis)
+        cosine_sim = clip_by_value(cosine_sim, -1.0+eps, 1.0-eps)
+
+        return cosine_sim.numpy()
+
+    @staticmethod
+    def mean_polling(model_output, attention_mask):
+        token_embeddings = model_output.last_hidden_state
+        input_mask_expanded = cast(expand_dims(attention_mask, -1), float32) * token_embeddings
+        return reduce_sum(input_mask_expanded, axis=1) / maximum(reduce_sum(cast(attention_mask, float32), 1e-3))
+
+    def vectorization_of_text(self, tags: list[str]):
+        encoded_input = self.tokenizer(tags, padding=True, truncation=True, return_tensors='tf')
+        model_output = self.model(**encoded_input)
+
+        sentence_embedding = self.mean_polling(model_output, encoded_input['attention_mask'])
+        sentence_embedding = math.l2_normalize(sentence_embedding, axis=1)
+        return sentence_embedding
 
     @staticmethod
     def get_match_polls(list_of_arrays: list[np.ndarray], user_vector: np.ndarray, num_of_polls):
@@ -69,6 +91,7 @@ class EngineOfDionysus:
             return json.dumps({'response': Responses.UserIsExists})
         except AssertionError:
             return json.dumps({'response': Responses.NotFoundUser})
+
 
 
 
