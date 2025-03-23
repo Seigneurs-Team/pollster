@@ -1,4 +1,5 @@
 import json
+import time
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpRequest, HttpResponseForbidden
@@ -7,6 +8,9 @@ from app.create_poll_page.set_poll import set_poll
 from Configs.Exceptions import TryToXSS
 
 from authentication.check_user_on_auth import authentication
+
+from Tools_for_rabbitmq.producer import producer
+from Configs.Commands_For_RMQ import Commands
 
 
 @authentication
@@ -25,11 +29,14 @@ def requests_on_get_polls(request, num_of_polls=5):
 @authentication
 def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
+    print(json_data)
     try:
         poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer = set_poll(json_data, id_of_user)
         result = client_mysqldb.create_pool(
             poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer
         )
+        if result:
+            producer.publish(Commands.get_vector_poll % poll.id_of_poll)
         return JsonResponse({"result": result})
     except TryToXSS:
         return HttpResponseForbidden()

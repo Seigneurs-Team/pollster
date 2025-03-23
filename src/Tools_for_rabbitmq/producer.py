@@ -11,7 +11,7 @@ from Configs.Exceptions import WronglyResponse
 
 class Producer:
     def __init__(self, host):
-        self.parameters = pika.ConnectionParameters(heartbeat=60, host=host)
+        self.parameters = pika.ConnectionParameters(heartbeat=0, host=host)
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
 
@@ -41,12 +41,12 @@ class Producer:
             )
 
             while self.response is None:
-                self.connection.process_data_events(time_limit=60)
+                self.connection.process_data_events(time_limit=10)
             else:
                 response = self.response
                 self.response = None
                 return json.loads(response)
-        except exceptions.ChannelWrongStateError:
+        except (exceptions.ChannelWrongStateError, exceptions.StreamLostError):
             self.reconnect()
             self.publish(message=message, properties=properties, queue=queue)
 
@@ -65,6 +65,7 @@ class Producer:
         if re.search(r'ERROR', body.decode()):
             raise WronglyResponse(f'Ошибка: {body.decode()}')
         else:
+            print(body.decode())
             self.response = body.decode()
 
     def reconnect(self):

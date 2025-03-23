@@ -6,6 +6,12 @@ WORKDIR /dionysus
 COPY . /dionysus
 
 RUN python3 -m venv venv && source venv/bin/activate
+
 RUN pip3 install -r requirements.txt
+RUN pip3 install transformers
+RUN pip3 install tensorflow
+RUN pip3 install tf-keras
+
+RUN python -c "from transformers import TFAutoModel, AutoTokenizer; TFAutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2'); AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')"
 
 CMD cd src && python3 -m Tools_for_rabbitmq.consumer

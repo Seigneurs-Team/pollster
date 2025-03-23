@@ -14,8 +14,8 @@ from Configs.Responses_from_consumer import Responses
 
 class EngineOfDionysus:
     def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained('all-MiniLM-L6-v2')
-        self.model = TFAutoModel.from_pretrained('all-MiniLM-L6-v2')
+        self.tokenizer = AutoTokenizer.from_pretrained('/root/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/snapshots/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/')
+        self.model = TFAutoModel.from_pretrained('/root/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/snapshots/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/')
 
     @staticmethod
     def cosine_similarity(user_vector: EagerTensor, poll_vectors: list[EagerTensor], axis=-1, eps=1e-3):
@@ -37,7 +37,7 @@ class EngineOfDionysus:
         return reduce_sum(input_mask_expanded, axis=1) / maximum(reduce_sum(cast(attention_mask, float32), 1e-3))
 
     def vectorization_of_text(self, tags: list[str]):
-        encoded_input = self.tokenizer(tags, padding=True, truncation=True, return_tensors='tf')
+        encoded_input = self.tokenizer([" ".join(tags)], padding=True, truncation=True, return_tensors='tf')
         model_output = self.model(**encoded_input)
 
         sentence_embedding = self.mean_polling(model_output, encoded_input['attention_mask'])

@@ -19,22 +19,22 @@ services:
         condition: service_started
     restart: unless-stopped
 
-#  dionysus:
-#    build:
-#      dockerfile: ./Dockerfile_Dionysus
-#    image: dionysus:latest
-#    networks:
-#      back:
-#        ipv4_address: 172.16.235.6
-#    volumes:
-#      - ./:/dionysus:./
-#    depends_on:
-#      mysql_db:
-#        condition: service_healthy
-#        restart: true
-#      rabbitmq_container:
-#        condition: service_started
-#    restart: unless-stopped
+  dionysus:
+    build:
+      dockerfile: ./Dockerfile_Dionysus
+    image: dionysus:latest
+    networks:
+      back:
+        ipv4_address: 172.16.235.6
+    volumes:
+      - ./:/dionysus:./
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+        restart: true
+      rabbitmq_container:
+        condition: service_started
+    restart: unless-stopped
 
   rabbitmq_container:
     image: rabbitmq:latest
@@ -57,6 +57,10 @@ services:
       interval: 10s
       timeout: 20s
       retries: 5
+    command: [
+      "mysqld",
+      "--transaction-isolation=READ-COMMITTED"  # Пример изменения уровня изоляции
+    ]
     restart: unless-stopped
 
 

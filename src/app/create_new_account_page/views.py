@@ -11,7 +11,6 @@ from django.http import JsonResponse
 
 
 def request_on_create_new_account_page(requests):
-    print('rendering create_new_account_page...')
     response = render(requests, 'create_new_account_page.html')
     cookie = generate_random_string(10)
 
@@ -37,13 +36,12 @@ def request_on_create_new_account(request):
 
         assert pow == pow_from_db
 
-        client_mysqldb.create_user(login, password, 'user', nickname)
+        client_mysqldb.create_user(login, password, 1, nickname)
         client_mysqldb.delete_pow_entry_from_pow_table(cookie)
 
         _, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         client_mysqldb.create_entry_into_sessions_table(cookie, 'auth_sessionid', id_of_user)
 
-        # producer.publish(Commands.get_vector_user % id_of_user)
         return JsonResponse({'response': 200})
     except AssertionError:
         return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'})
