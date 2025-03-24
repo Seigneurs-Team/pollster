@@ -1,4 +1,3 @@
-FROM ubuntu:latest
 FROM python:3.9-slim
 
 SHELL ["/bin/bash", "-c"]

@@ -1,5 +1,7 @@
 import datetime
+import json
 import random
+import typing
 
 from mysql.connector import connect
 import mysql
@@ -37,59 +39,89 @@ class MysqlDB:
             logger.info('Успешное подключение')
             return connection, connection.cursor(buffered=True)
         except (mysql.connector.errors.ProgrammingError, mysql.connector.errors.DatabaseError):
-            connection = connect(
-                host=Hosts.mysql_db,
-                user='root',
-                password='root1234567890',
-                auth_plugin='mysql_native_password',
-            )
-            cursor = connection.cursor()
-            cursor.execute('CREATE DATABASE Pollster_DB')
-            connection.commit()
-            self.connect_to_db()
+            try:
+                connection = connect(
+                    host=Hosts.mysql_db,
+                    user='root',
+                    password='root1234567890',
+                    auth_plugin='mysql_native_password',
+                )
+                cursor = connection.cursor()
+                cursor.execute('CREATE DATABASE Pollster_DB')
+                connection.commit()
+                self.connect_to_db()
+            except (mysql.connector.errors.ProgrammingError, mysql.connector.errors.DatabaseError):
+                self.connect_to_db()
 
     def create_table(self):
         #polls
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags TEXT, name_of_poll TEXT, description TEXT, id_of_author INT, PRIMARY KEY (id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags VARCHAR(100), name_of_poll VARCHAR(100), description TEXT, id_of_author INT, PRIMARY KEY (id))""")
+
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, 
-        id_of_poll INT UNSIGNED, text_of_question TEXT, type_of_question TEXT, serial_number INT,
+        id_of_poll INT UNSIGNED, text_of_question VARCHAR(255), type_of_question VARCHAR(50), serial_number INT,
         PRIMARY KEY (id_of_question),
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED, id_of_question INT UNSIGNED PRIMARY KEY, 
-        option_name TEXT,
-        FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS types_of_question(id INT, type TEXT, PRIMARY KEY (id))""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table(id_of_poll INT UNSIGNED, vector_of_poll BLOB, PRIMARY KEY (id_of_poll), FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED PRIMARY KEY, id_of_question INT UNSIGNED, 
+        option_name VARCHAR(255),
+        FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, 
+        PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, 
+        PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS types_of_question(id INT, type VARCHAR(50), PRIMARY KEY (id))""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table(id_of_poll INT UNSIGNED, vector_of_poll BLOB, 
+        PRIMARY KEY (id_of_poll), 
+        FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
         #users
         #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT, password TEXT, login TEXT, type_of_user TEXT, login_in_account BOOL, nickname TEXT, PRIMARY KEY (id_of_user))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, id_of_cookie INT, cookie TEXT, expired TIMESTAMP, name_of_cookie TEXT, PRIMARY KEY (id_of_cookie))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie TEXT)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type TEXT, PRIMARY KEY (id_of_type))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type VARCHAR(100), PRIMARY KEY (id_of_type))""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT PRIMARY KEY, type_of_user INT, 
+        FOREIGN KEY (type_of_user) REFERENCES table_of_type_of_users(id_of_type) ON UPDATE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS user(id_of_user INT, password VARCHAR(255), login VARCHAR(100), nickname VARCHAR(50), tags VARCHAR(100), 
+        PRIMARY KEY (id_of_user), 
+        FOREIGN KEY (id_of_user) REFERENCES users(id_of_user) ON DELETE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, id_of_cookie INT, cookie VARCHAR(10), expired TIMESTAMP, name_of_cookie VARCHAR(30), 
+        PRIMARY KEY (id_of_cookie), 
+        FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE)""")
+
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS pow_table(pow INT, cookie VARCHAR(10))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table_of_users(id_of_user INT PRIMARY KEY, vector_of_user BLOB,
+        FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE)""")
 
         #superuser
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login TEXT, password TEXT, PRIMARY KEY (id_of_superuser))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login VARCHAR(100), password VARCHAR(255), 
+        PRIMARY KEY (id_of_superuser), 
+        FOREIGN KEY (id_of_superuser) REFERENCES users (id_of_user) ON DELETE CASCADE)""")
         #данные, которые пользователь ввел в ответах на опрос
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_users_who_pass_the_poll(id_of_user INT, id_of_poll INT, PRIMARY KEY (id_of_user, id_of_poll))""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT, id_of_poll INT, id_of_user INT, serial_number_of_question INT, type_of_question TEXT, value TEXT, PRIMARY KEY (id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_users_who_pass_the_poll(id_of_user INT, id_of_poll INT UNSIGNED, 
+        PRIMARY KEY (id_of_user, id_of_poll), 
+        FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE, 
+        FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT AUTO_INCREMENT, id_of_poll INT, id_of_user INT, serial_number_of_question INT, type_of_question VARCHAR(50), value TEXT, PRIMARY KEY (id))""")
 
         self.connection.commit()
         self.set_types_of_questions()
+        self.set_table_type_of_users()
 
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с созданием, редактированием и удалением опросов
 
     def get_polls_tags(self, id_of_poll: int):
-        self.cursor.execute(f"""SELECT tags FROM polls WHERE id={id_of_poll}""")
+        self.cursor.execute(f"""SELECT tags FROM polls WHERE id = {id_of_poll}""")
         response_of_query = self.cursor.fetchone()
 
         assert response_of_query is not None
 
-        return response_of_query[0]
+        return json.loads(response_of_query[0])
 
     def get_polls(self, num_of_polls: int = 4, id_of_user: int = None) -> list:
         """
@@ -105,7 +137,7 @@ class MysqlDB:
         result = self.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
         for poll in result:
-            polls_list.append(Poll(poll[0], poll[1], poll[2], poll[3], id_of_user))
+            polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user))
         return polls_list
 
     def get_poll(self, id_of_poll: int) -> dict or None:
@@ -124,7 +156,7 @@ class MysqlDB:
             'id_of_poll': id_of_poll,
             'name_of_poll': questions_entries[0][1],
             'description': questions_entries[0][3],
-            'tags': questions_entries[0][2],
+            'tags': json.loads(questions_entries[0][2]),
             'questions': []
         }
 
@@ -155,7 +187,6 @@ class MysqlDB:
                  FROM polls INNER JOIN questions ON polls.id = questions.id_of_poll
                  WHERE polls.id = {id_of_poll}""")
         response_from_query = self.cursor.fetchall()
-        print(response_from_query)
 
         if len(response_from_query) == 0:
             raise NotFoundPoll('Опрос не найден')
@@ -179,9 +210,12 @@ class MysqlDB:
         :return: возвращает список объекта RightTextAnswer
         """
         self.cursor.execute(f"""SELECT text_of_right_answer FROM text_rights_answers WHERE id_of_question = {id_of_question}""")
-        response_of_query = self.cursor.fetchall()
+        response_of_query = self.cursor.fetchone()
 
-        return response_of_query[0][0]
+        if response_of_query is None:
+            return ''
+
+        return response_of_query[0]
 
     def get_right_answers(self, id_of_question: int):
         """
@@ -324,6 +358,8 @@ class MysqlDB:
 
         response_of_query = self.cursor.fetchall()
 
+        assert len(response_of_query) != 0
+
         return response_of_query
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -338,27 +374,37 @@ class MysqlDB:
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами пользователей
 
+    def set_table_type_of_users(self):
+        self.cursor.execute("""SELECT type FROM table_of_type_of_users""")
+        if self.cursor.fetchone() is None:
+            self.cursor.execute("""INSERT INTO table_of_type_of_users(id_of_type, type) VALUES(%s, %s)""", (1, 'user'))
+            self.cursor.execute("""INSERT INTO table_of_type_of_users(id_of_type, type) VALUES(%s, %s)""", (2, 'staff'))
+            self.connection.commit()
+
     def create_superuser(self):
         try:
-            self.cursor.execute("""INSERT INTO superusers (id_of_superusers, login, password) VALUES (%s, %s, %s)""", (random.randint(-99999999, -9999999), 'admin', 'P@ssw0rd'))
+            id_of_superuser = random.randint(-99999999, -9999999)
+            self.cursor.execute("""INSERT INTO users (id_of_user, type_of_user) VALUES (%s, %s)""", (id_of_superuser, 3))
+            self.cursor.execute("""INSERT INTO superusers (id_of_superusers, login, password) VALUES (%s, %s, %s)""", (id_of_superuser, 'admin', 'P@ssw0rd'))
         except mysql.connector.IntegrityError:
             self.create_superuser()
         self.connection.commit()
 
-    def create_user(self, login: str, password: str, type_of_user: str, nickname: str):
-        self.cursor.execute(f"""SELECT * FROM users WHERE login = "{login}" """)
+    def create_user(self, login: str, password: str, type_of_user: int, nickname: str):
+        self.cursor.execute(f"""SELECT * FROM user WHERE login = "{login}" """)
         if len(self.cursor.fetchall()) != 0:
             raise ErrorSameLogins('одинаковый логин')
         try:
             id_of_user = random.randint(-9999999, -999999)
-            self.cursor.execute("""INSERT INTO users (id_of_user, login, password, type_of_user, login_in_account, nickname) VALUES (%s, %s, %s, %s, %s, %s)""", (id_of_user, login, password, type_of_user, True, nickname))
+            self.cursor.execute("""INSERT INTO users (id_of_user, type_of_user) VALUES (%s, %s)""", (id_of_user, type_of_user))
+            self.cursor.execute("""INSERT INTO user (id_of_user, login, password, nickname, tags) VALUES (%s, %s, %s, %s, %s)""", (id_of_user, login, password, nickname, json.dumps([" "])))
         except mysql.connector.IntegrityError:
             self.create_user(login, password, type_of_user, nickname)
 
         self.connection.commit()
 
     def get_user_password_and_id_of_user_from_table(self, login):
-        self.cursor.execute(f"""SELECT password, id_of_user FROM users WHERE login = "{login}" """)
+        self.cursor.execute(f"""SELECT password, id_of_user FROM user WHERE login = "{login}" """)
         response = self.cursor.fetchone()
         if response is None:
             return None, None
@@ -373,7 +419,7 @@ class MysqlDB:
         assert session is not None
 
         if now < session[0]:
-            self.cursor.execute(f"""SELECT nickname FROM users WHERE id_of_user = {session[1]}""")
+            self.cursor.execute(f"""SELECT nickname FROM user WHERE id_of_user = {session[1]}""")
             user = self.cursor.fetchone()
             if user is not None:
                 return user[0]
@@ -386,10 +432,11 @@ class MysqlDB:
     def get_id_of_user_from_table_with_cookies(self, cookie: str, name_of_cookie: str) -> str:
         self.cursor.execute(f"""SELECT id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
         session = self.cursor.fetchone()
+        assert session is not None
         return session[0]
 
     def get_user_data_from_table(self, id_of_user: int) -> tuple:
-        self.cursor.execute(f"""SELECT nickname, login FROM users WHERE id_of_user={id_of_user}""")
+        self.cursor.execute(f"""SELECT nickname, login FROM user WHERE id_of_user={id_of_user}""")
         return self.cursor.fetchone()
 
     def create_cookie_into_pow_table(self, cookie: str):
@@ -449,7 +496,7 @@ class MysqlDB:
             self.cursor.execute(transaction)
             result = self.cursor.fetchall()
             for poll in result:
-                polls_list.append(Poll(poll[0], poll[1], poll[2], id_of_poll, id_of_user))
+                polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), id_of_poll, id_of_user))
         return polls_list
 
     def delete_entry_from_users(self, id_of_user: int):
@@ -480,6 +527,36 @@ class MysqlDB:
 
         return id_of_superusers
 
+    def add_entry_in_ranking_table_of_users(self, id_of_user: int, vector_of_user: bytes):
+        self.cursor.execute("""INSERT INTO ranking_table_of_users (id_of_user, vector_of_user) VALUES (%s, %s)""", (id_of_user, vector_of_user))
+        self.connection.commit()
+
+    def get_vector_of_user(self, id_of_user: int):
+        self.cursor.execute(f"""SELECT vector_of_user FROM ranking_table_of_users WHERE id_of_user = {id_of_user}""")
+        response_of_query = self.cursor.fetchone()
+
+        assert response_of_query is not None
+
+        return response_of_query[0]
+
+    def get_tags_of_user(self, id_of_user: int) -> list:
+        self.cursor.execute(f"""SELECT tags FROM user WHERE id_of_user = {id_of_user}""")
+        response_of_query = self.cursor.fetchone()
+
+        assert response_of_query is not None
+
+        return json.loads(response_of_query[0])
+
+    def update_the_filed_into_users(self, id_of_user: int, field: str, value: typing.Union[str, int, datetime.date]):
+        transaction = f"""UPDATE user SET {field} ="""
+        if isinstance(value, (int, datetime.date)):
+            transaction += f""" {value} """
+        elif isinstance(value, str):
+            transaction += f""" "{value}" """
+        transaction += f"""WHERE id_of_user = {id_of_user}"""
+
+        self.cursor.execute(transaction)
+        self.connection.commit()
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 

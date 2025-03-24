@@ -1,5 +1,3 @@
-import datetime
-
 from django.shortcuts import render
 import json
 from PoW.generate_random_string import generate_random_string
@@ -7,9 +5,12 @@ from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import ErrorSameLogins, NotFoundCookieIntoPowTable
 from django.http import JsonResponse
 
+# from Tools_for_rabbitmq.producer import producer
+# from Configs.Commands_For_RMQ import Commands
+# from Configs.Responses_from_consumer import Responses
+
 
 def request_on_create_new_account_page(requests):
-    print('rendering create_new_account_page...')
     response = render(requests, 'create_new_account_page.html')
     cookie = generate_random_string(10)
 
@@ -35,7 +36,7 @@ def request_on_create_new_account(request):
 
         assert pow == pow_from_db
 
-        client_mysqldb.create_user(login, password, 'user', nickname)
+        client_mysqldb.create_user(login, password, 1, nickname)
         client_mysqldb.delete_pow_entry_from_pow_table(cookie)
 
         _, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
