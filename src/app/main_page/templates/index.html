@@ -20,8 +20,8 @@
 
 <body>
 <div class="content">
-    <header>
-        <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+    <header data-background="{% static 'img\header.png' %}">
+<!--        <img src="{% static 'img\header2.png' %}" alt="logo" class="logo">-->
         <div class="right-block">
 
             {% if user.is_authenticated %}
@@ -29,6 +29,7 @@
             {% else %}
             <a href="/sign_in" class="sign-up">Войти</a>
             {% endif %}
+            <div class="slogan"><span>Создавай</span><span>-</span><span>Узнавай</span><span>-</span><span>Анализируй</span></div>
             <div class="search">
                 <img src="{% static 'img\Filter.svg' %}" class="opn-filter">
                 <div class="popup" id="popup">
@@ -55,18 +56,21 @@
                             </ul>
                             <p>По тэгам:</p>
                             <div class="tags">
-                                {% for item in tags %}
-                                <button class="tag">
-                                    <span>{{item}}</span>
-                                </button>
-                                {% endfor %}
+                                <div class="selected-tags"></div>
+                                <div class="not-selected-tags">
+                                    {% for id, tag in tags %}
+                                    <button class="tag" id="tag-{{id}}">
+                                        <span>{{tag}}</span>
+                                    </button>
+                                    {% endfor %}
+                                </div>
                             </div>
 
                         </div>
                         <button id="applyFilters">Применить фильтры</button>
                     </div>
                 </div>
-                <input type="text" name="search" id="search" placeholder="Search for polls">
+                <input type="text" name="search" id="search" placeholder="Search for polls" maxlength="100">
                 <img src="{% static 'img\Search.svg' %}" alt="logo" class="logo">
             </div>
 

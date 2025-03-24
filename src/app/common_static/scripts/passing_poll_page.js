@@ -136,3 +136,8 @@ async function sendPassedPoll(results) {
 
     return responseData;
 }
+
+// Фон шапки
+$(document).ready(function() {
+    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
+});

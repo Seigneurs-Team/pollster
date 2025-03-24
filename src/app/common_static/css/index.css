@@ -19,6 +19,7 @@ main {
     display: block;
     width: 87px;
     height: 26px;
+    line-height: 26px;
     margin: 10px 10px 10px 0;
     border: var(--violet) solid 2px;
     border-radius: 4px;
@@ -100,11 +101,8 @@ input[type="checkbox"], input[type="radio"] {
     padding-left: 20px;
 }
 
-.tags {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
+.tags, .selected-tags, .not-selected-tags {
+    display: inline;
 }
 
 .tag {
@@ -112,7 +110,11 @@ input[type="checkbox"], input[type="radio"] {
     padding: 5px;
     margin: 2px;
     border: var(--violet) solid 1.5px;
+}
 
+.selected-tags > .tag{
+    background: var(--violet);
+    color: #FFF;
 }
 
 #applyFilters {
@@ -121,6 +123,7 @@ input[type="checkbox"], input[type="radio"] {
     padding: 6px 10px;
     margin-top: 10px;
 }
+
 
 
 .search img {
@@ -149,4 +152,11 @@ input[type="checkbox"], input[type="radio"] {
 
 .circles {
     width: 100%;
+}
+.slogan {
+    display:flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    font-size: 16px;
 }

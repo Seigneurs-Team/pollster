@@ -10,8 +10,12 @@ main {
     text-align: center;
     padding: 0px 256px 267px 256px;
     position: relative;
-}
 
+    margin-top: 30px
+}
+header {
+    display:none;
+}
 h1 {
     font-size: 30px;
 }
@@ -69,24 +73,24 @@ form > * {
     height: 30px;
     text-align: center;
     position: absolute;
-    bottom: 168px;
+    bottom: 156px;
     left: 190px;
     color: white;
     background: transparent;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .second-circle {
     text-align: center;
     position: absolute;
-    bottom: 123px;
+    bottom: 112px;
     left: 416px;
     width: 126px;
     background: transparent;
     color: var(--violet);
     font-weight: 400;
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .submit:hover {

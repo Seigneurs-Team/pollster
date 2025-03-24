@@ -53,12 +53,7 @@ h1 {
 .form .form-label {
     font-weight: 500;
     color: #8D8D8D;
-}
-
-.form button {
-    /*width: calc(100% - 20px);*/
-    /*margin: 2px 10px;*/
-
+    display: block;
 }
 
 .form-label, .form input:not(.value)[type="text"], .form textarea {
@@ -107,7 +102,7 @@ h1 {
     border: var(--violet) dashed 1.5px;
 }
 
-.form > .input-wrapper, .form > button, .addPollImage {
+.form > .input-wrapper, .form > button, .addPollImage, .tags-wrapper {
     margin-bottom: 35px;
 
 }
@@ -206,4 +201,20 @@ button.deleteQuestion:hover {
 .delOption:hover {
     background: transparent;
     
+}
+
+.tags, .selected-tags, .not-selected-tags {
+    display: inline;
+}
+
+.tag {
+    font-size: 14px;
+    padding: 5px;
+    margin: 2px;
+    border: var(--violet) solid 1.5px;
+}
+
+.selected-tags > .tag{
+    background: var(--violet);
+    color: #FFF;
 }
