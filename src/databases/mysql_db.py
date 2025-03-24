@@ -58,12 +58,12 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags VARCHAR(100), name_of_poll VARCHAR(100), description TEXT, id_of_author INT, PRIMARY KEY (id))""")
 
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, 
-        id_of_poll INT UNSIGNED, text_of_question VARCHAR(255), type_of_question VARCHAR(50), serial_number INT,
+        id_of_poll INT UNSIGNED, text_of_question VARCHAR(100), type_of_question VARCHAR(50), serial_number INT,
         PRIMARY KEY (id_of_question),
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED PRIMARY KEY, id_of_question INT UNSIGNED, 
-        option_name VARCHAR(255),
+        option_name VARCHAR(100),
         FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, 
@@ -106,7 +106,7 @@ class MysqlDB:
         PRIMARY KEY (id_of_user, id_of_poll), 
         FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE, 
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT AUTO_INCREMENT, id_of_poll INT, id_of_user INT, serial_number_of_question INT, type_of_question VARCHAR(50), value TEXT, PRIMARY KEY (id))""")
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT AUTO_INCREMENT, id_of_poll INT UNSIGNED, id_of_user INT, serial_number_of_question INT, type_of_question VARCHAR(50), value TEXT, PRIMARY KEY (id))""")
 
         self.connection.commit()
         self.set_types_of_questions()

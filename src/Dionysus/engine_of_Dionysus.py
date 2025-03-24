@@ -63,6 +63,8 @@ class EngineOfDionysus:
             return json.dumps({'response': Responses.NotFoundPoll})
         except mysql.connector.IntegrityError:
             return json.dumps({'response': Responses.PollIsExists})
+        except TypeError:
+            return json.dumps({'response': Responses.NotValidData})
 
     def get_similar_polls(self, id_of_user, num_of_polls):
         try:

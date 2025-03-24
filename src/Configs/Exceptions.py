@@ -31,3 +31,8 @@ class TryToXSS(Exception):
 class WronglyResponse(Exception):
     def __init__(self, message):
         super(WronglyResponse, self).__init__(message)
+
+
+class ConnectionRefused(Exception):
+    def __init__(self, message):
+        super(ConnectionRefused, self).__init__(message)
