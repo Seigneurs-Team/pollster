@@ -137,3 +137,9 @@ header {
 label {
     display: block;
 }
+
+#tags-error-message {
+    font-size: 12px;
+    display: none;
+    color: red;
+}

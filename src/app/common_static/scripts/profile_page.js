@@ -1,3 +1,4 @@
+let errorMessage = $('#tags-error-message');
 
 $("#your-polls-btn").on('click', function (event) { openTab(event,'your-polls');});
 $("#completed-polls-btn").on('click', function (event) { openTab(event,'completed-polls');});
@@ -83,14 +84,17 @@ console.log(id)
 
 $('.tag').click(function() {
     // Проверяем, где находится текущий элемент
-    if ($('.selected-tags').children().length >3) {
-        console.log('>4 эго')
+    if ($(this).parent().hasClass('selected-tags')) {
+        // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
+        $(this).appendTo('.not-selected-tags');
+        errorMessage.hide()
+    } else if ($('.selected-tags').children().length >3) {
+        console.log('>4 тэгов нельзя')
+        errorMessage.show()
     } else if ($(this).parent().hasClass('not-selected-tags')) {
         // Если элемент в .not-selected-tags, перемещаем его в .selected-tags
         $(this).appendTo('.selected-tags');
-    } else if ($(this).parent().hasClass('selected-tags')) {
-        // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
-        $(this).appendTo('.not-selected-tags');
+        errorMessage.hide()
     }
 });
 
