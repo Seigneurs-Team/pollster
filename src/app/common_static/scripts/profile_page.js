@@ -110,7 +110,7 @@ $(document).ready(function() {
     initialUserData = {
         nickname: $('input[name="edit_name_input"]').val().trim(),
         email: $('#email').val().trim(),
-        phone_number: $('#phone').val().trim(),
+        number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
         tags: Array.from($('.selected-tags .tag')).map(tag => tag.id.replace('tag-', ''))
     };
@@ -127,7 +127,7 @@ $('.save-changes').on('click', async function(event) {
     const currentData = {
         nickname: $('input[name="edit_name_input"]').val().trim(),
         email: $('#email').val().trim(),
-        phone_number: $('#phone').val().trim(),
+        number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
         tags: Array.from($('.selected-tags .tag')).map(tag => tag.id.replace('tag-', ''))
     };
@@ -136,7 +136,7 @@ $('.save-changes').on('click', async function(event) {
     if (!currentData.nickname) errorMessages.push('Имя пользователя обязательно');
     if (!currentData.email) errorMessages.push('Email обязателен');
     // if (!isValidEmail(currentData.email)) errorMessages.push('Неверный формат email');
-    // if (currentData.phone_number && !isValidPhone(currentData.phone_number)) errorMessages.push('Неверный формат телефона');
+    // if (currentData.number_of_phone && !isValidPhone(currentData.number_of_phone)) errorMessages.push('Неверный формат телефона');
 
     if (errorMessages.length > 0) {
         alert(errorMessages.join('\n'));
@@ -147,7 +147,7 @@ $('.save-changes').on('click', async function(event) {
     const changes = {};
     if (currentData.nickname !== initialUserData.nickname) changes.nickname = currentData.nickname;
     if (currentData.email !== initialUserData.email) changes.email = currentData.email;
-    if (currentData.phone_number !== initialUserData.phone_number) changes.phone_number = currentData.phone_number;
+    if (currentData.number_of_phone !== initialUserData.number_of_phone) changes.number_of_phone = currentData.number_of_phone;
     if (currentData.dateOfBirth !== initialUserData.dateOfBirth) changes.date_of_birth = currentData.dateOfBirth;
     if (!arraysEqual(currentData.tags, initialUserData.tags)) changes.tags = currentData.tags;
 
