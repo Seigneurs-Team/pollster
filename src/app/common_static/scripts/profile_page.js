@@ -156,7 +156,7 @@ $('.save-changes').on('click', async function(event) {
         try {
             console.log(`{${field}: ${value}}`)
 
-            const dataJSON = `{${field}: ${value}}`
+            const dataJSON = `{"${field}": "${value}"}`
             console.log(`dataJSON: ${dataJSON}`)
             const url = field; // Используем имя поля как часть URL
             console.log(`url: ${url}`)
