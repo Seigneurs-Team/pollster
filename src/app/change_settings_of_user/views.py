@@ -6,6 +6,9 @@ from django.http import HttpResponseForbidden, JsonResponse
 from authentication.check_user_on_auth import authentication
 from databases.mysql_db import client_mysqldb
 
+from Tools_for_rabbitmq.producer import producer
+from Configs.Commands_For_RMQ import Commands
+
 
 @authentication
 def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None):
@@ -54,6 +57,8 @@ def request_on_change_the_tags(request: WSGIRequest, id_of_user: int = None):
     assert 'tags_of_user' in json_data
     assert isinstance(json_data['tags_of_user'], list)
     assert len(json_data['tags_of_user']) <= 4
+
+    producer.publish(Commands.get_vector_user % id_of_user)
 
     client_mysqldb.update_the_filed_into_user(id_of_user, 'tags', json.dumps(json_data['tags_of_user'], ensure_ascii=False))
     return JsonResponse({'response': 200})

@@ -52,5 +52,5 @@ urlpatterns = [
     path('log_out', request_on_log_out, name='log_out'),
     path('delete_account', request_on_delete_account, name='delete_account'),
     path('delete_poll/<int:id_of_poll>/', request_on_delete_poll, name='delete_poll'),
-    path('change_user_settings/', include(url_patterns_of_changes_in_user_profile), name='change_user_settings')
+    path('change_user_data/', include(url_patterns_of_changes_in_user_profile), name='change_user_settings')
 ]
