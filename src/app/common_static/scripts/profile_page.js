@@ -1,3 +1,4 @@
+
 $("#your-polls-btn").on('click', function (event) { openTab(event,'your-polls');});
 $("#completed-polls-btn").on('click', function (event) { openTab(event,'completed-polls');});
 $(".log-out").on('click',  async function () {
@@ -147,9 +148,10 @@ $('.save-changes').on('click', async function(event) {
     // Отправка изменений для каждого поля
     for (const [field, value] of Object.entries(changes)) {
         try {
-            console.log(`${field}: ${value}`)
+            console.log(`{${field}: ${value}}`)
 
-            const dataJSON = JSON.stringify(value);
+            const dataJSON = `{${field}: ${value}}`
+            console.log(`dataJSON: ${dataJSON}`)
             const url = field; // Используем имя поля как часть URL
             console.log(`url: ${url}`)
             const response = await sendChangeDataRequest(dataJSON, url);
