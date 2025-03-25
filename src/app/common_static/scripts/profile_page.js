@@ -1,3 +1,4 @@
+
 $("#your-polls-btn").on('click', function (event) { openTab(event,'your-polls');});
 $("#completed-polls-btn").on('click', function (event) { openTab(event,'completed-polls');});
 $(".log-out").on('click',  async function () {
@@ -11,8 +12,11 @@ $(".log-out").on('click',  async function () {
     console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
     if (!response.ok) {
+        alert('Ошибка при выходе из аккаунта:', responseData)
         console.error('Ошибка при выходе из аккаунта:', responseData);
         throw new Error('Ошибка при выходе из аккаунта');
+    } else {
+        window.location.href = '/sign_in';
     }
 });
 
@@ -27,8 +31,11 @@ $(".delete-account").on('click',  async function () {
     console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
     if (!response.ok) {
+        alert('Ошибка при удалении аккаунта:', 'responseData')
         console.error('Ошибка при удалении аккаунта:', responseData);
         throw new Error('Ошибка при удалении аккаунта');
+    } else {
+        window.location.href = '/sign_in';
     }
 });
 
@@ -88,4 +95,132 @@ $('.tag').click(function() {
 // Фон шапки
 $(document).ready(function() {
     $('header').css('background-image', 'url(' + $('header').data('background') + ')');
+});
+
+let initialUserData = {};
+
+$(document).ready(function() {
+    // Сохраняем исходные данные при загрузке
+    initialUserData = {
+        nickname: $('input[name="edit_name_input"]').val().trim(),
+        email: $('#email').val().trim(),
+        phone_number: $('#phone').val().trim(),
+        dateOfBirth: $('#date-of-birth').val().trim(),
+        tags: Array.from($('.selected-tags .tag')).map(tag => tag.id.replace('tag-', ''))
+    };
+
+    // Фон шапки
+    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
+});
+
+$('.save-changes').on('click', async function(event) {
+    event.preventDefault();
+    const errorMessages = [];
+
+    // Собираем текущие данные
+    const currentData = {
+        nickname: $('input[name="edit_name_input"]').val().trim(),
+        email: $('#email').val().trim(),
+        phone_number: $('#phone').val().trim(),
+        dateOfBirth: $('#date-of-birth').val().trim(),
+        tags: Array.from($('.selected-tags .tag')).map(tag => tag.id.replace('tag-', ''))
+    };
+
+    // Валидация обязательных полей
+    if (!currentData.nickname) errorMessages.push('Имя пользователя обязательно');
+    if (!currentData.email) errorMessages.push('Email обязателен');
+    // if (!isValidEmail(currentData.email)) errorMessages.push('Неверный формат email');
+    // if (currentData.phone_number && !isValidPhone(currentData.phone_number)) errorMessages.push('Неверный формат телефона');
+
+    if (errorMessages.length > 0) {
+        alert(errorMessages.join('\n'));
+        return;
+    }
+
+    // Определяем измененные поля
+    const changes = {};
+    if (currentData.nickname !== initialUserData.nickname) changes.nickname = currentData.nickname;
+    if (currentData.email !== initialUserData.email) changes.email = currentData.email;
+    if (currentData.phone_number !== initialUserData.phone_number) changes.phone_number = currentData.phone_number;
+    if (currentData.dateOfBirth !== initialUserData.dateOfBirth) changes.date_of_birth = currentData.dateOfBirth;
+    if (!arraysEqual(currentData.tags, initialUserData.tags)) changes.tags = currentData.tags;
+
+    // Отправка изменений для каждого поля
+    for (const [field, value] of Object.entries(changes)) {
+        try {
+            console.log(`{${field}: ${value}}`)
+
+            const dataJSON = `{${field}: ${value}}`
+            console.log(`dataJSON: ${dataJSON}`)
+            const url = field; // Используем имя поля как часть URL
+            console.log(`url: ${url}`)
+            const response = await sendChangeDataRequest(dataJSON, url);
+
+            if (response.success) {
+                initialUserData[field] = value; // Обновляем исходные данные
+                console.log(`${field}: ${value} successfully!`)
+
+            } else {
+                throw new Error(response.message || 'Ошибка сохранения');
+            }
+        } catch (error) {
+            console.error(`Ошибка при сохранении ${field}:`, error);
+            alert(`Ошибка: ${error.message}`);
+            return;
+        }
+    }
+
+    alert('Изменения сохранены!');
+});
+
+// Функция отправки данных (сохранена из исходного кода)
+async function sendChangeDataRequest(dataJSON, url) {
+    console.log('Отправка данных:', dataJSON, 'на URL:', `/change_user_data/${url}`);
+    const response = await fetch(`/change_user_data/${url}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: dataJSON
+    });
+
+    const responseData = await response.json();
+    console.log('Ответ сервера:', responseData);
+
+    if (!response.ok) {
+        throw new Error(responseData.message || 'Ошибка сервера');
+    }
+    return responseData;
+}
+
+// Вспомогательные функции
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone) {
+    return /^(\+7|8)?[\d]{10}$/.test(phone);
+}
+
+function arraysEqual(a, b) {
+    return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
+// Обработка тегов
+$('.tag').click(function() {
+    // Проверяем, где находится текущий элемент
+    console.log($(this))
+
+    console.log($(this).parent())
+    console.log($(this).parent().attr("class"))
+
+    if ($(this).parent().hasClass('not-selected-tags')) {
+        // Если элемент в .not-selected-tags, перемещаем его в .selected-tags
+        console.log('move to selected tags')
+        $(this).appendTo('.selected-tags');
+    } else if ($(this).parent().hasClass('selected-tags')) {
+        console.log('move to not selected tags')
+
+        // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
+        $(this).appendTo('.not-selected-tags');
+    }
 });
