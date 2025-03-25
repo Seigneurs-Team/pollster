@@ -436,7 +436,7 @@ class MysqlDB:
         return session[0]
 
     def get_user_data_from_table(self, id_of_user: int) -> tuple:
-        self.cursor.execute(f"""SELECT nickname, login FROM user WHERE id_of_user={id_of_user}""")
+        self.cursor.execute(f"""SELECT nickname, login, number_of_phone, date_of_birth, tags FROM user WHERE id_of_user={id_of_user}""")
         return self.cursor.fetchone()
 
     def create_cookie_into_pow_table(self, cookie: str):
