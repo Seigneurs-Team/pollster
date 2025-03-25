@@ -207,8 +207,8 @@ $(document).ready(function () {
 
 $('.tag').click(function() {
     // Проверяем, где находится текущий элемент
-    if ($(this).parent().hasClass('not-selected-tags')) {
-        // Если элемент в .not-selected-tags, перемещаем его в .selected-tags
+    if ($(this).parent().hasClass('not-selected-tags') && $('.selected-tags').children().length < 4) {
+        // Если элемент в .not-selected-tags и выбрано менее 4х тэгов, перемещаем его в .selected-tags
         $(this).appendTo('.selected-tags');
     } else if ($(this).parent().hasClass('selected-tags')) {
         // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
