@@ -85,7 +85,7 @@ class MysqlDB:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT PRIMARY KEY, type_of_user INT, 
         FOREIGN KEY (type_of_user) REFERENCES table_of_type_of_users(id_of_type) ON UPDATE CASCADE)""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS user(id_of_user INT, password VARCHAR(255), login VARCHAR(100), nickname VARCHAR(50), tags VARCHAR(100), 
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS user(id_of_user INT, password VARCHAR(255), login VARCHAR(100), nickname VARCHAR(50), tags VARCHAR(100), date_of_birth DATE, number_of_phone VARCHAR(17),
         PRIMARY KEY (id_of_user), 
         FOREIGN KEY (id_of_user) REFERENCES users(id_of_user) ON DELETE CASCADE)""")
 
@@ -397,7 +397,7 @@ class MysqlDB:
         try:
             id_of_user = random.randint(-9999999, -999999)
             self.cursor.execute("""INSERT INTO users (id_of_user, type_of_user) VALUES (%s, %s)""", (id_of_user, type_of_user))
-            self.cursor.execute("""INSERT INTO user (id_of_user, login, password, nickname, tags) VALUES (%s, %s, %s, %s, %s)""", (id_of_user, login, password, nickname, json.dumps([" "])))
+            self.cursor.execute("""INSERT INTO user (id_of_user, login, password, nickname) VALUES (%s, %s, %s, %s)""", (id_of_user, login, password, nickname))
         except mysql.connector.IntegrityError:
             self.create_user(login, password, type_of_user, nickname)
 
@@ -547,7 +547,7 @@ class MysqlDB:
 
         return json.loads(response_of_query[0])
 
-    def update_the_filed_into_users(self, id_of_user: int, field: str, value: typing.Union[str, int, datetime.date]):
+    def update_the_filed_into_user(self, id_of_user: int, field: str, value: typing.Union[str, int, datetime.date]):
         transaction = f"""UPDATE user SET {field} ="""
         if isinstance(value, (int, datetime.date)):
             transaction += f""" {value} """

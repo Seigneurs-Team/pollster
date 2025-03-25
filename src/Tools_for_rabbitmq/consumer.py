@@ -1,3 +1,4 @@
+import json
 import re
 
 import pika
@@ -50,8 +51,6 @@ class Consumer:
         result: str = ''
         if re.search(Commands.get_vector_poll.replace('%s', ''), body.decode()):
             id_of_poll = int(body.decode().split('=')[1])
-            client_mysqldb.cursor.execute("""SELECT * FROM polls""")
-            logger.info(client_mysqldb.cursor.fetchall())
             logger.info(id_of_poll)
             logger.info(type(id_of_poll))
             result = self.engine_of_dionysus.set_vectorization_of_poll(id_of_poll=id_of_poll)
@@ -63,12 +62,12 @@ class Consumer:
         elif re.search(Commands.get_vector_user, body.decode()):
             id_of_user = int(body.decode().split('=')[1])
             result = self.engine_of_dionysus.set_vectorization_user(id_of_user)
-        logger.info(f"Отправляю ответ: {result}")
         logger.info(f'Получил сообщение: {body.decode()}')
+        logger.info(f"Отправляю ответ: {result}")
         channel.basic_publish(
             exchange=self.exchange,
             routing_key=properties.reply_to,
-            body=str(result).encode(),
+            body=str(json.dumps(result, ensure_ascii=False)).encode(),
         )
         channel.basic_ack(delivery_tag=method.delivery_tag)
 

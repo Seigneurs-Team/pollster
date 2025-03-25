@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
 from app.main_page.views import request_on_main_page, requests_on_get_polls
 from app.create_poll_page.views import request_on_create_poll_page, request_on_create_new_poll
 from app.passing_poll_page.views import request_on_passing_poll_page
@@ -29,6 +30,8 @@ from app.passing_poll_page.views import request_on_passing_poll
 from app.log_out.views import request_on_log_out
 from app.delete_account.views import request_on_delete_account
 from app.delete_poll.views import request_on_delete_poll
+
+from app.change_settings_of_user import url_patterns_of_changes_in_user_profile
 
 
 urlpatterns = [
@@ -48,5 +51,6 @@ urlpatterns = [
     path('post_pass_poll', request_on_passing_poll, name="save_answers_in_db"),
     path('log_out', request_on_log_out, name='log_out'),
     path('delete_account', request_on_delete_account, name='delete_account'),
-    path('delete_poll/<int:id_of_poll>/', request_on_delete_poll, name='delete_poll')
+    path('delete_poll/<int:id_of_poll>/', request_on_delete_poll, name='delete_poll'),
+    path('change_user_settings/', include(url_patterns_of_changes_in_user_profile), name='change_user_settings')
 ]

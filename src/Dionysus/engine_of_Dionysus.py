@@ -11,11 +11,29 @@ from databases.mysql_db import client_mysqldb
 
 from Configs.Responses_from_consumer import Responses
 
+import logging
+
+logger = logging.getLogger()
+
 
 class EngineOfDionysus:
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained('/root/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/snapshots/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/')
         self.model = TFAutoModel.from_pretrained('/root/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2/snapshots/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/')
+
+    @staticmethod
+    def mean_polling(model_output, attention_mask):
+        token_embeddings = model_output.last_hidden_state
+        input_mask_expanded = cast(expand_dims(attention_mask, -1), float32) * token_embeddings
+        return reduce_sum(input_mask_expanded, axis=1) / maximum(reduce_sum(cast(attention_mask, float32)), 1e-3)
+
+    def vectorization_of_text(self, tags: list[str]):
+        encoded_input = self.tokenizer(tags, padding=True, truncation=True, return_tensors='tf')
+        model_output = self.model(**encoded_input)
+
+        sentence_embedding = self.mean_polling(model_output, encoded_input['attention_mask'])
+        sentence_embedding = math.l2_normalize(sentence_embedding, axis=1)
+        return sentence_embedding
 
     @staticmethod
     def cosine_similarity(user_vector: EagerTensor, poll_vectors: list[EagerTensor], axis=-1, eps=1e-3):
@@ -30,20 +48,6 @@ class EngineOfDionysus:
 
         return np.argsort(list_of_cosine_sim)[::-1]
 
-    @staticmethod
-    def mean_polling(model_output, attention_mask):
-        token_embeddings = model_output.last_hidden_state
-        input_mask_expanded = cast(expand_dims(attention_mask, -1), float32) * token_embeddings
-        return reduce_sum(input_mask_expanded, axis=1) / maximum(reduce_sum(cast(attention_mask, float32), 1e-3))
-
-    def vectorization_of_text(self, tags: list[str]):
-        encoded_input = self.tokenizer([" ".join(tags)], padding=True, truncation=True, return_tensors='tf')
-        model_output = self.model(**encoded_input)
-
-        sentence_embedding = self.mean_polling(model_output, encoded_input['attention_mask'])
-        sentence_embedding = math.l2_normalize(sentence_embedding, axis=1)
-        return sentence_embedding
-
     def get_match_polls(self, list_of_arrays: list[EagerTensor], user_vector: EagerTensor, num_of_polls):
         recommended_doc_ids = self.cosine_similarity(user_vector, list_of_arrays)[:num_of_polls]
         return recommended_doc_ids
@@ -51,7 +55,8 @@ class EngineOfDionysus:
     def set_vectorization_of_poll(self, id_of_poll: int):
         try:
             tags_of_poll = client_mysqldb.get_polls_tags(id_of_poll)
-            vector_of_poll = self.vectorization_of_text(tags_of_poll)
+
+            vector_of_poll = self.vectorization_of_text([" ".join(tags_of_poll)])
 
             vector_of_poll_in_blob = pickle.dumps(vector_of_poll)
 
@@ -60,11 +65,11 @@ class EngineOfDionysus:
             return json.dumps({'response': Responses.Ok})
 
         except AssertionError:
-            return json.dumps({'response': Responses.NotFoundPoll})
+            return {'response': Responses.NotFoundPoll}
         except mysql.connector.IntegrityError:
-            return json.dumps({'response': Responses.PollIsExists})
+            return {'response': Responses.PollIsExists}
         except TypeError:
-            return json.dumps({'response': Responses.NotValidData})
+            return {'response': Responses.NotValidData}
 
     def get_similar_polls(self, id_of_user, num_of_polls):
         try:

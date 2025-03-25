@@ -1,6 +1,7 @@
 import json
 import time
 
+import mysql.connector
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpRequest, HttpResponseForbidden
 from databases.mysql_db import client_mysqldb
@@ -18,7 +19,7 @@ def request_on_create_poll_page(requests, id_of_user: int = None):
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
 
     user = {'id': id_of_user, 'username': nickname}
-    tags = {  1: 'развлечения',  2: 'наука',  3: 'животные',  4: 'кухня',  5: 'искусство',  6: 'дети',  7: 'музыка',  8: 'кино и сериалы',  9: 'путешествия',  10: 'игры',  11: 'мода и стиль',  12: 'здоровье',  13: 'образование'}
+    tags = {1: 'развлечения',  2: 'наука',  3: 'животные',  4: 'кухня',  5: 'искусство',  6: 'дети',  7: 'музыка',  8: 'кино и сериалы',  9: 'путешествия',  10: 'игры',  11: 'мода и стиль',  12: 'здоровье',  13: 'образование'}
     return render(requests, 'create_poll_page.html', context={'user': user, 'tags': tags.items()})
 
 
@@ -42,4 +43,6 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     except TryToXSS:
         return HttpResponseForbidden()
     except AssertionError:
+        return HttpResponseForbidden()
+    except mysql.connector.errors.DataError:
         return HttpResponseForbidden()
