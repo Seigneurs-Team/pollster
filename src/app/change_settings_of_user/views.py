@@ -39,7 +39,7 @@ def request_on_change_the_date_of_birth(request: WSGIRequest, id_of_user: int = 
     assert 'date_of_birth' in json_data
 
     try:
-        date_of_birth = datetime.datetime.strptime(json_data['date_of_birth'], '%d.%m.%Y').date()
+        date_of_birth = datetime.datetime.strptime(json_data['date_of_birth'], '%Y-%m-%d').date()
     except ValueError:
         return HttpResponseForbidden("Некорректные данные")
 
