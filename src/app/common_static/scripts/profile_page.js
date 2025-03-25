@@ -83,7 +83,9 @@ console.log(id)
 
 $('.tag').click(function() {
     // Проверяем, где находится текущий элемент
-    if ($(this).parent().hasClass('not-selected-tags')) {
+    if ($('.selected-tags').children().length >3) {
+        console.log('>4 эго')
+    } else if ($(this).parent().hasClass('not-selected-tags')) {
         // Если элемент в .not-selected-tags, перемещаем его в .selected-tags
         $(this).appendTo('.selected-tags');
     } else if ($(this).parent().hasClass('selected-tags')) {
@@ -204,23 +206,3 @@ function isValidPhone(phone) {
 function arraysEqual(a, b) {
     return a.length === b.length && a.every((v, i) => v === b[i]);
 }
-
-// Обработка тегов
-$('.tag').click(function() {
-    // Проверяем, где находится текущий элемент
-    console.log($(this))
-
-    console.log($(this).parent())
-    console.log($(this).parent().attr("class"))
-
-    if ($(this).parent().hasClass('not-selected-tags')) {
-        // Если элемент в .not-selected-tags, перемещаем его в .selected-tags
-        console.log('move to selected tags')
-        $(this).appendTo('.selected-tags');
-    } else if ($(this).parent().hasClass('selected-tags')) {
-        console.log('move to not selected tags')
-
-        // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
-        $(this).appendTo('.not-selected-tags');
-    }
-});
