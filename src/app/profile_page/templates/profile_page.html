@@ -2,9 +2,6 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <title>Pollster</title>
     {% load static %}
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
@@ -43,7 +40,7 @@
         <label for="email">Электроная почта</label>
         <input type="text" name="" id="email" value="{{user.email}}">
         <label for="phone">Номер телефона</label>
-        <input type="text" name="" id="phone" value="{{user.phone}}">
+        <input type="text" name="" id="phone" value="{% if user.phone %}user.phone{% else %}{% endif %}">
         <label for="date-of-birth">Дата рождения</label>
         <input type="date" name="" id="date-of-birth" value="{{user.date_of_birth}}">
         <div class="tags-wrapper">
