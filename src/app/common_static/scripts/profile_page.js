@@ -116,7 +116,7 @@ $(document).ready(function () {
         email: $('#email').val().trim(),
         number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
-        tags: $('.selected-tags .tag').map(function() {
+        tags_of_user: $('.selected-tags .tag').map(function() {
             return $(this).text().trim();
         }).get()
     };
@@ -137,7 +137,7 @@ $('.save-changes').on('click', async function (event) {
         email: $('#email').val().trim(),
         number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
-        tags: $('.selected-tags .tag').map(function() {
+        tags_of_user: $('.selected-tags .tag').map(function() {
             return $(this).text().trim();
         }).get()
     };
@@ -159,7 +159,7 @@ $('.save-changes').on('click', async function (event) {
     if (currentData.email !== initialUserData.email) changes.email = currentData.email;
     if (currentData.number_of_phone !== initialUserData.number_of_phone) changes.number_of_phone = currentData.number_of_phone;
     if (currentData.dateOfBirth !== initialUserData.dateOfBirth) changes.date_of_birth = currentData.dateOfBirth;
-    if (!arraysEqual(currentData.tags, initialUserData.tags)) changes.tags = currentData.tags;
+    if (!arraysEqual(currentData.tags_of_user, initialUserData.tags_of_user)) changes.tags_of_user = currentData.tags_of_user;
 
     // Отправка изменений для каждого поля
     for (const [field, value] of Object.entries(changes)) {
