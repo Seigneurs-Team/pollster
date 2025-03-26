@@ -121,6 +121,8 @@ $(document).ready(function () {
         }).get()
     };
 
+    $('.about-you input').removeAttr('disabled')
+
     // Фон шапки
     $('header').css('background-image', 'url(' + $('header').data('background') + ')');
 });
@@ -168,7 +170,7 @@ $('.save-changes').on('click', async function (event) {
             console.log('dataJSON: ', dataJSON)
                 // `{"${field}": "${value}"}`
             const response = await sendChangeDataRequest(dataJSON, field);
-console.log('response: ', response)
+            console.log('response: ', response)
             if (response.ok) {
                 initialUserData[field] = value; // Обновляем исходные данные
                 console.log(`${field}: ${value} successfully!`)

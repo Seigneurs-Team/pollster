@@ -44,11 +44,11 @@
     <span>О вас</span>
     <div class="about-you">
         <label for="email">Электроная почта</label>
-        <input type="text" name="" id="email" value="{{user.email}}">
+        <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled">
         <label for="phone">Номер телефона</label>
-        <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}">
+        <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}" disabled="disabled">
         <label for="date-of-birth">Дата рождения</label>
-        <input type="date" name="" id="date-of-birth" value="{{user.date_of_birth}}">
+        <input type="date" name="" id="date-of-birth" value="{{user.date_of_birth}}" disabled="disabled">
         <div class="tags-wrapper">
             <label class="form-label">Ваши интересы:</label>
             <div class="tags">
