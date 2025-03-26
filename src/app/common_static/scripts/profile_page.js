@@ -166,7 +166,7 @@ $('.save-changes').on('click', async function (event) {
         try {
             console.log(`{${field}: ${value}}`)
 
-            const dataJSON = JSON.stringify( {field: value})
+            const dataJSON = JSON.stringify( {[field]: value})
             console.log('dataJSON: ', dataJSON)
                 // `{"${field}": "${value}"}`
             const response = await sendChangeDataRequest(dataJSON, field);
