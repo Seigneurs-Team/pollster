@@ -53,14 +53,14 @@
             <label class="form-label">Ваши интересы:</label>
             <div class="tags">
                 <div class="selected-tags">
-                    {% for id, tag in user.tags_of_user %}
+                    {% for tag in user.tags_of_user %}
                     <button class="tag" id="tag-{{id}}">
                         <span>{{tag}}</span>
                     </button>
                     {% endfor %}
                 </div>
                 <div class="not-selected-tags">
-                    {% for id, tag in tags %}
+                    {% for tag in tags %}
                     <button class="tag" id="tag-{{id}}">
                         <span>{{tag}}</span>
                     </button>
@@ -70,6 +70,8 @@
             <div id="tags-error-message">>4 тэгов добавлять нельзя!</div>
 
         </div>
+        <!-- Место для отображения сообщения об ошибке -->
+        <div class="error-message"></div>
         <div class="about-you-btns">
             <button class="save-changes" type="submit">Сохранить изменения</button>
             <button class="delete-account">Удалить аккаунт</button>
