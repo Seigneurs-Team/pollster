@@ -1,8 +1,12 @@
 let errorMessage = $('#tags-error-message');
 
-$("#your-polls-btn").on('click', function (event) { openTab(event,'your-polls');});
-$("#completed-polls-btn").on('click', function (event) { openTab(event,'completed-polls');});
-$(".log-out").on('click',  async function () {
+$("#your-polls-btn").on('click', function (event) {
+    openTab(event, 'your-polls');
+});
+$("#completed-polls-btn").on('click', function (event) {
+    openTab(event, 'completed-polls');
+});
+$(".log-out").on('click', async function () {
     console.log('sending log out request...');
     const response = await fetch('/log_out', {
         method: 'POST',
@@ -21,7 +25,7 @@ $(".log-out").on('click',  async function () {
     }
 });
 
-$(".delete-account").on('click',  async function () {
+$(".delete-account").on('click', async function () {
     console.log('sending delete account request...');
     const response = await fetch('/delete_account', {
         method: 'POST',
@@ -53,7 +57,7 @@ function openTab(event, tabName) {
     $(event.currentTarget).addClass("active");
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     // по умолчанию вкладка "ваши опросы"
     $("#your-polls-btn").addClass("active");
     $("#your-polls").show()
@@ -65,7 +69,7 @@ $(".delete-poll").on('click', async function () {
     event.preventDefault();
     console.log('deleting poll...');
     const id = $(this).attr('data-poll');
-console.log(id)
+    console.log(id)
 
     const response = await fetch(`/delete_poll/${id}`, {
         method: 'GET',
@@ -82,13 +86,13 @@ console.log(id)
     return responseData;
 })
 
-$('.tag').click(function() {
+$('.tag').click(function () {
     // Проверяем, где находится текущий элемент
     if ($(this).parent().hasClass('selected-tags')) {
         // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
         $(this).appendTo('.not-selected-tags');
         errorMessage.hide()
-    } else if ($('.selected-tags').children().length >3) {
+    } else if ($('.selected-tags').children().length > 3) {
         console.log('>4 тэгов нельзя')
         errorMessage.show()
     } else if ($(this).parent().hasClass('not-selected-tags')) {
@@ -99,27 +103,31 @@ $('.tag').click(function() {
 });
 
 // Фон шапки
-$(document).ready(function() {
+$(document).ready(function () {
     $('header').css('background-image', 'url(' + $('header').data('background') + ')');
 });
 
 let initialUserData = {};
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Сохраняем исходные данные при загрузке
     initialUserData = {
         nickname: $('input[name="edit_name_input"]').val().trim(),
         email: $('#email').val().trim(),
         number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
-        tags: Array.from($('.selected-tags .tag')).map(tag => tag.id.replace('tag-', ''))
+        tags: $('.selected-tags .tag').map(function() {
+            return $(this).text().trim();
+        }).get()
     };
+
+    $('.about-you input').removeAttr('disabled')
 
     // Фон шапки
     $('header').css('background-image', 'url(' + $('header').data('background') + ')');
 });
 
-$('.save-changes').on('click', async function(event) {
+$('.save-changes').on('click', async function (event) {
     event.preventDefault();
     const errorMessages = [];
 
@@ -129,7 +137,9 @@ $('.save-changes').on('click', async function(event) {
         email: $('#email').val().trim(),
         number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
-        tags: Array.from($('.selected-tags .tag')).map(tag => tag.id.replace('tag-', ''))
+        tags: $('.selected-tags .tag').map(function() {
+            return $(this).text().trim();
+        }).get()
     };
 
     // Валидация обязательных полей
@@ -156,13 +166,12 @@ $('.save-changes').on('click', async function(event) {
         try {
             console.log(`{${field}: ${value}}`)
 
-            const dataJSON = `{"${field}": "${value}"}`
-            console.log(`dataJSON: ${dataJSON}`)
-            const url = field; // Используем имя поля как часть URL
-            console.log(`url: ${url}`)
-            const response = await sendChangeDataRequest(dataJSON, url);
-
-            if (response.success) {
+            const dataJSON = JSON.stringify( {field: value})
+            console.log('dataJSON: ', dataJSON)
+                // `{"${field}": "${value}"}`
+            const response = await sendChangeDataRequest(dataJSON, field);
+            console.log('response: ', response)
+            if (response.ok) {
                 initialUserData[field] = value; // Обновляем исходные данные
                 console.log(`${field}: ${value} successfully!`)
 
@@ -179,23 +188,16 @@ $('.save-changes').on('click', async function(event) {
     alert('Изменения сохранены!');
 });
 
-// Функция отправки данных (сохранена из исходного кода)
+// Функция отправки данных
 async function sendChangeDataRequest(dataJSON, url) {
     console.log('Отправка данных:', dataJSON, 'на URL:', `/change_user_data/${url}`);
     const response = await fetch(`/change_user_data/${url}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         credentials: 'include',
         body: dataJSON
     });
-
-    const responseData = await response.json();
-    console.log('Ответ сервера:', responseData);
-
-    if (!response.ok) {
-        throw new Error(responseData.message || 'Ошибка сервера');
-    }
-    return responseData;
+    return response;
 }
 
 // Вспомогательные функции
