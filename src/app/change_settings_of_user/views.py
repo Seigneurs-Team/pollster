@@ -13,7 +13,8 @@ from Configs.Commands_For_RMQ import Commands
 @authentication
 def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
-    assert 'nickname' in json_data
+    if 'nickname' not in json_data:
+        return HttpResponseForbidden("Некорректные данные")
 
     client_mysqldb.update_the_filed_into_user(id_of_user, 'nickname', json_data['nickname'])
     return JsonResponse({'response': 200})
@@ -22,7 +23,8 @@ def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None)
 @authentication
 def request_on_change_the_login(request: WSGIRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
-    assert 'email' in json_data
+    if 'email' not in json_data:
+        return HttpResponseForbidden("Некорректные данные")
 
     client_mysqldb.update_the_filed_into_user(id_of_user, 'login', json_data['email'])
 
@@ -30,7 +32,8 @@ def request_on_change_the_login(request: WSGIRequest, id_of_user: int = None):
 @authentication
 def request_on_change_the_number_of_phone(request: WSGIRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
-    assert 'number_of_phone' in json_data
+    if 'number_of_phone' not in json_data:
+        return HttpResponseForbidden("Некорректные данные")
 
     client_mysqldb.update_the_filed_into_user(id_of_user, 'number_of_phone', json_data['number_of_phone'])
     return JsonResponse({'response': 200})
@@ -39,7 +42,8 @@ def request_on_change_the_number_of_phone(request: WSGIRequest, id_of_user: int 
 @authentication
 def request_on_change_the_date_of_birth(request: WSGIRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
-    assert 'date_of_birth' in json_data
+    if 'date_of_birth' not in json_data:
+        return HttpResponseForbidden("Некорректные данные")
 
     try:
         date_of_birth = datetime.datetime.strptime(json_data['date_of_birth'], '%Y-%m-%d').date()
@@ -54,9 +58,10 @@ def request_on_change_the_date_of_birth(request: WSGIRequest, id_of_user: int = 
 def request_on_change_the_tags(request: WSGIRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
 
-    assert 'tags_of_user' in json_data
-    assert isinstance(json_data['tags_of_user'], list)
-    assert len(json_data['tags_of_user']) <= 4
+    if ('tags_of_user' not in json_data)\
+            or (isinstance(json_data['tags_of_user'], list) is False)\
+            or (len(json_data['tags_of_user']) > 4):
+        return HttpResponseForbidden("Некорректные данные")
 
     producer.publish(Commands.get_vector_user % id_of_user)
 

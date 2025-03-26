@@ -549,9 +549,9 @@ class MysqlDB:
 
     def update_the_filed_into_user(self, id_of_user: int, field: str, value: typing.Union[str, int, datetime.date]):
         transaction = f"""UPDATE user SET {field} ="""
-        if isinstance(value, (int, datetime.date)):
+        if isinstance(value, int):
             transaction += f""" {value} """
-        elif isinstance(value, str):
+        elif isinstance(value, (str, datetime.date)):
             transaction += f""" "{value}" """
         transaction += f"""WHERE id_of_user = {id_of_user}"""
 
