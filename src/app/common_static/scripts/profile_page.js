@@ -1,4 +1,5 @@
-let errorMessage = $('#tags-error-message');
+let tagsErrorMessage = $('#tags-error-message');
+let errorMessage = $('.error-message');
 
 $("#your-polls-btn").on('click', function (event) {
     openTab(event, 'your-polls');
@@ -91,14 +92,14 @@ $('.tag').click(function () {
     if ($(this).parent().hasClass('selected-tags')) {
         // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
         $(this).appendTo('.not-selected-tags');
-        errorMessage.hide()
+        tagsErrorMessage.hide()
     } else if ($('.selected-tags').children().length > 3) {
         console.log('>4 тэгов нельзя')
-        errorMessage.show()
+        tagsErrorMessage.show()
     } else if ($(this).parent().hasClass('not-selected-tags')) {
         // Если элемент в .not-selected-tags, перемещаем его в .selected-tags
         $(this).appendTo('.selected-tags');
-        errorMessage.hide()
+        tagsErrorMessage.hide()
     }
 });
 
@@ -145,11 +146,12 @@ $('.save-changes').on('click', async function (event) {
     // Валидация обязательных полей
     if (!currentData.nickname) errorMessages.push('Имя пользователя обязательно');
     if (!currentData.email) errorMessages.push('Email обязателен');
-    // if (!isValidEmail(currentData.email)) errorMessages.push('Неверный формат email');
+    if (!isValidEmail(currentData.email)) errorMessages.push('Неверный формат email');
     // if (currentData.number_of_phone && !isValidPhone(currentData.number_of_phone)) errorMessages.push('Неверный формат телефона');
 
     if (errorMessages.length > 0) {
         alert(errorMessages.join('\n'));
+        errorMessage.text(errorMessages.join('\n'));
         return;
     }
 

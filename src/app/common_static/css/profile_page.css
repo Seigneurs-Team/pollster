@@ -143,3 +143,8 @@ label {
     display: none;
     color: red;
 }
+
+.error-message {
+    margin-bottom: 20px;
+    text-align: center;
+}

@@ -1,5 +1,7 @@
 import {getChallenge, findProof} from './POW.js';
 
+let errorMessage = $('#error-message');
+console.log(errorMessage);
 
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
@@ -9,14 +11,13 @@ $('#loginForm').on('submit', async function (event) {
     let password = $('input[name="password"]').val();
     let passwordRepeat = $('input[name="password-repeat"]').val();
     let nickname = $('input[name="nickname"]').val();
-    let errorMessage = $('#error-message');
 
     // проверка данных формы
     if (!(login && password)) {
-        // Если логин или пароль пустые, показываем сообщение об ошибке
         errorMessage.text('Логин и пароль не могут быть пустыми!');
+    } else if (!isValidEmail(login)) {
+        errorMessage.text('Некорректный формат почты!');
     } else if (password !== passwordRepeat) {
-        // Если пароли не совпадают, показываем сообщение об ошибке
         errorMessage.text('Пароли не совпадают!');
     } else {
         // Если пароли совпадают, очищаем сообщение об ошибке
@@ -72,17 +73,6 @@ $('#loginForm').on('submit', async function (event) {
     }
 });
 
-// Обработка кнопки "Вернуться на главную"
-$('#loading-overlay').on('click', '#go-home', function () {
-    window.location.href = '/'; // Перенаправление на главную страницу
-});
-
-// Обработка кнопки "Попробовать позже"
-$('#loading-overlay').on('click', '#try-again', function () {
-    $('#loading-overlay').hide(); // Скрываем overlay
-});
-
-
 // Шаг 3: Отправить данные регистрации на сервер
 async function sendRegistrationRequest(dataJSON) {
     console.log('sending registration data...');
@@ -104,23 +94,37 @@ async function sendRegistrationRequest(dataJSON) {
     return responseData;
 }
 
-$(document).ready(function () {
-    let errorMessage = $('#error-message');
+// Функция для проверки совпадения паролей
+function checkPasswords() {
+    let password = $('input[name="password"]').val();
+    let passwordRepeat = $('input[name="password-repeat"]').val();
 
-    // Функция для проверки совпадения паролей
-    function checkPasswords() {
-        let password = $('input[name="password"]').val();
-        let passwordRepeat = $('input[name="password-repeat"]').val();
-
-        if (password === passwordRepeat) {
-            // Если пароли совпадают, очищаем сообщение об ошибке
-            errorMessage.text('');
-        } else {
-            // Если пароли не совпадают, показываем сообщение об ошибке
-            errorMessage.text('Пароли не совпадают!');
-        }
+    if (password === passwordRepeat) {
+        // Если пароли совпадают, очищаем сообщение об ошибке
+        errorMessage.text('');
+    } else {
+        // Если пароли не совпадают, показываем сообщение об ошибке
+        errorMessage.text('Пароли не совпадают!');
     }
+}
+
+// Функция для проверки формата почты
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+$(document).ready(function () {
+    // Обработка кнопки "Вернуться на главную"
+    $('#loading-overlay').on('click', '#go-home', function () {
+        window.location.href = '/'; // Перенаправление на главную страницу
+    });
+
+// Обработка кнопки "Попробовать позже"
+    $('#loading-overlay').on('click', '#try-again', function () {
+        $('#loading-overlay').hide(); // Скрываем overlay
+    });
 
     // Добавляем обработчики событий на поля ввода
     $('#password, #password-repeat').on('input', checkPasswords);
+
 });
