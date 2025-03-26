@@ -13,11 +13,11 @@ def request_on_profile_page(requests, id_of_user):
 
     user_data = client_mysqldb.get_user_data_from_table(id_of_user)
     tags_of_user = json.loads(user_data[4]) if user_data[4] is not None else None
-    tags = {1: 'развлечения',  2: 'наука',  3: 'животные',  4: 'кухня',  5: 'искусство',  6: 'дети',  7: 'музыка',  8: 'кино и сериалы',  9: 'путешествия',  10: 'игры',  11: 'мода и стиль',  12: 'здоровье',  13: 'образование'}
+    tags = ['развлечения', 'наука', 'животные', 'кухня', 'искусство',  'дети', 'музыка', 'кино и сериалы', 'путешествия', 'игры', 'мода и стиль', 'здоровье', 'образование']
 
     if tags_of_user is not None:
-        tags = {k: v for k, v in tags.items() if v not in tags_of_user}
+        tags = [tag for tag in tags if tags not in tags_of_user]
 
     user = {'id': id_of_user, 'username': user_data[0], 'email': user_data[1], 'phone': user_data[2], 'date_of_birth': user_data[3], 'tags_of_user': tags_of_user, 'usersPolls': user_polls,  'completedPolls': pass_user_polls}
-    return render(requests, 'profile_page.html', context={'user': user, 'tags': tags.items()})
+    return render(requests, 'profile_page.html', context={'user': user, 'tags': tags})
 
