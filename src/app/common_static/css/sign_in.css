@@ -27,8 +27,6 @@ h1 {
 }
 
 input {
-    border: var(--violet) 1.5px solid;
-    border-radius: 4px;
     display: block;
     height: 30px;
     width: calc(100% - 10px);
@@ -133,4 +131,9 @@ form > * {
     border: var(--violet) solid 1.5px;
     border-radius: var(--border-radius);
     padding: 3px 16px;
+}
+
+#login:valid, input[type="password"]:valid {
+    border-color: green;
+    outline-color: green;
 }

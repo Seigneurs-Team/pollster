@@ -15,7 +15,7 @@ ul.polls {
 }
 
 li.poll-item {
-    width: 340px;
+    width: 360px;
 
 }
 
@@ -83,6 +83,7 @@ h2.poll-name {
     overflow: hidden;
     position: relative;
     font-size: 14px;
+    margin: 5px 0;
 }
 
 .poll-author {

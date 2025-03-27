@@ -17,7 +17,6 @@ h1 {
 }
 
 .form > * {
-    /*width: 100%;*/
     margin: auto;
 }
 
@@ -87,14 +86,11 @@ h1 {
 }
 
 .input-wrapper:hover {
-    background-color: #c7caec;
-    /*background-color: #9398cf;*/
-
+    background-color: #d1d3ed;
 }
 
 
 .questionImage {
-    /*width: calc(100% - 20px);*/
     line-height: 28px;
 }
 
@@ -108,7 +104,6 @@ h1 {
 }
 
 .options .input-wrapper {
-    /*display: inline-block;*/
     width: calc(100% - 40px);
     display: flex;
     justify-content: space-between;
@@ -131,7 +126,6 @@ h1 {
 
 .questionImage {
     display: inline-block;
-    /* border-radius: var(--border-radius); */
     background: white;
     text-align: left;
 padding: 0 10px;
@@ -145,7 +139,6 @@ padding: 0 10px;
 button.deleteQuestion {
     border: red solid 1px;
     color: red;
-    /*width: 100%;*/
 }
 
 button.deleteQuestion:hover {

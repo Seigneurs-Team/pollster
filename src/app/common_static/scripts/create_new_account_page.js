@@ -53,7 +53,7 @@ $('#loginForm').on('submit', async function (event) {
             // Обработка ответа от сервера
             if (response.response === 200) {
                 // Успешная регистрация
-                $('#overlay-message').text(`Добро пожаловать, ${login}!`);
+                $('#overlay-message').text(`Добро пожаловать!`);
                 $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
             } else {
                 // Ошибка регистрации

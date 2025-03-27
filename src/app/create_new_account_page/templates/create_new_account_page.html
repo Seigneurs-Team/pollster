@@ -38,13 +38,13 @@
         <form action="" id="loginForm" class="registration">
             <div>
                 <label for="login">Логин (почта):</label>
-                <input type="text" name="login" id="login" autocomplete="username" maxlength="100">
+                <input type="text" name="login" id="login" autocomplete="email" maxlength="100" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required>
             </div>
             <div>
                 <label for="password">Пароль:</label>
                 <div class="password-wrapper">
                     <input type="password" name="password" class="password" id="password" autocomplete="new-password"
-                           placeholder="Введите пароль">
+                           placeholder="Введите пароль" required>
                     <a href="#" class="password-control" data-view="{% static 'img/view.svg' %}"
                        data-no-view="{% static 'img/no-view.svg' %}"></a>
 
@@ -55,14 +55,14 @@
                 <div class="password-wrapper">
                     <input type="password" name="password-repeat" class="password" autocomplete="new-password"
                            id="password-repeat"
-                           placeholder="Повторите пароль">
+                           placeholder="Повторите пароль" required>
                     <a href="#" class="password-control" data-view="{% static 'img/view.svg' %}"
                        data-no-view="{% static 'img/no-view.svg' %}"></a>
                 </div>
             </div>
             <div>
                 <label for="nickname">Ваш ник:</label>
-                <input type="text" name="nickname" id="nickname">
+                <input type="text" name="nickname" id="nickname" required>
             </div>
             <!-- Место для отображения сообщения об ошибке -->
             <div id="error-message"></div>

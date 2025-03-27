@@ -39,12 +39,12 @@
                 <path d="M152.92,318.307c1.707,1.707,3.413,2.56,5.973,2.56c1.707,0,4.267-0.853,5.973-2.56l204.8-204.8 c3.413-3.413,3.413-8.533,0-11.947c-3.413-3.413-8.533-3.413-11.947,0l-204.8,204.8 C149.507,309.773,149.507,314.893,152.92,318.307z"></path>
                 <path d="M194.733,360.12c1.707,1.707,3.413,2.56,5.973,2.56s4.267-0.853,5.973-2.56l204.8-204.8 c3.413-3.413,3.413-8.533,0-11.947s-8.533-3.413-11.947,0l-204.8,204.8C191.32,351.587,191.32,356.707,194.733,360.12z"></path> </g> </g></g></svg>
         </button>
-        <input type="text" name="edit_name_input" id="" value="{{user.username}}" maxlength="100">
+        <input type="text" name="edit_name_input" id="" value="{{user.username}}" maxlength="100" required>
     </div>
     <span>О вас</span>
     <div class="about-you">
         <label for="email">Электроная почта</label>
-        <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled">
+        <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required>
         <label for="phone">Номер телефона</label>
         <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}" disabled="disabled">
         <label for="date-of-birth">Дата рождения</label>

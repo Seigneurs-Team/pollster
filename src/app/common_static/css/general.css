@@ -146,3 +146,12 @@ footer p {
     font-size: 12px;
     color: red;
 }
+
+input[type="text"] {
+    border: var(--violet) 1.5px solid;
+}
+
+input:invalid {
+    border-color: red;
+    outline-color: red;
+}

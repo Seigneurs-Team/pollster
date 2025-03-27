@@ -41,10 +41,8 @@ $('#loginForm').on('submit', async function (event) {
             console.log('response:', response)
 // Обработка ответа от сервера
             if (response.response === 'ok') {
-                console.log(`Добро пожаловать, ${login}!`)
-
                 // Успешная регистрация
-                $('#overlay-message').text(`Добро пожаловать, ${login}!`);
+                $('#overlay-message').text(`Добро пожаловать`);
                 $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
             } else {
                 console.log('Ошибка при входе в аккаунт')
