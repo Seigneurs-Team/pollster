@@ -31,12 +31,18 @@
 
         <main>
             <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
-            <h1 class="poll-name">Прохождение опроса<br>{{poll.name_of_poll}}</h1>
+            <h1 class="poll-name">{{poll.name_of_poll}}</h1>
             <p class="poll-description">{{poll.description}}</p> <span class="poll_id">#{{poll.id_of_poll}}</span>
-            <p class="poll-tags">{{poll.tags}} </p>
+            <p class="poll-tags">
+                {% for tag in poll.tags %}
+            <div class="tag">{{tag}}</div>
+            {% endfor %}
+            </p>
             <button class="start">Прохождение опроса</button>
-            <div id="questions"></div>
-            <button class="submit" data-poll-id="{{poll.id_of_poll}}">Отправить</button>
+            <form>
+                <div id="questions"></div>
+                <button class="submit" data-poll-id="{{poll.id_of_poll}}">Отправить</button>
+            </form>
         </main>
 
     </div>

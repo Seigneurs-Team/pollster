@@ -193,6 +193,10 @@ button.deleteQuestion:hover {
     width: 100%;
 }
 
+.option input[type="text"] {
+    width: 100%;
+}
+
 .delOption {
     border: none;
     background: transparent;

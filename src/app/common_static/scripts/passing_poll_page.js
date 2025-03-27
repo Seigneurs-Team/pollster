@@ -16,7 +16,7 @@ questionsList.forEach(question => {
 
 // нажатие на кнопку "прохождение опроса"
 $(".start").on('click', function () {
-    questionsDiv.show();
+    $('form').show();
     $(this).hide()
 });
 

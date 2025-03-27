@@ -84,14 +84,18 @@
         <h1>Рекомендуем</h1>
 
         <ul class="polls">
-            {% for item in all_objects %}
+            {% for poll in all_objects %}
             <li class="poll-item">
-                <a href="passing_poll/{{item.id_of_poll}}/">
-                    <h2 class="poll-name">{{item.name_of_poll}}</h2> <span class="poll_id">#{{item.id_of_poll}}</span>
-                    <p class="poll-description">{{item.description}}</p>
+                <a href="passing_poll/{{poll.id_of_poll}}/">
+                    <h2 class="poll-name">{{poll.name_of_poll}}</h2> <span class="poll_id">#{{poll.id_of_poll}}</span>
+                    <p class="poll-description">{{poll.description}}</p>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
-                    <p class="poll-tags">{{item.tags}} </p>
-                    <span class="poll-author">Автор: {{item.author}}</span>
+                    <p class="poll-tags">
+                        {% for tag in poll.tags %}
+                    <div class="tag">{{tag}}</div>
+                    {% endfor %}
+                    </p>
+                    <span class="poll-author">Автор: {{poll.author}}</span>
                     <div class="till-the-end">
                         <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.003 512.003"
