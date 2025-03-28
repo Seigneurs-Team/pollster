@@ -6,6 +6,7 @@
 
 .poll-img img {
     width: 100%;
+    border-radius: 28px;
 }
 
 main {

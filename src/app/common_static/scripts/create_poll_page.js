@@ -162,7 +162,7 @@ $('.tag').click(function() {
 });
 
 // Функция для проверки на HTML-теги
-export function hasHTMLTags(input) {
+function hasHTMLTags(input) {
     const htmlPattern = /<[^>]*>/; // Ищет любые HTML-теги
     return htmlPattern.test(input);
 }
