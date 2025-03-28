@@ -29,6 +29,5 @@ $(document).ready(function() {
     });
     $('main').css('background-image', 'url(' + $('main').data('background') + ')');
     console.log("$('main').data('background'): ", $('main').data('background'))
-
-
 });
+

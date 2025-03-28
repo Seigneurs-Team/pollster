@@ -12,12 +12,7 @@ $('#loginForm').on('submit', async function (event) {
     let passwordRepeat = $('input[name="password-repeat"]').val();
     let nickname = $('input[name="nickname"]').val();
 
-    // проверка данных формы
-    if (!(login && password)) {
-        errorMessage.text('Логин и пароль не могут быть пустыми!');
-    } else if (!isValidEmail(login)) {
-        errorMessage.text('Некорректный формат почты!');
-    } else if (password !== passwordRepeat) {
+    if (password !== passwordRepeat) {
         errorMessage.text('Пароли не совпадают!');
     } else {
         // Если пароли совпадают, очищаем сообщение об ошибке

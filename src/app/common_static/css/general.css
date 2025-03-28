@@ -155,3 +155,7 @@ input:invalid {
     border-color: red;
     outline-color: red;
 }
+
+[aria-invalid] {
+    background-color: #f5b2b2;
+}
