@@ -1,143 +1,173 @@
 const questionsDiv = $("#questions");
 
-// отрисовка вопросов
-questionsList.forEach(question => {
-    const questionEl = $(`<div id="${question.id}" class="question"></div>`)
-
-    // <p> текст впороса
-    const questionText = $(`<p class="question-text">${question.text}</p>`)
-    const questionContent = answerType(question.type, question.id, question);
-
-    questionEl.append(questionText);
-    questionEl.append(questionContent);
-    questionsDiv.append(questionEl);
-
-})
-
-// нажатие на кнопку "прохождение опроса"
-$(".start").on('click', function () {
-    $('form').show();
-    $(this).hide()
+// Инициализация при загрузке документа
+$(document).ready(function() {
+    renderAllQuestions();
+    setupEventListeners();
+    setHeaderBackground();
 });
 
-// отрисовка содержимого вопросов
+/**
+ * Отрисовка всех вопросов
+ */
+function renderAllQuestions() {
+    questionsList.forEach(question => {
+        const questionEl = $(`<div id="${question.id}" class="question"></div>`);
+        const questionText = $(`<p class="question-text">${question.text}</p>`);
+        const questionContent = answerType(question.type, question.id, question);
+
+        questionEl.append(questionText, questionContent);
+        questionsDiv.append(questionEl);
+    });
+}
+
+/**
+ * Настройка обработчиков событий
+ */
+function setupEventListeners() {
+    $(".start").on('click', handleStartButtonClick);
+    $(".submit").on('click', handleSubmitButtonClick);
+}
+
+/**
+ * Обработка клика на кнопку "Прохождение опроса"
+ */
+function handleStartButtonClick() {
+    $('form').show();
+    $(this).hide();
+}
+
+/**
+ * Генерация содержимого вопроса по типу
+ */
 function answerType(questionType, questionId, question) {
-    // отрисовка вопросов: возвращает соответствующий контент:
-    //текст вопроса выводится в любом случае, поэтому он не в этой функции, т.к. не зависит от типа
-    //  - вопрос с развернутым ответом - поле для ввода ответа textarea
-    //  - вопрос с кратким текстовым ответом - поле для ввода ответа input:text
-    //  - checkbox: ul со всеми вариантами: checkbox, p
-    //  - radiobutton: ul со всеми вариантами: radio, p
+    switch(questionType) {
+        case "short text":
+            return '<input class="answerShort" type="text" maxlength="60" placeholder="Короткий ответ">';
 
-    if (questionType == "short text") {
-        return '<input class="answerShort" type="text" maxlength="60" placeholder="Короткий ответ">';
-    } else if (questionType == "long text") {
-        return '<textarea class="answerLong" type="text" rows="5" maxlength="700" placeholder="Развернутый ответ">';
+        case "long text":
+            return '<textarea class="answerLong" type="text" rows="5" maxlength="700" placeholder="Развернутый ответ">';
 
-    } else if (questionType == "radiobutton" | questionType == "checkbox") {
-        // name равно индексу question, id должно быть уникально как в каждой радиокнопке/чекбоксе, так и в каждом вопросе, поэтому оно будет составляться из id вопроса и номера кнопки {question_id}-{radiobutton_id}. номер кнопки из counter считаем, просто по порядку
-        let optionsCounter = 0
+        case "radiobutton":
+        case "checkbox":
+            return renderOptions(questionType, questionId, question);
 
-        let options = $(`<div class="options"></div>`)
+        case "radiobutton img":
+        case "checkbox img":
+            // TODO: реализовать вопросы с изображениями
+            return $();
 
-        question.options.forEach(option => {
-            options.append(addOption(questionType, questionId, option, optionsCounter))
-            optionsCounter++
-        })
-
-        return options
-        // TODO вопросы с изображениями
-    } else if (questionType == "radiobutton img") {
-        return 0
-
-    } else if (questionType == "checkbox img") {
-        return 0
-
+        default:
+            return $();
     }
 }
 
-// отрисовка вариантов ответов
-function addOption(type, questionId, option, counter) {
-    // Создаем новый вариант ответа
+/**
+ * Отрисовка вариантов ответов
+ */
+function renderOptions(type, questionId, question) {
+    const options = $(`<div class="options"></div>`);
+    let counter = 0;
 
-    // id варианта ответа составляется из id вопроса и порядкового номера варианта ответа (передается аргументом counter)
-    const id = questionId + "_" + counter
+    question.options.forEach(option => {
+        options.append(addOption(type, questionId, option, counter));
+        counter++;
+    });
 
-    return $(`<div class="option">
-        <input type="${type == "radiobutton" ? "radio" : type}" name="${questionId}" id=${id} class="check">
-        <label type="text" for=${id}>${option}</label>
-    </div>`)
+    return options;
 }
 
+/**
+ * Генерация HTML для варианта ответа
+ */
+function addOption(type, questionId, option, counter) {
+    const inputType = type === "radiobutton" ? "radio" : "checkbox";
+    const id = `${questionId}_${counter}`;
 
-// Извлечение и отправка результатов
-$(".submit").on('click', async function () {
-    let poll_id = $(event.currentTarget).attr('data-poll-id')
+    return $(`
+        <div class="option">
+            <input type="${inputType}" name="${questionId}" id="${id}" class="check">
+            <label for="${id}">${option}</label>
+        </div>
+    `);
+}
 
+/**
+ * Обработка отправки результатов
+ */
+async function handleSubmitButtonClick(event) {
+    const poll_id = $(event.currentTarget).attr('data-poll-id');
     const results = {
         poll_id: poll_id,
-        answers: []
+        answers: collectAnswers()
     };
 
-    questionsList.forEach(question => {
-        const answer = {
-            question_id: question.id,
-            type: question.type,
-            value: null
-        };
+    try {
+        const response = await sendPassedPoll(results);
+        console.log('Ответ сервера:', response);
+    } catch (error) {
+        console.error('Ошибка при отправке данных:', error);
+    }
+}
 
-        // Обработка разных типов вопросов
-        const questionEl = $(`#${question.id}`);
-        switch (question.type) {
-            case 'short text':
-                answer.value = questionEl.find('.answerShort').val();
-                break;
+/**
+ * Сбор ответов со всех вопросов
+ */
+function collectAnswers() {
+    return questionsList.map(question => ({
+        question_id: question.id,
+        type: question.type,
+        value: getAnswerValue(question)
+    }));
+}
 
-            case 'long text':
-                answer.value = questionEl.find('.answerLong').val();
-                break;
+/**
+ * Получение значения ответа для конкретного вопроса
+ */
+function getAnswerValue(question) {
+    const questionEl = $(`#${question.id}`);
 
-            case 'radiobutton':
-                const selectedRadio = questionEl.find('input[type="radio"]:checked');
-                answer.value = selectedRadio.length ? selectedRadio.next('label').text() : null;
-                break;
+    switch(question.type) {
+        case 'short text':
+            return questionEl.find('.answerShort').val();
 
-            case 'checkbox':
-                const checkedBoxes = questionEl.find('input[type="checkbox"]:checked');
-                answer.value = checkedBoxes.map(function () {
-                    return $(this).next('label').text();
-                }).get();
-                break;
-        }
+        case 'long text':
+            return questionEl.find('.answerLong').val();
 
-        results.answers.push(answer);
-    });
-    console.log(results)
-    const response = await sendPassedPoll(results);
-});
+        case 'radiobutton':
+            return questionEl.find('input[type="radio"]:checked').next('label').text() || null;
 
-// Отправить данные пройденного опроса
+        case 'checkbox':
+            return questionEl.find('input[type="checkbox"]:checked')
+                .map((i, el) => $(el).next('label').text()).get();
+
+        default:
+            return null;
+    }
+}
+
+/**
+ * Отправка данных на сервер
+ */
 async function sendPassedPoll(results) {
-    console.log('sending registration data...');
+    console.log('Отправка результатов...');
     const response = await fetch('/post_pass_poll', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        credentials: 'include', // Отправляем куки
+        credentials: 'include',
         body: JSON.stringify(results),
     });
 
-    const responseData = await response.json();
-    console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
-
     if (!response.ok) {
-        console.error('Ошибка при отправке данных:', responseData);
         throw new Error('Ошибка при отправке данных');
     }
 
-    return responseData;
+    return await response.json();
 }
 
-// Фон шапки
-$(document).ready(function() {
-    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
-});
+/**
+ * Установка фона шапки
+ */
+function setHeaderBackground() {
+    $('header').css('background-image', `url(${$('header').data('background')})`);
+}
