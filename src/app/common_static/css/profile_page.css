@@ -2,7 +2,6 @@
     --border-radius: 12px;
     --violet: #5863BF;
 
-    --light-violet: #7688ff;
 }
 
 .profile-photo {
@@ -40,6 +39,11 @@
     margin: 7px 0 20px 0;
 }
 
+.tags-wrapper, .save-changes {
+    margin: 0px 0 20px 0;
+
+}
+
 /* Style the buttons that are used to open the tab content */
 .tab button {
     background-color: inherit;
@@ -53,7 +57,7 @@
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-    background-color: var(--light-violet);
+    background-color: var(--violet);
 }
 
 /* Create an active/current tablink class */
@@ -63,6 +67,7 @@
     color: #fff;
     font-weight: 400;
 }
+
 #your-polls-btn {
     border-top-left-radius: 10px;
 }
@@ -78,21 +83,68 @@
     border-top: none;
 }
 
-.log-out {
+.log-out img {
+    width: 30px;
+}
+
+.about-you-btns {
+    display: flex;
+}
+
+.save-changes {
+    background-color: white;
+    border: solid 1px var(--violet);
+    border-radius: 10px;
+}
+
+.save-changes, .delete-account, .log-out {
+    width: 200px;
+    height: 28px;
+}
+
+.delete-account, .log-out {
     background-color: white;
     border: solid 1px red;
     border-radius: 10px;
-    width: 200px;
+    color: red;
 }
-.log-out:hover {
+
+.delete-account:hover, .log-out:hover {
     background-color: red;
-    border: solid 2px red;
 }
-.delete-account {
-    background-color: red;
-    border-radius: 10px;
-    width: 200px;
+
+header {
+    align-items: flex-start;
 }
-.delete-account:hover {
-    background-color: #910000;
+
+
+.tags, .selected-tags, .not-selected-tags {
+    display: inline;
+}
+
+.tag {
+    font-size: 14px;
+    padding: 5px;
+    margin: 2px;
+    border: var(--violet) solid 1.5px;
+}
+
+.selected-tags > .tag {
+    background: var(--violet);
+    color: #FFF;
+}
+
+label {
+    display: block;
+}
+
+#tags-error-message {
+    font-size: 12px;
+    display: none;
+    color: red;
+}
+
+.error-message {
+    margin-bottom: 20px;
+    text-align: center;
 }

@@ -58,12 +58,20 @@ export function submitPoll() {
 
     }).get() // Преобразуем результат в массив
 
+    let tags = [];
 
+    // Перебираем все элементы, у которых id начинается с "tag-"
+    $('.selected-tags [id^="tag-"]').each(function () {
+        tags.push($(this).text().trim()); // получаем текст тэга
+    });
+
+    // Выводим массив tags в консоль для проверки
+    console.log('tags: ', tags);
     // Собираем данные
     let pollData = {
         name_of_poll: $('#pollTitle').val(),
         description: $('#pollDescription').val(),
-        tags: $('#pollTags').val(),
+        tags: tags,
         questions: questions,
     };
     console.log("pollData:", pollData)

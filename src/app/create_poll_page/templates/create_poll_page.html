@@ -24,12 +24,7 @@
 
 <body>
 <div class="content">
-    <header>
-        <a href="/" class="go-back">
-            <span>вернуться назад</span>
-            <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
-        </a>
-        <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+    <header data-background="{% static 'img\header.png' %}">
         <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
                                                                                      src="{% static 'img\profile img.png' %}"
                                                                                      alt="profile photo"></a>
@@ -48,7 +43,7 @@
 
             <div class="input-wrapper">
                 <label class="form-label" for="pollTitle">Название опроса (макс. 60 символов):</label>
-                <input type="text" id="pollTitle" maxlength="60">
+                <input type="text" id="pollTitle" maxlength="100">
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
             </div>
 
@@ -58,12 +53,18 @@
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
             </div>
 
-            <!-- TODO пока что тэги - это просто строка, но в дальнейшем надо будет реализовать это как-то по-другому: можно сделать список возможных тэгов и выбор из него. -->
-
-            <div class="input-wrapper">
-                <label class="form-label" for="pollTags">Тэги:</label>
-                <input type="text" id="pollTags" maxlength="60">
-                <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
+            <div class="tags-wrapper">
+                <label class="form-label">Тэги:</label>
+                <div class="tags">
+                    <div class="selected-tags"></div>
+                    <div class="not-selected-tags">
+                        {% for id, tag in tags %}
+                        <button class="tag" id="tag-{{id}}">
+                            <span>{{tag}}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
 
             <label class="form-label">Вопросы</label>

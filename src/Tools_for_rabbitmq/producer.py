@@ -1,15 +1,17 @@
+import json
+
 import pika
 from typing import Any, Optional, Union
 import re
 from Tools_for_rabbitmq.Queue import Queue
 from pika import exceptions
 from Configs.Hosts import Hosts
-from Configs.Exceptions import WronglyResponse
+from Configs.Exceptions import WronglyResponse, ConnectionRefused
 
 
 class Producer:
     def __init__(self, host):
-        self.parameters = pika.ConnectionParameters(heartbeat=60, host=host)
+        self.parameters = pika.ConnectionParameters(heartbeat=0, host=host)
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
 
@@ -38,15 +40,22 @@ class Producer:
                 properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent, reply_to=self.callback_queue)
             )
 
+            count: int = 0
             while self.response is None:
-                self.connection.process_data_events(time_limit=60)
+                self.connection.process_data_events(time_limit=3)
+                count += 1
+                if count == 2:
+                    raise ConnectionRefused('соединение с контейнером потеряно')
             else:
                 response = self.response
                 self.response = None
-                return response
+                return json.loads(response)
         except exceptions.ChannelWrongStateError:
             self.reconnect()
             self.publish(message=message, properties=properties, queue=queue)
+
+        except ConnectionRefused:
+            return 'Потеряно соединение с сервером Dionysus'
 
     def close_connection(self):
         self.channel.close()

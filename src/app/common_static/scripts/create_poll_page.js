@@ -43,7 +43,7 @@ $(".answerType").on('click', function () {
 <div class="question" id="${questionsId}" data-type="${questionType}">
     <span class="questionId">Вопрос #` + questionsId + `</span>
     <div class="input-wrapper">
-        <input class="questionText" type="text" maxlength="60" placeholder="Задайте вопрос">
+        <input class="questionText" type="text" maxlength="200" placeholder="Задайте вопрос">
         <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
     </div>
     <button class="questionImage">+ Картинка опроса (необязательно)</button>
@@ -141,7 +141,7 @@ function renderOption(type, questionId, optionId) {
     return `<div class="option">
         <input type="${type}" name="${questionId}" id="${questionId}_${optionId}" class="check">
             <div class="input-wrapper">
-                <input type="text" for="${questionId}_${optionId}" id="${questionId}_${optionId}-input" class="value" placeholder="Вариант ответа"><button class="delOption"><img src="${$('main').data('deloption')}" alt="удалить вариант ответа"></button>
+                <input type="text" for="${questionId}_${optionId}" id="${questionId}_${optionId}-input" class="value" placeholder="Вариант ответа" maxlength="100"><button class="delOption"><img src="${$('main').data('deloption')}" alt="удалить вариант ответа"></button>
                     <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
             </div>
     </div>`
@@ -187,7 +187,7 @@ function showHasHTMLTagsMessage(e) {
     }
 }
 
-// Проверяем все текстовые поля
+// Проверяем все текстовые поля на наличие html кода
 $(`input[type="text"], textarea`).each(function () {
     $(this).on("input", function (e) {
         showHasHTMLTagsMessage(e)
@@ -204,3 +204,19 @@ $(document).ready(function () {
     $('.delOption').css('background-image', 'url(' + $('main').data('deloption') + ')');
 
 })
+
+$('.tag').click(function() {
+    // Проверяем, где находится текущий элемент
+    if ($(this).parent().hasClass('not-selected-tags') && $('.selected-tags').children().length < 4) {
+        // Если элемент в .not-selected-tags и выбрано менее 4х тэгов, перемещаем его в .selected-tags
+        $(this).appendTo('.selected-tags');
+    } else if ($(this).parent().hasClass('selected-tags')) {
+        // Если элемент в .selected-tags, перемещаем его в .not-selected-tags
+        $(this).appendTo('.not-selected-tags');
+    }
+});
+
+// Фон шапки
+$(document).ready(function() {
+    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
+});

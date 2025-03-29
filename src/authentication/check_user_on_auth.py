@@ -1,3 +1,5 @@
+import mysql.connector.errors
+
 from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import CookieWasExpired, NotFoundPoll
 
@@ -5,18 +7,24 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
 
 
-def check_user(request):
+def check_user(request, get_id_of_user: bool = False):
     assert 'auth_sessionid' in request.COOKIES
     auth_sessionid = request.COOKIES['auth_sessionid']
-    user = client_mysqldb.get_user_nickname_from_table_with_cookie(auth_sessionid, 'auth_sessionid')
-    assert user is not None
-    return user
+    if get_id_of_user is False:
+        user = client_mysqldb.get_user_nickname_from_table_with_cookie(auth_sessionid, 'auth_sessionid')
+        assert user is not None
+        return user
+    else:
+        id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(auth_sessionid, 'auth_sessionid')
+        assert id_of_user is not None
+        return id_of_user
 
 
 def authentication(func):
     def wrapped_func(request: WSGIRequest, *args, **kwargs):
         try:
-            check_user(request)
+            id_of_user = check_user(request, get_id_of_user=True)
+            kwargs['id_of_user'] = id_of_user
             return func(request, *args, **kwargs)
         except (AssertionError, CookieWasExpired) as _ex:
             return HttpResponseRedirect('/sign_in')
@@ -63,4 +71,17 @@ def authentication_for_delete_polls(func):
             return HttpResponseForbidden()
         except NotFoundPoll:
             return HttpResponseNotFound()
+    return wrapped_func
+
+
+def authentication_for_change_user_data(func):
+    def wrapped_func(request: WSGIRequest, *args, **kwargs):
+        try:
+            id_of_user = check_user(request, get_id_of_user=True)
+            kwargs['id_of_user'] = id_of_user
+            return func(request, *args, **kwargs)
+        except mysql.connector.errors.DataError:
+            return HttpResponseForbidden('некорректная длинна поля')
+        except (AssertionError, CookieWasExpired) as _ex:
+            return HttpResponseRedirect('/sign_in')
     return wrapped_func

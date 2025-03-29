@@ -5,4 +5,4 @@ from dataclasses import dataclass
 class Hosts:
     mongodb: str = 'localhost'
     mysql_db: str = '172.16.235.2'     #172.16.235.2
-    rabbitmq: str = 'localhost'
+    rabbitmq: str = '172.16.235.3'      #172.16.235.3
