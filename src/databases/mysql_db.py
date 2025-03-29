@@ -140,6 +140,20 @@ class MysqlDB:
             polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user))
         return polls_list
 
+    def get_polls_by_their_id(self, polls_id: list[int]):
+        polls_list: list = []
+        for idx in polls_id:
+            transaction = f"""SELECT name_of_poll, description, tags, id_of_author FROM polls WHERE id = {idx}"""
+            self.cursor.execute(transaction)
+            result = self.cursor.fetchone()
+
+            if result is None:
+                continue
+
+            polls_list.append(Poll(result[0], result[1], json.loads(result[2]), idx, result[3]))
+
+        return polls_list
+
     def get_poll(self, id_of_poll: int) -> dict or None:
         """
         Функция выполняет транзакцию, у которой ответ состоит из перекрытия полей четырех таблиц.
@@ -352,9 +366,11 @@ class MysqlDB:
         self.connection.commit()
 
     def get_vectorization_polls(self, id_of_user: int):
-        self.cursor.execute(f"""SELECT ranking_table.id_of_poll, ranking_table.vector_of_poll 
-        FROM ranking_table INNER JOIN table_of_users_who_pass_the_poll 
-        ON table_of_users_who_pass_the_poll.id_of_user != {id_of_user}""")
+        self.cursor.execute(f"""SELECT ranking_table.id_of_poll, ranking_table.vector_of_poll
+        FROM ranking_table LEFT JOIN table_of_users_who_pass_the_poll 
+        ON ranking_table.id_of_poll = table_of_users_who_pass_the_poll.id_of_poll AND
+        table_of_users_who_pass_the_poll.id_of_user = {id_of_user}
+        WHERE table_of_users_who_pass_the_poll.id_of_poll IS NULL""")
 
         response_of_query = self.cursor.fetchall()
 
@@ -528,8 +544,11 @@ class MysqlDB:
         return id_of_superusers
 
     def add_entry_in_ranking_table_of_users(self, id_of_user: int, vector_of_user: bytes):
-        self.cursor.execute("""INSERT INTO ranking_table_of_users (id_of_user, vector_of_user) VALUES (%s, %s)""", (id_of_user, vector_of_user))
-        self.connection.commit()
+        try:
+            self.cursor.execute("""INSERT INTO ranking_table_of_users (id_of_user, vector_of_user) VALUES (%s, %s)""", (id_of_user, vector_of_user))
+            self.connection.commit()
+        except mysql.connector.errors.IntegrityError:
+            self.cursor.execute("""UPDATE ranking_table_of_users SET vector_of_user = %s WHERE id_of_user = %s""", (vector_of_user, id_of_user))
 
     def get_vector_of_user(self, id_of_user: int):
         self.cursor.execute(f"""SELECT vector_of_user FROM ranking_table_of_users WHERE id_of_user = {id_of_user}""")
@@ -553,6 +572,15 @@ class MysqlDB:
 
         self.cursor.execute(transaction, (value, ))
         self.connection.commit()
+
+    def get_vector_of_user_from_ranking_table(self, id_of_user: int) -> bool:
+        try:
+            self.cursor.execute(f"""SELECT vector_of_user FROM ranking_table_of_users WHERE id_of_user = {id_of_user}""")
+            response_of_query = self.cursor.fetchone()
+            assert response_of_query is not None
+            return True
+        except AssertionError:
+            return False
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 

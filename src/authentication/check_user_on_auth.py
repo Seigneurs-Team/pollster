@@ -1,3 +1,5 @@
+import mysql.connector.errors
+
 from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import CookieWasExpired, NotFoundPoll
 
@@ -69,4 +71,17 @@ def authentication_for_delete_polls(func):
             return HttpResponseForbidden()
         except NotFoundPoll:
             return HttpResponseNotFound()
+    return wrapped_func
+
+
+def authentication_for_change_user_data(func):
+    def wrapped_func(request: WSGIRequest, *args, **kwargs):
+        try:
+            id_of_user = check_user(request, get_id_of_user=True)
+            kwargs['id_of_user'] = id_of_user
+            return func(request, *args, **kwargs)
+        except mysql.connector.errors.DataError:
+            return HttpResponseForbidden('некорректная длинна поля')
+        except (AssertionError, CookieWasExpired) as _ex:
+            return HttpResponseRedirect('/sign_in')
     return wrapped_func

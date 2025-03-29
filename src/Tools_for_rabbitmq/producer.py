@@ -72,7 +72,6 @@ class Producer:
         if re.search(r'ERROR', body.decode()):
             raise WronglyResponse(f'Ошибка: {body.decode()}')
         else:
-            print(body.decode())
             self.response = body.decode()
 
     def reconnect(self):
