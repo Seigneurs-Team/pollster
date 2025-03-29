@@ -2,9 +2,12 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+          rel="stylesheet">
     <title>Pollster</title>
     {% load static %}
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
@@ -36,31 +39,41 @@
                 <path d="M152.92,318.307c1.707,1.707,3.413,2.56,5.973,2.56c1.707,0,4.267-0.853,5.973-2.56l204.8-204.8 c3.413-3.413,3.413-8.533,0-11.947c-3.413-3.413-8.533-3.413-11.947,0l-204.8,204.8 C149.507,309.773,149.507,314.893,152.92,318.307z"></path>
                 <path d="M194.733,360.12c1.707,1.707,3.413,2.56,5.973,2.56s4.267-0.853,5.973-2.56l204.8-204.8 c3.413-3.413,3.413-8.533,0-11.947s-8.533-3.413-11.947,0l-204.8,204.8C191.32,351.587,191.32,356.707,194.733,360.12z"></path> </g> </g></g></svg>
         </button>
-        <input type="text" name="edit_name_input" id="" value="{{user.username}}">
+        <input type="text" name="edit_name_input" id="" value="{{user.username}}" maxlength="100">
     </div>
     <span>О вас</span>
     <div class="about-you">
         <label for="email">Электроная почта</label>
-        <input type="text" name="" id="email" value="{{user.email}}">
+        <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled">
         <label for="phone">Номер телефона</label>
-        <input type="text" name="" id="phone" value="{{user.phone}}">
+        <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}" disabled="disabled">
         <label for="date-of-birth">Дата рождения</label>
-        <input type="date" name="" id="date-of-birth" value="{{user.date_of_birth}}">
+        <input type="date" name="" id="date-of-birth" value="{{user.date_of_birth}}" disabled="disabled">
         <div class="tags-wrapper">
             <label class="form-label">Ваши интересы:</label>
             <div class="tags">
-                <div class="selected-tags"></div>
+                <div class="selected-tags">
+                    {% for tag in user.tags_of_user %}
+                    <button class="tag" id="tag-{{id}}">
+                        <span>{{tag}}</span>
+                    </button>
+                    {% endfor %}
+                </div>
                 <div class="not-selected-tags">
-                    {% for id, tag in tags %}
+                    {% for tag in tags %}
                     <button class="tag" id="tag-{{id}}">
                         <span>{{tag}}</span>
                     </button>
                     {% endfor %}
                 </div>
             </div>
+            <div id="tags-error-message">>4 тэгов добавлять нельзя!</div>
+
         </div>
+        <!-- Место для отображения сообщения об ошибке -->
+        <div class="error-message"></div>
         <div class="about-you-btns">
-            <button class="save-changes">Сохранить изменения</button>
+            <button class="save-changes" type="submit">Сохранить изменения</button>
             <button class="delete-account">Удалить аккаунт</button>
         </div>
 

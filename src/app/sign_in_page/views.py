@@ -2,7 +2,7 @@ from django.shortcuts import render
 import json
 from databases.mysql_db import client_mysqldb
 from PoW.generate_random_string import generate_random_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 import datetime
 
 
@@ -30,11 +30,12 @@ def request_on_sign_in_account(request):
         pow = json_data.get('pow', '')
         pow_from_db = client_mysqldb.get_pow(cookie)
 
-        assert pow != ''
-        assert pow == pow_from_db
+        if pow == '' or pow != pow_from_db:
+            return HttpResponseForbidden(403)
 
         password_from_db, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         assert password == password_from_db
+        assert password_from_db is not None
 
         expired = datetime.datetime.now()
         expired = expired + datetime.timedelta(days=3)
@@ -46,4 +47,4 @@ def request_on_sign_in_account(request):
 
         return JsonResponse({'response': 'ok'})
     except AssertionError:
-        return JsonResponse({'response': 'not ok'})
+        return JsonResponse({'response': 'Неправильный пароль или почта'})

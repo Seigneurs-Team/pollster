@@ -2,13 +2,20 @@ from Configs.Poll import (Poll, Question, Option, RightAnswer, RightTextAnswer)
 from random import randint
 from app.passing_poll_page.views import check_the_type
 
+import json
+
 
 def get_random_id():
     return randint(1, 100000)
 
 
 def set_poll(json_data: dict, id_of_author: int) -> tuple[Poll, list[Question], list[Option], list[RightAnswer], list[RightTextAnswer]]:
-    poll: Poll = Poll(json_data.get("name_of_poll", ''), json_data.get("description", ''), json_data.get("tags", ""), get_random_id(), id_of_author)
+    assert json_data.get("name_of_poll", '') != ''
+    assert json_data.get('tags', "") != ''
+    assert isinstance(json_data.get('tags'), list)
+    assert len(json_data.get('tags')) > 0
+
+    poll: Poll = Poll(json_data.get("name_of_poll"), json_data.get("description", ''), json.dumps(json_data.get("tags"), ensure_ascii=False), get_random_id(), id_of_author)
     list_of_questions: list[Question] = set_questions(json_data, poll)
     list_of_options: list[Option] = set_options(json_data, list_of_questions)
     list_of_right_answers: list[RightAnswer] = set_right_answers(json_data, list_of_questions)

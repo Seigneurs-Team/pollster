@@ -126,6 +126,7 @@ h1 {
 
 .form textarea {
     min-height: 100px;
+    resize: vertical;
 }
 
 .questionImage {
@@ -185,9 +186,7 @@ button.deleteQuestion:hover {
 }
 
 .error-message {
-    font-size: 12px;
     display: none;
-    color: red;
 }
 
 .deleteQuestion, .addQuestion, .questionImage,#submitPollBtn {

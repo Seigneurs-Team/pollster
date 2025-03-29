@@ -141,3 +141,8 @@ footer p {
     top: 250px;
 
 }
+
+.error-message, #error-message {
+    font-size: 12px;
+    color: red;
+}
