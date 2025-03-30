@@ -58,8 +58,8 @@
                             <div class="tags">
                                 <div class="selected-tags"></div>
                                 <div class="not-selected-tags">
-                                    {% for id, tag in tags %}
-                                    <button class="tag" id="tag-{{id}}">
+                                    {% for tag in tags %}
+                                    <button class="tag">
                                         <span>{{tag}}</span>
                                     </button>
                                     {% endfor %}
