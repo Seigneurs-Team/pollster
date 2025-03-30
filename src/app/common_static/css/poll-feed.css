@@ -90,20 +90,6 @@ h2.poll-name {
     font-size: 14px;
 }
 
-/*!* Псевдоэлемент для создания эффекта градиента *!*/
-/*.poll-description::after {*/
-/*    content: '';*/
-/*    position: absolute;*/
-/*    bottom: 0;*/
-/*    left: 0;*/
-/*    right: 0;*/
-/*    height: 30px;*/
-/*    !* Высота градиентной части *!*/
-/*    background: linear-gradient(to bottom, transparent, white);*/
-/*    !* Или используйте цвет фона карточки *!*/
-/*    !* display: none; Скрыть по умолчанию *!*/
-/*}*/
-
 .poll-tags {
     font-size: 14px;
     color: rgb(52, 115, 242);

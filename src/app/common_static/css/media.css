@@ -1,19 +1,31 @@
 /* media.css - Адаптивные стили для всех страниц */
 
 @media (max-width: 768px) {
+
+    footer {
+        display: none;
+    }
+
     /* Общие стили */
     .content {
         width: 100%;
         padding: 0 15px;
     }
 
-    header {
-        flex-direction: column;
-        height: auto;
-        padding: 15px;
+    .main > * {
+        max-width: calc(100% - 30px);
     }
-.search {    width: 90%;
-    margin: auto;
+
+    header {
+        height: auto;
+        min-height: 73px;
+    }
+
+    .search {
+        width: 90%;
+        margin: auto;
+    }
+
     .logo {
         margin-bottom: 15px;
         max-width: 150px;
@@ -36,25 +48,19 @@
     }
 
     /* Страница опросов */
-    .poll-item {
-        width: 100%;
-        max-width: 340px;
-        margin: 0 auto 20px;
+    li.poll-item {
+        width: 360px;
+        max-width: calc(100% - 30px);
+        margin: 0 auto;
     }
-    #createPollBtn {
-        width: 100%;
-    }
+
     .right-block {
         float: none;
         align-items: normal;
     }
-    .profile-link {
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
+
     .poll-img img {
-        max-width: 90%;
+        max-width: 100%;
         height: auto;
     }
 
@@ -64,19 +70,35 @@
 
     /* Профиль пользователя */
     .profile-photo {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
+    }
+
+    .log-out {
+        width: initial;
+        border: none;
+    }
+
+    .log-out:hover {
+        background:none;
+    }
+
+    .log-out img {
+        display: block;
+    }
+
+    .log-out span {
+        display: none;
     }
 
     .about-you {
-        width: 90%;
+        max-width: calc(100% - 30px);
         margin: 30px auto;
         padding: 15px;
     }
 
-    .tab button {
-        width: 100%;
-        padding: 12px;
+    #createPollBtn {
+        max-width: calc(100% - 30px);
     }
 
     /* Создание опроса */
@@ -118,17 +140,16 @@
     footer {
         padding: 20px 15px;
     }
+
     .footer-content {
         width: 100%;
 
     }
+
     .footer-content p {
         position: static;
         width: 100%;
         margin: 15px 0;
-    }
-    * {
-        max-width: 100%;
     }
 
 }
@@ -151,7 +172,8 @@
     .profile-link span {
         display: none;
     }
+
     .circles {
-        display:none;
+        display: none;
     }
 }

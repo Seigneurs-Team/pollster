@@ -13,9 +13,9 @@
     <!-- css, общий для всех страниц (header, footer, fonts...)  -->
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/profile_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/poll-feed.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
 
@@ -26,27 +26,25 @@
 <body>
 <div class="content">
     <header data-background="{% static 'img\header.png' %}">
-        <button class="log-out">Выйти из аккаунта</button>
+        <button class="log-out"><span>Выйти из аккаунта</span><img src="{% static 'img\Log out.svg' %}"></button>
+
     </header>
 
     <img class="profile-photo" src="{% static 'img\profile img.png' %}" alt="profile photo">
     <div class="name">
         <button class="edit-name-btn">
-            <svg fill="#000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.32 512.32"
-                 style="enable-background:new 0 0 512.32 512.32;" xml:space="preserve"><g transform="translate(1 1)"> <g> <g> <path
-                    d="M508.76,94.733l-90.453-89.6c-3.413-3.413-9.387-3.413-12.8,0l-17.92,17.92c-3.413-3.413-8.533-3.413-11.947,0 L62.467,337.08c-1.833,1.833-2.672,4.159-2.536,6.448c-0.005,0.127-0.024,0.252-0.024,0.379l1.707,15.36 c2.56,29.867-7.68,58.88-29.013,80.213c-1.707,1.707-2.56,3.413-2.56,5.973c0,2.34,0.722,3.967,2.148,5.532L1.88,481.293 c-2.56,1.707-3.413,5.12-2.56,7.68s3.413,5.12,5.973,5.973l35.84,11.947c0.853,0.853,1.707,0.853,2.56,0.853 c2.56,0,5.12-0.853,5.973-2.56l18.347-18.347l0.427,0.427c1.707,1.707,3.413,2.56,5.973,2.56c1.707,0,4.267-0.853,5.973-2.56 L83.8,483c19.627-19.627,44.373-29.867,71.68-29.867h11.638c1.069,0.563,2.253,0.853,3.722,0.853c2.56,0,4.267-1.707,5.973-2.56 L489.987,137.4c3.413-3.413,3.413-8.533,0-11.947l18.773-18.773C512.173,103.267,512.173,98.147,508.76,94.733z M381.613,40.973 l90.878,90.029L170.84,432.653L80.387,342.2L381.613,40.973z M56.493,475.32l-14.507,14.507l-17.92-5.973l20.48-20.48 l5.973,5.973L56.493,475.32z M74.413,469.347L49.667,444.6c19.627-22.187,29.867-50.347,29.013-79.36l71.68,71.68 C122.2,437.773,94.893,449.72,74.413,469.347z M478.893,113.507L400.387,35l11.947-11.947l78.507,78.507L478.893,113.507z"></path>
-                <path d="M152.92,318.307c1.707,1.707,3.413,2.56,5.973,2.56c1.707,0,4.267-0.853,5.973-2.56l204.8-204.8 c3.413-3.413,3.413-8.533,0-11.947c-3.413-3.413-8.533-3.413-11.947,0l-204.8,204.8 C149.507,309.773,149.507,314.893,152.92,318.307z"></path>
-                <path d="M194.733,360.12c1.707,1.707,3.413,2.56,5.973,2.56s4.267-0.853,5.973-2.56l204.8-204.8 c3.413-3.413,3.413-8.533,0-11.947s-8.533-3.413-11.947,0l-204.8,204.8C191.32,351.587,191.32,356.707,194.733,360.12z"></path> </g> </g></g></svg>
+            <img src="{% static 'img\Edit.svg' %}" class="opn-filter">
         </button>
         <input type="text" name="edit_name_input" id="" value="{{user.username}}" maxlength="100" required>
     </div>
     <span>О вас</span>
     <div class="about-you">
         <label for="email">Электроная почта</label>
-        <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required>
+        <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled"
+               pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required>
         <label for="phone">Номер телефона</label>
-        <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}" disabled="disabled">
+        <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}"
+               disabled="disabled">
         <label for="date-of-birth">Дата рождения</label>
         <input type="date" name="" id="date-of-birth" value="{{user.date_of_birth}}" disabled="disabled">
         <div class="tags-wrapper">
@@ -89,37 +87,50 @@
 
     <!-- Tab content -->
     <div id="your-polls" class="tabcontent">
-        {% if not user.usersPolls %}
-        <p>Здесь пока ничего нет...</p>
-        {% else %}
         <ul class="polls">
+            {% if not user.usersPolls %}
+            <p>Здесь пока ничего нет...</p>
+            {% else %}
             {% for poll in user.usersPolls %}
             <li class="poll-item">
-                <a href="passing_poll/{{poll.id_of_poll}}/">
+                <a href="/passing_poll/{{poll.id_of_poll}}/">
                     <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                     <p class="poll-description">{{poll.description}}</p>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
-                    <p class="poll-tags">
-                        {% for tag in poll.tags %}
-                    <div class="tag">{{tag}}</div>
-                    {% endfor %}
-                    </p>
-                </a>
-            </li>
+                    <div class="right-block">
+                        <h2 class="poll-name">{{poll.name_of_poll}}</h2>
+                        <p class="poll-description">{{poll.description}}</p>
+                        <button>
+                            <div class="answers-left-poll"></div>
+                            Осталось {{10}} человек
+                        </button>
+                        <button>
+                            <div class="edit-poll"></div>
+                            Редактировать
+                        </button>
+                        <button>
+                            <div class="delete-poll"></div>
+                            Удалить
+                        </button>
+                    </div>
+                </li>
+            </a>
+
             {% endfor %}
         </ul>
         {% endif %}
     </div>
 
     <div id="completed-polls" class="tabcontent">
-        {% if not user.completedPolls %}
-        <p>Здесь пока ничего нет...</p>
-        {% else %}
         <ul class="polls">
+            {% if not user.completedPolls %}
+            <p>Здесь пока ничего нет...</p>
+            {% else %}
             {% for item in user.completedPolls %}
             <li class="poll-item">
                 <a href="passing_poll/{{item.id_of_poll}}/">
-                    <h2 class="poll-name">{{item.name_of_poll}}</h2> <span class="poll_id">#{{item.id_of_poll}}</span>
+                    <h2 class="poll-name">{{item.name_of_poll}}</h2>
+                    <span class="poll_id">#{{item.id_of_poll}}</span>
                     <p class="poll-description">{{item.description}}</p>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
                     <p class="poll-tags">{{item.tags}} </p>
