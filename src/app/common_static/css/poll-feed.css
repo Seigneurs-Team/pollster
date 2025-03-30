@@ -18,7 +18,10 @@ li.poll-item {
     width: 360px;
 
 }
-
+li.poll-item a {
+    display: flex;
+    flex-direction: column;
+}
 li.poll-item .poll-img img {
     width: 100%;
     /* Ширина изображений */
@@ -91,6 +94,8 @@ h2.poll-name {
 }
 
 .poll-tags {
+    display: flex;
+    flex-direction: row;
     font-size: 14px;
     color: rgb(52, 115, 242);
 }

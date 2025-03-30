@@ -94,10 +94,8 @@
             {% for poll in user.usersPolls %}
             <li class="poll-item">
                 <a href="/passing_poll/{{poll.id_of_poll}}/">
-                    <h2 class="poll-name">{{poll.name_of_poll}}</h2>
-                    <p class="poll-description">{{poll.description}}</p>
                     <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
-                    <div class="right-block">
+                    <div class="poll-info">
                         <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                         <p class="poll-description">{{poll.description}}</p>
                         <button>
@@ -113,9 +111,8 @@
                             Удалить
                         </button>
                     </div>
-                </li>
-            </a>
-
+                </a>
+            </li>
             {% endfor %}
         </ul>
         {% endif %}

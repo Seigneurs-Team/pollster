@@ -38,11 +38,15 @@
             <div class="tag">{{tag}}</div>
             {% endfor %}
             </p>
+            {% if is_pass %}
+            <p>вы уже прошли этот опрос</p>
+            {% else %}
             <button class="start">Прохождение опроса</button>
             <form>
                 <div id="questions"></div>
                 <button class="submit" data-poll-id="{{poll.id_of_poll}}">Отправить</button>
             </form>
+            {% endif %}
         </main>
 
     </div>

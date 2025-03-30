@@ -160,3 +160,11 @@ input[type="checkbox"], input[type="radio"] {
     justify-content: space-around;
     font-size: 16px;
 }
+
+h1 {
+    margin-top: 24px;
+}
+
+ul.polls {
+    margin-top: 24px;
+}
