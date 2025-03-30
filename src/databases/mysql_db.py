@@ -523,6 +523,11 @@ class MysqlDB:
                 polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), id_of_poll, id_of_user))
         return polls_list
 
+    def check_user_on_pass_the_poll(self, id_of_user: int, id_of_poll: int):
+        self.cursor.execute(f"""SELECT * FROM table_of_users_who_pass_the_poll WHERE id_of_user = {id_of_user} AND id_of_poll = {id_of_poll}""")
+        response_of_query = self.cursor.fetchone()
+        return True if response_of_query is None else False
+
     def delete_entry_from_users(self, id_of_user: int):
         self.cursor.execute(f"""DELETE FROM users WHERE id_of_user={id_of_user}""")
         self.connection.commit()
