@@ -1,4 +1,4 @@
-import { submitPoll } from './submitPoll.js';
+import { createPoll } from './createPoll.js';
 
 // Глобальные переменные
 let questionsId = 0;
@@ -18,16 +18,46 @@ $(document).ready(function () {
     $('header').css('background-image', 'url(' + $('header').data('background') + ')');
 });
 
-// Удаление вопроса
-$(".deleteQuestion").on('click', function (event) {
-    deleteQuestion(this);
-});
-
 function deleteQuestion(target) {
     console.log('deleteQuestion activated');
     $(target).parent('.question').remove();
 }
 
+
+// назначение обработчиков событий на вопрос
+// Удаление вопроса
+$('.questions').on('click', '.deleteQuestion', function (event) {
+    deleteQuestion(this);
+});
+
+//удаление варианта ответа
+$('.questions').on('click', '.delOption', function (event) {
+    delOption(this);
+});
+
+//удаление варианта ответа
+$('.questions').on('click', '.delOption', function (event) {
+    delOption(this);
+});
+
+// Настройка обработчиков для вопроса
+function setupQuestionHandlers(questionType, questionId) {
+    if (questionType === "radiobutton") {
+        $(`#${questionId} .addOptionRadio`).on('click', function () {
+            addOption(this, 'radio', questionId);
+        });
+    }
+    if (questionType === "checkbox") {
+        $(`#${questionId} .addOptionCheckbox`).on('click', function () {
+            addOption(this, 'checkbox', questionId);
+        });
+    }
+
+
+    $(`#${questionId}`).on('input', `input[type="text"], textarea`, function (event) {
+        showHasHTMLTagsMessage(event);
+    });
+}
 // Открытие модального окна для выбора типа вопроса
 $(".addQuestion").on('click', function () {
     modalType.show();
@@ -67,32 +97,6 @@ $(".answerType").on('click', function () {
     modalType.hide();
     content = null;
 });
-
-// Настройка обработчиков для вопроса
-function setupQuestionHandlers(questionType, questionId) {
-    $(`#${questionId} .deleteQuestion`).on('click', function (event) {
-        deleteQuestion(this);
-    });
-
-    if (questionType === "radiobutton") {
-        $(`#${questionId} .addOptionRadio`).on('click', function () {
-            addOption(this, 'radio', questionId);
-        });
-    }
-    if (questionType === "checkbox") {
-        $(`#${questionId} .addOptionCheckbox`).on('click', function () {
-            addOption(this, 'checkbox', questionId);
-        });
-    }
-
-    $(`#${questionId}`).on('click', '.delOption', function (event) {
-        delOption(this);
-    });
-
-    $(`#${questionId}`).on('input', `input[type="text"], textarea`, function (event) {
-        showHasHTMLTagsMessage(event);
-    });
-}
 
 // Функция для определения контента вопроса
 function answerType(questionType, questionId) {
@@ -186,7 +190,7 @@ $(`input[type="text"], textarea`).each(function () {
 });
 
 // Отправка опроса
-$("#submitPollBtn").on('click', submitPoll);
+$("#submitPollBtn").on('click', createPoll);
 
 // Экспорт функции для проверки HTML-тегов
 export { hasHTMLTags };
