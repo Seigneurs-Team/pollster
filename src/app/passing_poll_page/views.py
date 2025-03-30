@@ -16,11 +16,12 @@ def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None)
     # получение опроса по id
     auth_sessionid = requests.COOKIES['auth_sessionid']
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(auth_sessionid, 'auth_sessionid')
+    is_pass = client_mysqldb.check_user_on_pass_the_poll(id_of_user, poll_id)
 
     user = {'id': id_of_user, 'username': nickname}
     try:
         poll = client_mysqldb.get_poll(poll_id)
-        return render(requests, 'passing_poll_page.html', context={'user': user, 'poll': poll})
+        return render(requests, 'passing_poll_page.html', context={'user': user, 'poll': poll, 'is_pass': is_pass})
     except NotFoundPoll as _ex:
         return render(requests, 'NotFound.html')
 
