@@ -7,7 +7,7 @@ export async function getChallenge() {
         credentials: 'include', // Отправляем куки
     });
 
-    if (!response.ok) {
+    if (response.status!== 200) {
         throw new Error('Ошибка при получении challenge');
     }
 

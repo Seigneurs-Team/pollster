@@ -1,3 +1,5 @@
+import { sendRequest } from './api.js';
+
 const questionsDiv = $("#questions");
 
 // Инициализация при загрузке документа
@@ -149,17 +151,17 @@ function getAnswerValue(question) {
 /**
  * Отправка данных на сервер
  */
-async function sendPassedPoll(results) {
+async function sendPassedPoll(data) {
     console.log('Отправка результатов...');
-    const response = await fetch('/post_pass_poll', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(results),
-    });
+    const response = sendRequest('/post_pass_poll', 'POST', data);
+    console.log('response:', response)
 
-    if (!response.ok) {
+    // Обработка ответа от сервера
+    if (response.status!== 200) {
         throw new Error('Ошибка при отправке данных');
+    } else {
+        alert('Результаты прохождения сохранены')
+        window.location.href = '/'; // Перенаправление на домашнюю страницу
     }
 
     return await response.json();
