@@ -8,6 +8,8 @@ from pika import exceptions
 from Configs.Hosts import Hosts
 from Configs.Exceptions import WronglyResponse, ConnectionRefused
 
+from Configs.Responses_from_consumer import Responses
+
 
 class Producer:
     def __init__(self, host):
@@ -42,7 +44,7 @@ class Producer:
 
             count: int = 0
             while self.response is None:
-                self.connection.process_data_events(time_limit=3)
+                self.connection.process_data_events(time_limit=2)
                 count += 1
                 if count == 2:
                     raise ConnectionRefused('соединение с контейнером потеряно')
@@ -55,7 +57,7 @@ class Producer:
             self.publish(message=message, properties=properties, queue=queue)
 
         except ConnectionRefused:
-            return 'Потеряно соединение с сервером Dionysus'
+            return Responses.RefusedConnection
 
     def close_connection(self):
         self.channel.close()

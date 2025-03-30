@@ -67,7 +67,7 @@ class MysqlDB:
         FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, 
-        PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
+        PRIMARY KEY (id_of_question, rightAnswerId), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, 
         PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
@@ -123,16 +123,24 @@ class MysqlDB:
 
         return json.loads(response_of_query[0])
 
-    def get_polls(self, num_of_polls: int = 4, id_of_user: int = None) -> list:
+    def get_polls(self, num_of_polls: int = 4, only_for_user: bool = False, id_of_user: int = None) -> list:
         """
         Функция возвращает list, состоящий из id: int, tags: string, name_of_poll: string, description: string
         :param num_of_polls: количество опросов, которые должна вернуть функция
         :param id_of_user: уникальный идентификатор пользователя
+        :param only_for_user: bool значение, которое определяет - искать опросы для конкретного пользователя или нет
         :return: list
         """
-        transaction = """SELECT name_of_poll, description, tags, id FROM polls"""
-        if id_of_user is not None:
-            transaction += f" WHERE id_of_author = {id_of_user}" if id_of_user is not None else ''
+        transaction = ''
+        if only_for_user is False:
+            transaction = """SELECT name_of_poll, description, tags, id FROM polls"""
+            if id_of_user is not None:
+                transaction += f" WHERE id_of_author = {id_of_user}" if id_of_user is not None else ''
+        else:
+            transaction = f"""SELECT name_of_poll, description, tags, id FROM polls
+            LEFT JOIN table_of_users_who_pass_the_poll ON table_of_users_who_pass_the_poll.id_of_poll = polls.id AND
+            table_of_users_who_pass_the_poll.id_of_user = {id_of_user}
+            WHERE table_of_users_who_pass_the_poll.id_of_poll IS NULL"""
         self.cursor.execute(transaction)
         result = self.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []

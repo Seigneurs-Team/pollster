@@ -18,6 +18,7 @@ def request_on_main_page(requests, is_authenticated: bool):
         id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
         nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
         user = {'is_authenticated': is_authenticated, 'id': id_of_user, 'username': nickname}
+        polls = client_mysqldb.get_polls(only_for_user=True, id_of_user=id_of_user)
 
         polls = get_polls_for_user(id_of_user, polls)
 
@@ -35,7 +36,7 @@ def get_polls_for_user(id_of_user: int, polls: list):
     try:
         if client_mysqldb.get_vector_of_user_from_ranking_table(id_of_user):
             response_of_rmq_request = producer.publish(Commands.get_similar_polls % (5, id_of_user))
-            if response_of_rmq_request is None:
+            if response_of_rmq_request == Responses.RefusedConnection:
                 raise AssertionError
             if response_of_rmq_request['response'] == Responses.UserPassAllPolls:
                 polls = []
