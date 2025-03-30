@@ -54,12 +54,15 @@ class Consumer:
             logger.info(id_of_poll)
             logger.info(type(id_of_poll))
             result = self.engine_of_dionysus.set_vectorization_of_poll(id_of_poll=id_of_poll)
-        elif re.search(Commands.get_similar_polls, body.decode()):
-            num_of_polls = re.findall(r'(\d+)', body.decode())[0]
-            id_of_user = int(re.findall(r'(-?\d+)', body.decode())[0])
+        elif re.search(Commands.get_similar_polls.replace('%s', '').split('=')[0], body.decode()):
+            num_of_polls = int(re.findall(r'(\d+)', body.decode())[0])
+            id_of_user = int(re.findall(r'(-?\d+)', body.decode())[1])
+
+            logger.info("num_of_poll=%s" % num_of_polls)
+            logger.info("id_of_user=%s" % id_of_user)
 
             result = self.engine_of_dionysus.get_similar_polls(id_of_user=id_of_user, num_of_polls=num_of_polls)
-        elif re.search(Commands.get_vector_user, body.decode()):
+        elif re.search(Commands.get_vector_user.replace('%s', ''), body.decode()):
             id_of_user = int(body.decode().split('=')[1])
             result = self.engine_of_dionysus.set_vectorization_user(id_of_user)
         logger.info(f'Получил сообщение: {body.decode()}')

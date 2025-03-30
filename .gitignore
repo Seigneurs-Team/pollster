@@ -1,4 +1,4 @@
 /venv/
 /.idea/
 *.pyc
-src/consumer.log
+*.log

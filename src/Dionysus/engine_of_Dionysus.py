@@ -80,9 +80,9 @@ class EngineOfDionysus:
 
             recommended_ids = self.get_match_polls(vectors, vector_of_user, num_of_polls)
 
-            return json.dumps({'response': Responses.Ok, 'polls_ids': [vectorization_polls[idx][0] for idx in recommended_ids]})
+            return {'response': Responses.Ok, 'polls_ids': [vectorization_polls[idx][0] for idx in recommended_ids]}
         except AssertionError:
-            return json.dumps({'response': Responses.UserPassAllPolls})
+            return {'response': Responses.UserPassAllPolls}
 
     def set_vectorization_user(self, id_of_user):
         try:
@@ -93,12 +93,14 @@ class EngineOfDionysus:
 
             client_mysqldb.add_entry_in_ranking_table_of_users(id_of_user, vector_of_user_in_blob)
 
-            return json.dumps({'response': 'OK'})
+            return {'response': Responses.Ok}
 
         except mysql.connector.IntegrityError:
-            return json.dumps({'response': Responses.UserIsExists})
+            return {'response': Responses.UserIsExists}
         except AssertionError:
-            return json.dumps({'response': Responses.NotFoundUser})
+            return {'response': Responses.NotFoundUser}
+        except TypeError:
+            return {'response': Responses.NotValidData}
 
 
 

@@ -10,3 +10,4 @@ class Responses:
     UserIsExists: str = 'User is exists in the table'
     NotFoundUser: str = 'Не найден пользователь'
     NotValidData: str = 'Неправильная структура тегов'
+    RefusedConnection: str = 'Потеряно соединение с сервером Dionysus'
