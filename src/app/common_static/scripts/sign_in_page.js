@@ -1,6 +1,8 @@
 // вход в аккаунт
 import {getChallenge, findProof} from './POW.js';
 import {sendRequest} from './api.js';
+import { setFooterBackground } from './utils.js';
+setFooterBackground()
 
 async function sendSignInRequest(data) {
     console.log('отправка даннных регистрации...')

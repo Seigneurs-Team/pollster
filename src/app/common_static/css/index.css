@@ -60,7 +60,7 @@ header {
     outline: none;
 }
 
-.search input[type="checkbox"]. .search input[type="radio"] {
+.search input[type="checkbox"] .search input[type="radio"] {
     margin-right: 10px;
 }
 

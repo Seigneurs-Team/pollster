@@ -1,3 +1,6 @@
+import { setFooterBackground } from './utils.js';
+setFooterBackground()
+
 // нажатие на кнопку filter
 $(".opn-filter").on('click', function () {
     $(".popup").toggle();

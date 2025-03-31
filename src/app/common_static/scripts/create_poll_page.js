@@ -1,4 +1,6 @@
 import { createPoll } from './createPoll.js';
+import { setFooterBackground } from './utils.js';
+setFooterBackground()
 
 // Глобальные переменные
 let questionsId = 0;

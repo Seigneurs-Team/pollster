@@ -1,11 +1,6 @@
 /* media.css - Адаптивные стили для всех страниц */
 
 @media (max-width: 768px) {
-
-    footer {
-        display: none;
-    }
-
     /* Общие стили */
     .content {
         width: calc(100% - 30px);
@@ -175,11 +170,6 @@
 
     }
 
-    .footer-content p {
-        position: static;
-        width: 100%;
-        margin: 15px 0;
-    }
 }
 
 @media (max-width: 480px) {

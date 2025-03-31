@@ -1,4 +1,6 @@
 import { sendRequest } from './api.js';
+import { setFooterBackground } from './utils.js';
+setFooterBackground()
 
 const questionsDiv = $("#questions");
 

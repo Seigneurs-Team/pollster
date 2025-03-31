@@ -66,11 +66,13 @@
             </div>
         </div>
     </main>
-    <script src="{% static 'scripts/form.js' %}" type="module"></script>
-    <script src="{% static 'scripts/sign_in_page.js' %}" type="module"></script>
 
 </div>
-{% include 'footer.html' %}
+<div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}" data-cloud-2="{% static 'img/cloud 2.svg' %}">
+    {% include 'footer.html' %}
+</div>
+<script src="{% static 'scripts/form.js' %}" type="module"></script>
+<script src="{% static 'scripts/sign_in_page.js' %}" type="module"></script>
 </body>
 
 </html>
