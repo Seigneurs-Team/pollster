@@ -28,7 +28,8 @@
     }
 
     .logo-stub {
-        height: 73px;
+        height: 131px;
+        width: 40%;
     }
 
     .search {
@@ -40,9 +41,20 @@
         float: none;
         height: auto;
     }
+
     .logo {
         margin-bottom: 15px;
         max-width: 150px;
+    }
+
+    .profile-link {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .slogan {
+        margin: 5px 0;
     }
 
     /* Страница регистрации/входа */
@@ -62,18 +74,20 @@
     }
 
     /* Страница опросов */
-
     li.poll-item {
         max-width: 100%;
         margin: 0 auto;
     }
+
     li.poll-item a {
         display: flex;
         flex-direction: column;
     }
+
     li.poll-item a > * {
-width: 100%;
+        width: 100%;
     }
+
     .polls .poll-img img {
         max-width: 100%;
         height: auto;
@@ -113,7 +127,7 @@ width: 100%;
     }
 
     #createPollBtn {
-        max-width: 100%;
+        max-width: calc(100% - 6px);
     }
 
     /* Создание опроса */
@@ -174,6 +188,10 @@ width: 100%;
         font-size: 24px;
     }
 
+    .logo-stub {
+        height: 73px;
+    }
+
     .poll-description {
         font-size: 14px;
     }
@@ -181,12 +199,6 @@ width: 100%;
     .start, .submit {
         height: 50px;
         line-height: 50px;
-    }
-
-    .profile-link {
-        position: absolute;
-        top: 15px;
-        right: 15px;
     }
 
     .profile-link span {

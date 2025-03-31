@@ -26,6 +26,7 @@
 <body>
 <div class="content">
     <header data-background="{% static 'img\header.png' %}">
+        <a href="/" class="logo-stub"></a>
         <button class="log-out"><span>Выйти из аккаунта</span><img src="{% static 'img\Log out.svg' %}"></button>
 
     </header>
@@ -94,7 +95,7 @@
             {% for poll in user.usersPolls %}
             <li class="poll-item">
                 <a href="/passing_poll/{{poll.id_of_poll}}/">
-                    <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
+                    <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image"></div>
                     <div class="poll-info">
                         <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                         <p class="poll-description">{{poll.description}}</p>
@@ -129,7 +130,7 @@
                     <h2 class="poll-name">{{item.name_of_poll}}</h2>
                     <span class="poll_id">#{{item.id_of_poll}}</span>
                     <p class="poll-description">{{item.description}}</p>
-                    <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
+                    <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image"></div>
                     <p class="poll-tags">{{item.tags}} </p>
                     <div class="till-the-end">
                         <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
