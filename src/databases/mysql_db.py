@@ -596,11 +596,11 @@ class MysqlDB:
             return False
 
     def get_count_of_users_who_pass_the_poll(self, id_of_poll: int) -> int:
-        self.cursor.execute(f"""SELECT COUNT(*) FROM table_of_users_who_pass_the_poll WHERE id_of_poll = {id_of_poll}""")
+        self.cursor.execute(f"""SELECT COUNT(id_of_user) FROM table_of_users_who_pass_the_poll WHERE id_of_poll = {id_of_poll}""")
         return self.cursor.fetchone()[0]
 
     def get_count_of_users_who_selected_of_specific_option(self, option: str, serial_number_of_question: int, id_of_poll: int):
-        self.cursor.execute(f"""SELECT COUNT(*) FROM data_of_passing_poll_from_user WHERE serial_number_of_question = {serial_number_of_question} AND
+        self.cursor.execute(f"""SELECT COUNT(id_of_user) FROM data_of_passing_poll_from_user WHERE serial_number_of_question = {serial_number_of_question} AND
         id_of_poll = {id_of_poll} AND value = "{option}" """)
         return self.cursor.fetchone()[0]
 
