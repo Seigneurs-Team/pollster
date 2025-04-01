@@ -20,15 +20,18 @@ def check_user(request, get_id_of_user: bool = False):
         return id_of_user
 
 
-def authentication(func):
-    def wrapped_func(request: WSGIRequest, *args, **kwargs):
-        try:
-            id_of_user = check_user(request, get_id_of_user=True)
-            kwargs['id_of_user'] = id_of_user
-            return func(request, *args, **kwargs)
-        except (AssertionError, CookieWasExpired) as _ex:
-            return HttpResponseRedirect('/sign_in')
-    return wrapped_func
+def authentication(return_id_of_user: bool = True):
+    def wrapped_func_main(func):
+        def wrapped_func(request: WSGIRequest, *args, **kwargs):
+            try:
+                id_of_user = check_user(request, get_id_of_user=True)
+                if return_id_of_user:
+                    kwargs['id_of_user'] = id_of_user
+                return func(request, *args, **kwargs)
+            except (AssertionError, CookieWasExpired) as _ex:
+                return HttpResponseRedirect('/sign_in')
+        return wrapped_func
+    return wrapped_func_main
 
 
 def authentication_for_profile_page(func):

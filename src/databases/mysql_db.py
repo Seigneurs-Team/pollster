@@ -594,6 +594,20 @@ class MysqlDB:
             return True
         except AssertionError:
             return False
+
+    def get_count_of_users_who_pass_the_poll(self, id_of_poll: int) -> int:
+        self.cursor.execute(f"""SELECT COUNT(*) FROM table_of_users_who_pass_the_poll WHERE id_of_poll = {id_of_poll}""")
+        return self.cursor.fetchone()[0]
+
+    def get_count_of_users_who_selected_of_specific_option(self, option: str, serial_number_of_question: int, id_of_poll: int):
+        self.cursor.execute(f"""SELECT COUNT(*) FROM data_of_passing_poll_from_user WHERE serial_number_of_question = {serial_number_of_question} AND
+        id_of_poll = {id_of_poll} AND value = "{option}" """)
+        return self.cursor.fetchone()[0]
+
+    def get_text_answers_of_users(self, id_of_poll: int, serial_number_of_questions: int):
+        self.cursor.execute(f"""SELECT value FROM data_of_passing_poll_from_user WHERE id_of_poll = {id_of_poll} AND
+        serial_number_of_question = {serial_number_of_questions}""")
+        return [value[0] for value in self.cursor.fetchall()]
 #-----------------------------------------------------------------------------------------------------------------------
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 
