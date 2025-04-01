@@ -112,7 +112,7 @@ footer {
     height: 200px;
 }
 
-.footer-content div {
+.footer-content > div {
     position: absolute;
     /* background-color: white; */
     border-radius: 12px;
@@ -128,7 +128,6 @@ footer {
     border-radius: 12px 12px 0 12px;
     right: 0;
     top: 0;
-    float: right;
     max-width: 384px;
     min-height: 40px;
 
@@ -151,6 +150,23 @@ footer {
     top: 250px;
     background: white;
     border-radius: 12px;
+}
+
+footer .contacts {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0;
+}
+
+.contact {
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.contacts svg {
+    width: 30px;
 }
 
 .error-message, #error-message {

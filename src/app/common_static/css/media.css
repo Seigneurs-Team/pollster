@@ -161,14 +161,28 @@
     }
 
     /* Футер */
-    footer {
-        padding: 20px 15px;
-    }
-
     .footer-content {
-        width: 100%;
-
+        width: fit-content;
     }
+
+    .footer-content > div {
+        position: initial;
+        margin: 30px auto;
+        float: none;
+    }
+
+    .footer-content .contacts {
+        margin: 0;
+    }
+
+    .cloud-1 {
+        line-height: 35px;
+    }
+
+    .lamp {
+        display: none;
+    }
+
 
 }
 
@@ -197,5 +211,13 @@
 
     .circles {
         display: none;
+    }
+
+    .footer-content .cloud-1 {
+        font-size: 24px;
+    }
+
+    .footer-content {
+        padding: 0 15px;
     }
 }
