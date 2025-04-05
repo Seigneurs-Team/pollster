@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pollster</title>
+    {% load static %}
+    <!-- css, общий для всех страниц (header, footer, fonts...)  -->
+    <link rel="stylesheet" href="{% static 'css/general.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/passing_poll_page.css' %}">
+    <link rel="stylesheet" href="{% static 'css/media.css' %}">
+
+    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="{% static 'img/circle-logo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="content">
+        <header data-background="{% static 'img\header.png' %}">
+        <a href="/" class="logo-stub"></a>
+            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo" src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+        </header>
+
+
+        <main>
+
+            <button id="get-statistics" data-poll-id="{{id_of_poll}}">get statistics in console</button>
+        </main>
+
+    </div>
+    <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}" data-cloud-2="{% static 'img/cloud 2.svg' %}">
+    {% include 'footer.html' %}
+</div>
+
+    <script src="{% static 'scripts/statistics_page.js' %}" type="module"></script>
+
+</body>
+
+</html>
