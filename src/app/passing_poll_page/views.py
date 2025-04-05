@@ -11,7 +11,7 @@ import json
 from django.http import JsonResponse, HttpResponseForbidden
 
 
-@authentication
+@authentication()
 def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None):
     # получение опроса по id
     auth_sessionid = requests.COOKIES['auth_sessionid']
@@ -26,7 +26,7 @@ def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None)
         return render(requests, 'NotFound.html')
 
 
-@authentication
+@authentication()
 def request_on_passing_poll(request, id_of_user: int = None):
     data_of_passing_poll = json.loads(request.body)
     auth_sessionid = request.COOKIES['auth_sessionid']

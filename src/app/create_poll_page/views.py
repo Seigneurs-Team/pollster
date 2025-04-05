@@ -14,7 +14,7 @@ from Tools_for_rabbitmq.producer import producer
 from Configs.Commands_For_RMQ import Commands
 
 
-@authentication
+@authentication()
 def request_on_create_poll_page(requests, id_of_user: int = None):
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
 
@@ -28,7 +28,7 @@ def requests_on_get_polls(request, num_of_polls=5):
     return JsonResponse({"list": polls})
 
 
-@authentication
+@authentication()
 def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
     print(json_data)

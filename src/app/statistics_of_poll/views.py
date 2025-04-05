@@ -6,7 +6,7 @@ from databases.mysql_db import client_mysqldb
 from authentication.check_user_on_auth import authentication
 
 
-@authentication
+@authentication()
 def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_user: int = None):
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
     user = {'id': id_of_user, 'username': nickname}
@@ -14,10 +14,10 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
     return render(requests, 'statistics_page.html', context={'id_of_poll': id_of_poll, 'user': user})
 
 
-@authentication(return_id_of_user=False)
+@authentication(False)
 def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
     count_of_users_who_pass_the_poll = client_mysqldb.get_count_of_users_who_pass_the_poll(id_of_poll)
-    list_of_questions = [[question[3:]] for question in client_mysqldb.get_questions(id_of_poll)]
+    list_of_questions = [question[4:] for question in client_mysqldb.get_questions(id_of_poll)]
     dict_for_statistics: dict = {
         'count_of_users': count_of_users_who_pass_the_poll,
         'questions': []
@@ -41,7 +41,7 @@ def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
                 dict_of_questions['seral_number'], id_of_poll
             )
         else:
-            dict_of_questions['text_answers'] = client_mysqldb.get_text_answers_of_users(id_of_poll, dict_of_questions['seral_number'])
+            dict_of_questions['text_answers'] = client_mysqldb.get_text_answers_of_users(id_of_poll, dict_of_questions['serial_number'])
             dict_of_questions['right_text_answer'] = client_mysqldb.get_text_right_answers(dict_of_questions['id'])
 
         dict_for_statistics['questions'].append(dict_of_questions)
