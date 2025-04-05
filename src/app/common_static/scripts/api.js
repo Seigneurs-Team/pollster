@@ -1,16 +1,26 @@
 // api.js
-export async function sendRequest(url, method, data) {
-    const response = await fetch(url, {
-        method,
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify(data),
-    });
-
-console.log('response', response)
-    if (response.status!== 200) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+export async function sendRequest(url, method, data, timeout = 0) {
+    const controller = new AbortController();
+    let timeoutId;
+    
+    if (timeout > 0) {
+        timeoutId = setTimeout(() => controller.abort(), timeout);
     }
 
-    return response;
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
+            body: JSON.stringify(data),
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        console.log(response)
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+    }
 }

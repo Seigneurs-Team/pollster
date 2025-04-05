@@ -155,15 +155,16 @@ function getAnswerValue(question) {
  */
 async function sendPassedPoll(data) {
     console.log('Отправка результатов...');
-    const response = sendRequest('/post_pass_poll', 'POST', data);
+    const response = await sendRequest('/post_pass_poll', 'POST', data);
     console.log('response:', response)
+    console.log('response.status === 200', response.status === 200)
 
     // Обработка ответа от сервера
-    if (response.status!== 200) {
+    if (response.status !== 200) {
         throw new Error('Ошибка при отправке данных');
     } else {
         alert('Результаты прохождения сохранены')
-        window.location.href = '/'; // Перенаправление на домашнюю страницу
+        // window.location.href = '/'; // Перенаправление на домашнюю страницу
     }
 
     return await response.json();
