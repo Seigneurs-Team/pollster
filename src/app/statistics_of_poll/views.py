@@ -52,7 +52,7 @@ def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
 
             dict_of_questions['options'] = set_options(
                 list_of_options_name, list_of_right_answer_ids,
-                dict_of_questions['seral_number'], id_of_poll
+                dict_of_questions['serial_number'], id_of_poll
             )
         else:
             dict_of_questions['text_answers'] = client_mysqldb.get_text_answers_of_users(id_of_poll, dict_of_questions['serial_number'])
