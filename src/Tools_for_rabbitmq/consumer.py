@@ -11,14 +11,15 @@ import logging
 from logging import basicConfig
 from Dionysus.engine_of_Dionysus import EngineOfDionysus
 
-from databases.mysql_db import client_mysqldb
-
 from Configs.Commands_For_RMQ import Commands
 basicConfig(filename='consumer.log', filemode='w', level=logging.DEBUG, format='[%(levelname)s] - %(funcName)s - %(message)s')
 logger = logging.getLogger()
 
 
 class Consumer:
+    """
+    Класс является интерфейсом взаимодействия с rabbbitmq контейнером, как consumer сущность
+    """
     def __init__(self, host):
         self.parameters = pika.ConnectionParameters(heartbeat=0, host=host)
         self.connection = pika.BlockingConnection(self.parameters)
@@ -48,6 +49,14 @@ class Consumer:
         self.channel.start_consuming()
 
     def confirm_the_request(self, channel: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: bytes):
+        """
+        Функция исполняет команды, которые присылает Publisher. Команды можно посмотреть в классе Commands Configs.Commands_For_RMQ
+        :param channel: канал связи
+        :param method: метод доставки сообщения
+        :param properties: настройки
+        :param body: сообщение в виде байтовой строки
+        :return: None
+        """
         result: str = ''
         if re.search(Commands.get_vector_poll.replace('%s', ''), body.decode()):
             id_of_poll = int(body.decode().split('=')[1])
@@ -75,6 +84,14 @@ class Consumer:
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def callback_on_ping_request(self, channel: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: Any):
+        """
+        Callback на сообщение ping
+        :param channel: канал связи
+        :param method: метод доставки сообщения
+        :param properties: настройки
+        :param body: сообщение в виде байтовой строки
+        :return: None
+        """
         channel.basic_publish(
             exchange=self.exchange,
             routing_key=properties.reply_to,
@@ -83,9 +100,19 @@ class Consumer:
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def publish(self, body: bytes):
+        """
+        Отправка Publisher какого-то сообщения
+        :param body: сообщение
+        :return: None
+        """
         self.channel.basic_publish(self.exchange, routing_key=self.queue_callback, body=body)
 
     def reconnect(self):
+        """
+        Переподключение к контейнеру rabbitmq
+
+        :return:
+        """
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
 

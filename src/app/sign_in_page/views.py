@@ -7,6 +7,12 @@ import datetime
 
 
 def request_on_sign_in_page(requests):
+    """
+    Функция нужна для отправки страницы входа в систему
+
+    :param requests:
+    :return: render(requests, 'sign_in_page.html')
+    """
     response = render(requests, 'sign_in_page.html')
     cookie = generate_random_string(10)
 
@@ -17,6 +23,12 @@ def request_on_sign_in_page(requests):
 
 
 def request_on_sign_in_account(request):
+    """
+    Функция производит механизм аутентификации и авторизации пользователя в системе
+
+    :param request:
+    :return: 403, ok, Неправильный пароль или почта
+    """
     try:
         json_data = json.loads(request.body)
 
@@ -31,7 +43,7 @@ def request_on_sign_in_account(request):
         pow_from_db = client_mysqldb.get_pow(cookie)
 
         if pow == '' or pow != pow_from_db:
-            return HttpResponseForbidden(403)
+            return HttpResponseForbidden()
 
         password_from_db, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         assert password == password_from_db

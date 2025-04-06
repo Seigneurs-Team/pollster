@@ -5,12 +5,13 @@ from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import ErrorSameLogins, NotFoundCookieIntoPowTable
 from django.http import JsonResponse
 
-# from Tools_for_rabbitmq.producer import producer
-# from Configs.Commands_For_RMQ import Commands
-# from Configs.Responses_from_consumer import Responses
-
 
 def request_on_create_new_account_page(requests):
+    """
+    Функция возвращает страницу создания нового аккаунта
+    :param requests:
+    :return: render(requests, 'create_new_account_page.html')
+    """
     response = render(requests, 'create_new_account_page.html')
     cookie = generate_random_string(10)
 
@@ -20,6 +21,12 @@ def request_on_create_new_account_page(requests):
 
 
 def request_on_create_new_account(request):
+    """
+    Функция нужна для успешного создания нового аккаунта на основе тех данных, которые передаются в JSON запроса
+
+    :param request:
+    :return: 200, либо коды ошибок (1, 2, 3)
+    """
     try:
         json_data = json.loads(request.body)
         login = json_data.get('login')

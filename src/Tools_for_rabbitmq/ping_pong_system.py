@@ -4,6 +4,12 @@ from src.Tools_for_rabbitmq.Queue import Queue
 
 
 async def ping_the_consumer():
+    """
+    Функция представляет собой бесконечный цикл отправки сообщения ping в очередь ping_queue для поддерживания жизни
+    подключения Consumer к rabbitmq контейнеру
+
+    :return: None
+    """
     while True:
         result = producer.publish('ping', queue=Queue.ping_queue)
         if result is None:

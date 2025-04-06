@@ -16,6 +16,12 @@ from Configs.Commands_For_RMQ import Commands
 
 @authentication()
 def request_on_create_poll_page(requests, id_of_user: int = None):
+    """
+    Функция нужна для загрузки конструктора опроса
+    :param requests:
+    :param id_of_user: идентификатор пользователя
+    :return: render(requests, 'create_poll_page.html', context={'user': user, 'tags': tags.items()})
+    """
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
 
     user = {'id': id_of_user, 'username': nickname}
@@ -23,15 +29,16 @@ def request_on_create_poll_page(requests, id_of_user: int = None):
     return render(requests, 'create_poll_page.html', context={'user': user, 'tags': tags.items()})
 
 
-def requests_on_get_polls(request, num_of_polls=5):
-    polls = client_mysqldb.get_polls(int(num_of_polls))
-    return JsonResponse({"list": polls})
-
-
 @authentication()
 def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
+    """
+    Функция создает записи в БД и создает сущность "опрос" в системе. Также функция проверяет запрос на XSS атаку, а также несоответствие данных
+
+    :param request:
+    :param id_of_user: идентификатор пользователя
+    :return: True, False, 403
+    """
     json_data = json.loads(request.body)
-    print(json_data)
     try:
         poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer = set_poll(json_data, id_of_user)
         result = client_mysqldb.create_pool(
