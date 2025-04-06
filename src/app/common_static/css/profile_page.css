@@ -179,6 +179,9 @@ label {
 
 li.poll-item {
     width: 100%;
+}
+
+li.poll-item a {
     display: flex;
     flex-direction: row;
     padding: 15px;
@@ -194,7 +197,7 @@ li.poll-item {
     height: initial;
 }
 
-.right-block {
+.poll-info {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -203,6 +206,6 @@ li.poll-item {
     padding: 0 10px;
 }
 
-.right-block .poll-name, .right-block button {
+.poll-info .poll-name, .poll-info button {
     text-align: left;
 }

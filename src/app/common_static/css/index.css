@@ -60,7 +60,7 @@ header {
     outline: none;
 }
 
-.search input[type="checkbox"]. .search input[type="radio"] {
+.search input[type="checkbox"] .search input[type="radio"] {
     margin-right: 10px;
 }
 
@@ -159,4 +159,12 @@ input[type="checkbox"], input[type="radio"] {
     width: 100%;
     justify-content: space-around;
     font-size: 16px;
+}
+
+h1 {
+    margin-top: 24px;
+}
+
+ul.polls {
+    margin-top: 24px;
 }

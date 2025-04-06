@@ -1,4 +1,6 @@
 import {sendRequest} from './api.js';
+import { setFooterBackground } from './utils.js';
+setFooterBackground()
 
 async function sendChangeDataRequest(data, url) {
     return sendRequest(`/change_user_data/${url}`, 'POST', data);

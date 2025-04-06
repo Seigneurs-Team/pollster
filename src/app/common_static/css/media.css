@@ -1,24 +1,30 @@
 /* media.css - Адаптивные стили для всех страниц */
 
 @media (max-width: 768px) {
-
-    footer {
-        display: none;
-    }
-
     /* Общие стили */
     .content {
-        width: 100%;
+        width: calc(100% - 30px);
         padding: 0 15px;
     }
 
+    .content > * {
+        max-width: 100%;
+    }
+
     .main > * {
-        max-width: calc(100% - 30px);
+        max-width: 100%;
     }
 
     header {
         height: auto;
         min-height: 73px;
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    .logo-stub {
+        height: 131px;
+        width: 40%;
     }
 
     .search {
@@ -26,9 +32,24 @@
         margin: auto;
     }
 
+    .right-block {
+        float: none;
+        height: auto;
+    }
+
     .logo {
         margin-bottom: 15px;
         max-width: 150px;
+    }
+
+    .profile-link {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .slogan {
+        margin: 5px 0;
     }
 
     /* Страница регистрации/входа */
@@ -49,17 +70,20 @@
 
     /* Страница опросов */
     li.poll-item {
-        width: 360px;
-        max-width: calc(100% - 30px);
+        max-width: 100%;
         margin: 0 auto;
     }
 
-    .right-block {
-        float: none;
-        align-items: normal;
+    li.poll-item a {
+        display: flex;
+        flex-direction: column;
     }
 
-    .poll-img img {
+    li.poll-item a > * {
+        width: 100%;
+    }
+
+    .polls .poll-img img {
         max-width: 100%;
         height: auto;
     }
@@ -80,7 +104,7 @@
     }
 
     .log-out:hover {
-        background:none;
+        background: none;
     }
 
     .log-out img {
@@ -92,13 +116,13 @@
     }
 
     .about-you {
-        max-width: calc(100% - 30px);
+        max-width: 100%;
         margin: 30px auto;
         padding: 15px;
     }
 
     #createPollBtn {
-        max-width: calc(100% - 30px);
+        max-width: calc(100% - 6px);
     }
 
     /* Создание опроса */
@@ -137,20 +161,28 @@
     }
 
     /* Футер */
-    footer {
-        padding: 20px 15px;
-    }
-
     .footer-content {
-        width: 100%;
-
+        width: fit-content;
     }
 
-    .footer-content p {
-        position: static;
-        width: 100%;
-        margin: 15px 0;
+    .footer-content > div {
+        position: initial;
+        margin: 30px auto;
+        float: none;
     }
+
+    .footer-content .contacts {
+        margin: 0;
+    }
+
+    .cloud-1 {
+        line-height: 35px;
+    }
+
+    .lamp {
+        display: none;
+    }
+
 
 }
 
@@ -158,6 +190,10 @@
     /* Дополнительные правки для маленьких экранов */
     h1 {
         font-size: 24px;
+    }
+
+    .logo-stub {
+        height: 73px;
     }
 
     .poll-description {
@@ -175,5 +211,13 @@
 
     .circles {
         display: none;
+    }
+
+    .footer-content .cloud-1 {
+        font-size: 24px;
+    }
+
+    .footer-content {
+        padding: 0 15px;
     }
 }

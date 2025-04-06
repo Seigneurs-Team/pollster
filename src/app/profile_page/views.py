@@ -26,5 +26,6 @@ def request_on_profile_page(requests, id_of_user):
         tags = [tag for tag in tags if tag not in tags_of_user]
 
     user = {'id': id_of_user, 'username': user_data[0], 'email': user_data[1], 'phone': user_data[2], 'date_of_birth': user_data[3], 'tags_of_user': tags_of_user, 'usersPolls': user_polls,  'completedPolls': pass_user_polls}
+    print('user polls: ', user_polls)
     return render(requests, 'profile_page.html', context={'user': user, 'tags': tags})
 
