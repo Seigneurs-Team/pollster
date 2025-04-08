@@ -115,6 +115,10 @@ class MysqlDB:
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с созданием, редактированием и удалением опросов
 
+    def get_metadata_of_poll(self, id_of_poll: int):
+        self.cursor.execute(f"""SELECT name_of_poll, description, tags, id_of_author FROM polls WHERE id = {id_of_poll}""")
+        return self.cursor.fetchone()
+
     def get_polls_tags(self, id_of_poll: int):
         """
         Функция нужна для того, чтобы вернуть все теги опроса, которые представляют собой list[str]
@@ -137,7 +141,6 @@ class MysqlDB:
         :param only_for_user: bool значение, которое определяет - искать опросы для конкретного пользователя или нет
         :return: list
         """
-        transaction = ''
         if only_for_user is False:
             transaction = """SELECT name_of_poll, description, tags, id FROM polls"""
             if id_of_user is not None:
@@ -443,6 +446,31 @@ class MysqlDB:
         assert len(response_of_query) != 0
 
         return response_of_query
+
+    def get_count_of_text_answers(self, id_of_poll: int, serial_number: int, type_of_question):
+        self.cursor.execute(f"""SELECT COUNT(*) FROM data_of_passing_poll_from_user WHERE
+         id_of_poll = {id_of_poll} AND serial_number_of_question = {serial_number} AND type_of_question = "{type_of_question}" """)
+
+        return self.cursor.fetchone()[0]
+
+    def get_count_of_right_answers(self, id_of_poll: int, serial_number: int):
+        self.cursor.execute(f"""SELECT COUNT(*) FROM data_of_passing_poll_from_user INNER JOIN text_rights_answers ON 
+        text_rights_answers.text_of_right_answer = data_of_passing_poll_from_user.value
+        WHERE data_of_passing_poll_from_user.id_of_poll = {id_of_poll} 
+        AND data_of_passing_poll_from_user.type_of_question = "short text"
+        AND data_of_passing_poll_from_user.serial_number_of_question = {serial_number}""")
+
+        return self.cursor.fetchone()[0]
+
+    def get_count_of_wrong_answers(self, id_of_poll: int, serial_number: int):
+        self.cursor.execute(f"""SELECT COUNT(*) FROM data_of_passing_poll_from_user LEFT JOIN text_rights_answers 
+        ON text_rights_answers.text_of_right_answer = data_of_passing_poll_from_user.value
+        WHERE data_of_passing_poll_from_user.id_of_poll = {id_of_poll} 
+        AND data_of_passing_poll_from_user.type_of_question = "short text"
+        AND data_of_passing_poll_from_user.serial_number_of_question = {serial_number}
+        AND data_of_passing_poll_from_user.value IS NULL""")
+
+        return self.cursor.fetchone()[0]
 
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
