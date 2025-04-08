@@ -1,6 +1,5 @@
 import { sendRequest } from './api.js';
-import { setFooterBackground } from './utils.js';
-setFooterBackground()
+
 
 const questionsDiv = $("#questions");
 
@@ -8,7 +7,6 @@ const questionsDiv = $("#questions");
 $(document).ready(function() {
     renderAllQuestions();
     setupEventListeners();
-    setHeaderBackground();
 });
 
 /**
@@ -52,11 +50,11 @@ function answerType(questionType, questionId, question) {
         case "long text":
             return '<textarea class="answerLong" type="text" rows="5" maxlength="700" placeholder="Развернутый ответ">';
 
-        case "radiobutton":
+        case "radio":
         case "checkbox":
             return renderOptions(questionType, questionId, question);
 
-        case "radiobutton img":
+        case "radio img":
         case "checkbox img":
             // TODO: реализовать вопросы с изображениями
             return $();
@@ -85,7 +83,7 @@ function renderOptions(type, questionId, question) {
  * Генерация HTML для варианта ответа
  */
 function addOption(type, questionId, option, counter) {
-    const inputType = type === "radiobutton" ? "radio" : "checkbox";
+    const inputType = type === "radio" ? "radio" : "checkbox";
     const id = `${questionId}_${counter}`;
 
     return $(`
@@ -138,7 +136,7 @@ function getAnswerValue(question) {
         case 'long text':
             return questionEl.find('.answerLong').val();
 
-        case 'radiobutton':
+        case 'radio':
             return questionEl.find('input[type="radio"]:checked').next('label').text() || null;
 
         case 'checkbox':
@@ -168,11 +166,4 @@ async function sendPassedPoll(data) {
     }
 
     return await response.json();
-}
-
-/**
- * Установка фона шапки
- */
-function setHeaderBackground() {
-    $('header').css('background-image', `url(${$('header').data('background')})`);
 }

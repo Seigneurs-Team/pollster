@@ -1,0 +1,7 @@
+ul {
+    list-style: none;
+}
+
+canvas.chart {
+    max-height: 300px;
+}

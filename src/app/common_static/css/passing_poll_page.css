@@ -43,7 +43,7 @@ form {
 }
 
 #questions {
-    text-align: center;
+    text-align: left;
     border: var(--violet) solid 0.5px;
     border-radius: 30px;
     padding: 60px;

@@ -5,3 +5,7 @@
 .second-circle {
     bottom: 98px;
 }
+
+main.create-new-account {
+    background-image: url("../img/registration-background.png");
+}

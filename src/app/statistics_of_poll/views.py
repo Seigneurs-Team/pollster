@@ -86,7 +86,7 @@ def get_statistic(id_of_poll: int, more_statistic: bool = False) -> dict:
             'serial_number': question[3]
         }
 
-        if dict_of_questions['type_of_question'] == 'radiobutton' or \
+        if dict_of_questions['type_of_question'] == 'radio' or \
                 dict_of_questions['type_of_question'] == 'checkbox':
             dict_of_questions = set_statistic_for_radiobutton_of_checkbox_questions(dict_of_questions, id_of_poll, more_statistic)
         elif dict_of_questions['type_of_question'] == 'long text':

@@ -24,7 +24,7 @@ export function createPoll() {
         let options = []
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
-        if (type === 'radiobutton' || type === 'checkbox') {
+        if (type === 'radio' || type === 'checkbox') {
             let rightAnswersId = []
 
             // id ответов начинаются с 0

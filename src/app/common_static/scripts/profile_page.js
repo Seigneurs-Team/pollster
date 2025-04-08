@@ -1,6 +1,5 @@
 import {sendRequest} from './api.js';
-import { setFooterBackground } from './utils.js';
-setFooterBackground()
+
 
 async function sendChangeDataRequest(data, url) {
     return sendRequest(`/change_user_data/${url}`, 'POST', data);
@@ -111,11 +110,6 @@ $('.tag').click(function () {
     }
 });
 
-// Фон шапки
-$(document).ready(function () {
-    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
-});
-
 let initialUserData = {};
 
 $(document).ready(function () {
@@ -132,8 +126,7 @@ $(document).ready(function () {
 
     $('.about-you input').removeAttr('disabled')
 
-    // Фон шапки
-    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
+    
 });
 
 $('.save-changes').on('click', async function (event) {

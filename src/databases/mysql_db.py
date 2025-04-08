@@ -215,7 +215,7 @@ class MysqlDB:
             if type_of_question == 'short text':
                 dict_of_poll['questions'][index]['shortTextRightAnswer'] = self.get_text_right_answers(id_of_question)
 
-            elif type_of_question == 'radiobutton' or type_of_question == 'checkbox':
+            elif type_of_question == 'radio' or type_of_question == 'checkbox':
                 dict_of_poll['questions'][index]['options'] = self.get_options(id_of_question)
                 dict_of_poll['questions'][index]['rightAnswersId'] = self.get_right_answers(id_of_question)
         return dict_of_poll
@@ -374,7 +374,7 @@ class MysqlDB:
         :return: None
         """
         self.cursor.execute("""SELECT id FROM types_of_question""")
-        types_of_question = ['long text', 'short text', 'radiobutton', 'checkbox']
+        types_of_question = ['long text', 'short text', 'radio', 'checkbox']
         if self.cursor.fetchone() is None:
             for i, type_of_question in enumerate(types_of_question):
                 self.cursor.execute("""INSERT INTO types_of_question(id, type) VALUES (%s, %s)""", (i, type_of_question))

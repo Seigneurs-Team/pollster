@@ -35,7 +35,7 @@
         </header>
 
 
-        <main data-background="{% static 'img/sign-in-background.png' %}">
+        <main class="sign-in">
             <h1>Начнем работать? </h1>
             <form action="" id="loginForm">
                 <div>
@@ -72,8 +72,7 @@
         </main>
 
     </div>
-    <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}"
-        data-cloud-2="{% static 'img/cloud 2.svg' %}">
+    <div class="footer-wrapper">
         {% include 'footer.html' %}
     </div>
     <script src="{% static 'scripts/form.js' %}" type="module"></script>

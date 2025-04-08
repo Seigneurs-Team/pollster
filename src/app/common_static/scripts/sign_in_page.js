@@ -1,21 +1,20 @@
 // вход в аккаунт
-import {getChallenge, findProof} from './POW.js';
-import {sendRequest} from './api.js';
-import { setFooterBackground } from './utils.js';
-setFooterBackground()
+import { getChallenge, findProof } from './POW.js';
+import { sendRequest } from './api.js';
+
 
 async function sendSignInRequest(data) {
     console.log('отправка даннных регистрации...')
     const response = await sendRequest('/log_in', 'POST', data);
-console.log('response', response);
+    const responseData = await response.json();
+    console.log('Ответ сервера:', responseData);
     // Обработка ответа от сервера
-    if (response.status === 200) {
+    if (responseData.response == 'ok') {
         // Успешная регистрация
         $('#overlay-message').text(`Добро пожаловать!`);
         $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
     } else {
-        // Ошибка регистрации
-        let errorText = `Ошибка при регистрации: ${response.response}`;
+        let errorText = `Ошибка при входе в аккаунт: ${responseData.response}`;
 
         $('#overlay-message').text(errorText);
         $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
@@ -41,7 +40,7 @@ $('#loginForm').on('submit', async function (event) {
     $('#overlay-buttons').hide(); // Скрываем кнопки
 
     try {
-// Шаг 1: Получаем challenge от бэкенда
+        // Шаг 1: Получаем challenge от бэкенда
         const challenge = await getChallenge();
 
         // Шаг 2: Находим nonce

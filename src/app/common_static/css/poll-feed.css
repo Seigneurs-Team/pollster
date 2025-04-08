@@ -41,13 +41,6 @@ li.poll-item .poll_id {
 }
 
 
-li.poll-item .delete-poll {
-    background-color: white;
-    border: none;
-    vertical-align: text-top;
-    line-height: 12px;
-}
-
 li.poll-item .till-the-end {
     float: right;
     font-size: 14px;
@@ -60,9 +53,6 @@ li.poll-item .till-the-end svg {
     width: 20px;
 }
 
-li.poll-item .delete-poll:hover {
-    background-color: rgb(253, 244, 255);
-}
 
 li.poll-item .delete-poll svg {
     display: inline;

@@ -25,7 +25,7 @@
 
 <body>
     <div class="content">
-        <header data-background="{% static 'img\header.png' %}">
+        <header>
             <a href="/" class="logo-stub"></a>
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
                     src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
@@ -84,9 +84,9 @@
                         <button class="answerType" name="long text">Развернутый ответ
                             (без ограничений)
                         </button>
-                        <button class="answerType" name="radiobutton">1 вариант ответа</button>
+                        <button class="answerType" name="radio">1 вариант ответа</button>
                         <button class="answerType" name="checkbox">Несколько вариантов ответа</button>
-                        <button class="answerType" name="radiobutton img">1 вариант ответа (картинки)</button>
+                        <button class="answerType" name="radio img">1 вариант ответа (картинки)</button>
                         <button class="answerType" name="checkbox img">Несколько вариантов ответа
                             (картинки)
                         </button>
@@ -96,8 +96,7 @@
         </main>
 
     </div>
-    <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}"
-        data-cloud-2="{% static 'img/cloud 2.svg' %}">
+    <div class="footer-wrapper">
         {% include 'footer.html' %}
     </div>
     <script src="{% static 'scripts/create_poll_page.js' %}" type="module"></script>
