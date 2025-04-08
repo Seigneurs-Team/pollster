@@ -12,6 +12,12 @@ from Configs.Commands_For_RMQ import Commands
 
 @authentication_for_change_user_data
 def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None):
+    """
+    Функция нужна для обработки запроса изменения никнейма пользователя
+    :param request:
+    :param id_of_user: идентификатор пользователя
+    :return: 403 или 200
+    """
     json_data = json.loads(request.body)
     if 'nickname' not in json_data:
         return HttpResponseForbidden("Некорректные данные")
@@ -22,15 +28,28 @@ def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None)
 
 @authentication_for_change_user_data
 def request_on_change_the_login(request: WSGIRequest, id_of_user: int = None):
+    """
+    Функция нужна для изменения логина пользователя
+    :param request:
+    :param id_of_user: идентификатор пользователя
+    :return: 200 или 403
+    """
     json_data = json.loads(request.body)
     if 'email' not in json_data:
         return HttpResponseForbidden("Некорректные данные")
 
     client_mysqldb.update_the_filed_into_user(id_of_user, 'login', json_data['email'])
+    return JsonResponse({'response': 200})
 
 
 @authentication_for_change_user_data
 def request_on_change_the_number_of_phone(request: WSGIRequest, id_of_user: int = None):
+    """
+    Функция нужна для изменения номера телефона пользователя
+    :param request:
+    :param id_of_user: идентификатор пользователя
+    :return: 403 или 200
+    """
     json_data = json.loads(request.body)
     if 'number_of_phone' not in json_data:
         return HttpResponseForbidden("Некорректные данные")
@@ -41,6 +60,12 @@ def request_on_change_the_number_of_phone(request: WSGIRequest, id_of_user: int 
 
 @authentication_for_change_user_data
 def request_on_change_the_date_of_birth(request: WSGIRequest, id_of_user: int = None):
+    """
+    Функция нужна для изменения даты дня рождения пользователя
+    :param request:
+    :param id_of_user: идентификатор пользователя
+    :return: 403 или 200
+    """
     json_data = json.loads(request.body)
     if 'date_of_birth' not in json_data:
         return HttpResponseForbidden("Некорректные данные")
@@ -56,6 +81,12 @@ def request_on_change_the_date_of_birth(request: WSGIRequest, id_of_user: int = 
 
 @authentication_for_change_user_data
 def request_on_change_the_tags(request: WSGIRequest, id_of_user: int = None):
+    """
+    Функция нужна для изменения списка тегов пользователя
+    :param request:
+    :param id_of_user: идентификатор пользователя
+    :return: 403 или 200
+    """
     json_data = json.loads(request.body)
 
     if ('tags_of_user' not in json_data)\

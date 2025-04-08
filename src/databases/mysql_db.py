@@ -116,6 +116,12 @@ class MysqlDB:
 # часть кода связанная с созданием, редактированием и удалением опросов
 
     def get_polls_tags(self, id_of_poll: int):
+        """
+        Функция нужна для того, чтобы вернуть все теги опроса, которые представляют собой list[str]
+
+        :param id_of_poll: идентификатор опроса
+        :return: list[str] - теги опроса
+        """
         self.cursor.execute(f"""SELECT tags FROM polls WHERE id = {id_of_poll}""")
         response_of_query = self.cursor.fetchone()
 
@@ -174,6 +180,15 @@ class MysqlDB:
         return dict_of_poll
 
     def set_dict_poll(self, questions_entries: list, id_of_poll: int) -> dict:
+        """
+        Функция нужна для создания словаря опроса для отправки JSON клиенту
+
+        :param questions_entries: записи вопросов связанных с опросом
+
+        :param id_of_poll: идентификатор опроса
+
+        :return: словарь состоящий из списков вопросов, описания опроса, названия опроса и тегов
+        """
         dict_of_poll: dict = {
             'id_of_poll': id_of_poll,
             'name_of_poll': questions_entries[0][1],
@@ -203,6 +218,13 @@ class MysqlDB:
         return dict_of_poll
 
     def get_questions(self, id_of_poll: int) -> List or None:
+        """
+        Функция возвращает вопросы связанные с конкретным опросом по его id
+
+        :param id_of_poll: идентификатор опроса
+
+        :return: список вопросов
+        """
         self.cursor.execute(f"""SELECT polls.id, polls.name_of_poll, polls.tags, 
                  polls.description, questions.id_of_question, questions.type_of_question, questions.text_of_question,
                  questions.serial_number
@@ -343,6 +365,11 @@ class MysqlDB:
                             (right_text_answer.id_of_question, right_text_answer.text_of_right_answer))
 
     def set_types_of_questions(self):
+        """
+        Функция добавляет в БД записи о типах вопросов, если их нет в БД.
+
+        :return: None
+        """
         self.cursor.execute("""SELECT id FROM types_of_question""")
         types_of_question = ['long text', 'short text', 'radio', 'checkbox']
         if self.cursor.fetchone() is None:
@@ -353,11 +380,22 @@ class MysqlDB:
             return None
 
     def get_types_of_question(self):
+        """
+        Функция возвращает типы вопросов из БД
+
+        :return: список типов list[str]
+        """
         self.cursor.execute("""SELECT type FROM types_of_question""")
         result = self.cursor.fetchall()
         return [type_of_question[0] for type_of_question in result]
 
     def get_id_of_author_of_poll(self, id_of_poll):
+        """
+        Функция возвращает идентификатор автора опроса по конкретному идентификатору опроса
+
+        :param id_of_poll: идентификатор опроса
+        :return: идентификатор автора
+        """
         self.cursor.execute(f"""SELECT id_of_author FROM polls WHERE id={id_of_poll}""")
         data_of_query = self.cursor.fetchone()
         if data_of_query is None:
@@ -366,14 +404,34 @@ class MysqlDB:
         return data_of_query[0]
 
     def delete_poll(self, id_of_poll: int):
+        """
+        Функция удаляет опрос из БД
+        :param id_of_poll: идентификатор опроса
+        :return:
+        """
         self.cursor.execute(f"""DELETE FROM polls WHERE id={id_of_poll}""")
         self.connection.commit()
 
     def create_entry_into_ranking_table(self, id_of_poll: int, vector_of_poll: bytes):
+        """
+        Функция создает запись в ranking_table. Запись представляет собой идентификатор опроса и вектор тегов,
+        представленный в виде байтов
+
+        :param id_of_poll: идентификатор опроса
+        :param vector_of_poll: поток байтов вектора тегов опроса
+        :return: None
+        """
         self.cursor.execute("""INSERT INTO ranking_table(id_of_poll, vector_of_poll) VALUES(%s, %s)""", (id_of_poll, vector_of_poll))
         self.connection.commit()
 
     def get_vectorization_polls(self, id_of_user: int):
+        """
+        Функция возвращает идентификаторы опросов и векторизованные теги опросов, которые не были пройдены пользователем
+
+        :param id_of_user: идентификатор пользователя
+
+        :return: идентификатор опроса и вектор тегов в байтовом представлении
+        """
         self.cursor.execute(f"""SELECT ranking_table.id_of_poll, ranking_table.vector_of_poll
         FROM ranking_table LEFT JOIN table_of_users_who_pass_the_poll 
         ON ranking_table.id_of_poll = table_of_users_who_pass_the_poll.id_of_poll AND
@@ -390,15 +448,30 @@ class MysqlDB:
 # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
 
     def reconnect(self):
+        """
+        Функция нужна для переподключения к БД
+
+        :return: None
+        """
         self.connection, self.cursor = self.connect_to_db()
 
     def delete_tables(self):
+        """
+        Функция нужна для удаления таблиц в БД
+
+        :return: None
+        """
         self.cursor.execute("""DROP TABLE polls, questions, options, rightAnswers""")
         self.connection.commit()
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами пользователей
 
     def set_table_type_of_users(self):
+        """
+        Функция нужна для добавления в БД типов пользователей: user, staff
+
+        :return: None
+        """
         self.cursor.execute("""SELECT type FROM table_of_type_of_users""")
         if self.cursor.fetchone() is None:
             self.cursor.execute("""INSERT INTO table_of_type_of_users(id_of_type, type) VALUES(%s, %s)""", (1, 'user'))
@@ -406,6 +479,11 @@ class MysqlDB:
             self.connection.commit()
 
     def create_superuser(self):
+        """
+        Функция создает суперпользователя ака админ
+
+        :return: None
+        """
         try:
             id_of_superuser = random.randint(-99999999, -9999999)
             self.cursor.execute("""INSERT INTO users (id_of_user, type_of_user) VALUES (%s, %s)""", (id_of_superuser, 3))
@@ -415,7 +493,15 @@ class MysqlDB:
         self.connection.commit()
 
     def create_user(self, login: str, password: str, type_of_user: int, nickname: str):
-        self.cursor.execute(f"""SELECT * FROM user WHERE login = "{login}" """)
+        """
+        Функция создает пользователя в БД. Также есть проверка на то, что пользователь уже существует в БД с таким логином
+        :param login: логин
+        :param password: пароль
+        :param type_of_user: тип пользователя (user, staff)
+        :param nickname: никнейм
+        :return: None
+        """
+        self.cursor.execute(f"""SELECT * FROM user WHERE login = "{login}" OR nickname = "{nickname}" """)
         if len(self.cursor.fetchall()) != 0:
             raise ErrorSameLogins('одинаковый логин')
         try:
@@ -428,6 +514,13 @@ class MysqlDB:
         self.connection.commit()
 
     def get_user_password_and_id_of_user_from_table(self, login):
+        """
+        Функция возвращает пароль и идентификатор пользователя по логину
+
+        :param login: логин
+
+        :return: пароль и идентификатор пользователя
+        """
         self.cursor.execute(f"""SELECT password, id_of_user FROM user WHERE login = "{login}" """)
         response = self.cursor.fetchone()
         if response is None:
@@ -436,6 +529,15 @@ class MysqlDB:
             return response[0], response[1]
 
     def get_user_nickname_from_table_with_cookie(self, cookie: str, name_of_cookie: str):
+        """
+        Функция возвращает никнейм пользователя по куки. Также в функции присутствует механизм проверки смерти куки.
+
+        :param cookie: куки значение
+
+        :param name_of_cookie: куки название
+
+        :return: никнейм пользователя
+        """
         self.cursor.execute(f"""SELECT expired, id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
         session = self.cursor.fetchone()
         now = datetime.datetime.now()
@@ -454,16 +556,34 @@ class MysqlDB:
             raise CookieWasExpired("время жизни куки файлов кончилось")
 
     def get_id_of_user_from_table_with_cookies(self, cookie: str, name_of_cookie: str) -> str:
+        """
+        Функция возвращает идентификатор пользователя по куки из таблицы sessions
+        :param cookie: куки значение
+        :param name_of_cookie: имя куки
+        :return: идентификатор пользователя
+        """
         self.cursor.execute(f"""SELECT id_of_user FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
         session = self.cursor.fetchone()
         assert session is not None
         return session[0]
 
     def get_user_data_from_table(self, id_of_user: int) -> tuple:
+        """
+        Функция нужна для выборки данных пользователя из таблицы
+
+        :param id_of_user: идентификатор пользователя
+
+        :return: tuple состоящий из никнейма, номера телефона, даты рождения и тегов
+        """
         self.cursor.execute(f"""SELECT nickname, login, number_of_phone, date_of_birth, tags FROM user WHERE id_of_user={id_of_user}""")
         return self.cursor.fetchone()
 
     def create_cookie_into_pow_table(self, cookie: str):
+        """
+        Функция создает запись в таблице pow_table
+        :param cookie:
+        :return: None
+        """
         try:
             self.cursor.execute("""INSERT INTO pow_table (cookie) VALUES (%s)""", (cookie, ))
         except mysql.connector.IntegrityError:
@@ -471,10 +591,21 @@ class MysqlDB:
         self.connection.commit()
 
     def update_pow_in_pow_table(self, cookie: str, pow: int):
+        """
+        Функция обновляет запись в таблице pow_table
+        :param cookie:
+        :param pow:
+        :return: None
+        """
         self.cursor.execute(f"""UPDATE pow_table SET pow = {pow} WHERE cookie = "{cookie}" """)
         self.connection.commit()
 
     def get_pow(self, cookie: str):
+        """
+        Функция нудна для получения pow значения из таблицы pow_table по куки
+        :param cookie: куки
+        :return: None
+        """
         self.cursor.execute(f"""SELECT pow FROM pow_table WHERE cookie = "{cookie}" """)
         response = self.cursor.fetchall()
         if len(response) != 0:
@@ -483,6 +614,14 @@ class MysqlDB:
             raise NotFoundCookieIntoPowTable('не найден куки в таблице')
 
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: datetime.datetime):
+        """
+        Функция нужна для создания сессии клиента в системе
+        :param cookie: куки
+        :param name_of_cookie: название куки
+        :param id_of_user: идентификатор пользователя
+        :param expired: время жизни куки
+        :return: None
+        """
         try:
             self.cursor.execute(f"""SELECT id_of_cookie FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" """)
             if self.cursor.fetchone() is not None:
@@ -497,18 +636,47 @@ class MysqlDB:
             self.create_cookie_into_session_table(new_cookie, name_of_cookie, id_of_user, expired)
 
     def delete_cookie_from_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int):
+        """
+        Удаление записи в sessions
+        :param cookie: значение куки
+        :param name_of_cookie: название куки
+        :param id_of_user: идентификатор пользователя
+        :return: None
+        """
         self.cursor.execute(f"""DELETE FROM sessions WHERE cookie = "{cookie}" AND name_of_cookie = "{name_of_cookie}" AND id_of_user = {id_of_user}""")
         self.connection.commit()
 
     def update_cookie_in_session_table(self, cookie: str, id_of_user: int, name_of_cookie: str, expired: int):
+        """
+        Функция обновляет значение куки и время жизни в таблице sessions.
+        :param cookie: значение куки
+        :param id_of_user: идентификатор пользователя
+        :param name_of_cookie: название куки
+        :param expired: время жизни
+        :return: None
+        """
         self.cursor.execute(f"""UPDATE sessions SET cookie = "{cookie}", expired = "{expired}" WHERE id_of_user = {id_of_user} AND name_of_cookie = "{name_of_cookie}" """)
         self.connection.commit()
 
     def delete_pow_entry_from_pow_table(self, cookie):
+        """
+        Функция удаляет запись в таблице pow_table
+        :param cookie: значение куки
+        :return:
+        """
         self.cursor.execute(f"""DELETE FROM pow_table WHERE cookie = "{cookie}" """)
         self.connection.commit()
 
     def get_pass_user_polls(self, id_of_user: int, num_of_polls: int = 4):
+        """
+        Функция возвращает список опросов, которые пользователь прошел успешно
+
+        :param id_of_user: идентификатор пользователя
+
+        :param num_of_polls: количество опросов
+
+        :return: список опросов типа Poll
+        """
         self.cursor.execute(f"""SELECT id_of_poll FROM table_of_users_who_pass_the_poll WHERE id_of_user = {id_of_user}""")
         response_of_query = self.cursor.fetchmany(num_of_polls)
         id_of_polls = [poll[0] for poll in response_of_query]
@@ -524,31 +692,65 @@ class MysqlDB:
         return polls_list
 
     def check_user_on_pass_the_poll(self, id_of_user: int, id_of_poll: int):
+        """
+        Проверка на то, что пользователь прошел опрос
+        :param id_of_user: идентификатор пользователя
+        :param id_of_poll: идентификатор опроса
+        :return: True или False
+        """
         self.cursor.execute(f"""SELECT * FROM table_of_users_who_pass_the_poll WHERE id_of_user = {id_of_user} AND id_of_poll = {id_of_poll}""")
         response_of_query = self.cursor.fetchone()
         return True if response_of_query is not None else False
 
     def delete_entry_from_users(self, id_of_user: int):
+        """
+        Функция удаляет пользователя из БД
+        :param id_of_user: идентификатор пользователя
+        :return: None
+        """
         self.cursor.execute(f"""DELETE FROM users WHERE id_of_user={id_of_user}""")
         self.connection.commit()
 
     def check_availability_entry_in_sessions(self, id_of_user) -> bool:
+        """
+        Функция проверяет существование записи в таблице session со значением id_of_user
+        :param id_of_user: идентификатор пользователя
+        :return: True или False
+        """
         self.cursor.execute(f"""SELECT id_of_user FROM sessions WHERE id_of_user = {id_of_user}""")
         if self.cursor.fetchone() is None:
             return False
         return True
 
     def create_entry_into_sessions_table(self, cookie: str, cookie_name: str, id_of_user: int,  days: int = 3):
+        """
+        Функция создает запись в таблице sessions
+        :param cookie: значение куки
+        :param cookie_name: название куки
+        :param id_of_user: идентификатор пользователя
+        :param days: количество дней жизни куки
+        :return: None
+        """
         expired = datetime.datetime.now()
         expired = expired + datetime.timedelta(days=days)
         self.create_cookie_into_session_table(cookie, cookie_name, id_of_user, expired)
 
     def check_user_into_superusers(self, id_of_user: int) -> bool:
+        """
+        Функция нужна для проверки на то, существует ли такая запись в БД со значением id_of_user
+        :param id_of_user: идентификатор пользователя
+        :return: True или False
+        """
         if id_of_user in self.get_id_of_superusers():
             return True
         return False
 
     def get_id_of_superusers(self):
+        """
+        Функция возвращает идентификаторы супер пользователей
+
+        :return: список id
+        """
         self.cursor.execute("""SELECT id_of_superuser FROM superusers""")
         data_of_query = self.cursor.fetchall()
 
@@ -557,6 +759,12 @@ class MysqlDB:
         return id_of_superusers
 
     def add_entry_in_ranking_table_of_users(self, id_of_user: int, vector_of_user: bytes):
+        """
+        Функция создает запись в таблице ranking_table_of_users.
+        :param id_of_user: идентификатор пользователя
+        :param vector_of_user: поток байт вектора тегов пользователя
+        :return: None
+        """
         try:
             self.cursor.execute("""INSERT INTO ranking_table_of_users (id_of_user, vector_of_user) VALUES (%s, %s)""", (id_of_user, vector_of_user))
             self.connection.commit()
@@ -564,6 +772,11 @@ class MysqlDB:
             self.cursor.execute("""UPDATE ranking_table_of_users SET vector_of_user = %s WHERE id_of_user = %s""", (vector_of_user, id_of_user))
 
     def get_vector_of_user(self, id_of_user: int):
+        """
+        Функция возвращает вектор тегов пользователя из таблицы vector_of_user
+        :param id_of_user: идентификатор пользователя
+        :return: Вектор тегов пользователя
+        """
         self.cursor.execute(f"""SELECT vector_of_user FROM ranking_table_of_users WHERE id_of_user = {id_of_user}""")
         response_of_query = self.cursor.fetchone()
 
@@ -572,6 +785,13 @@ class MysqlDB:
         return response_of_query[0]
 
     def get_tags_of_user(self, id_of_user: int) -> list:
+        """
+        Функция возвращает список тегов пользователя
+
+        :param id_of_user: идентификатор пользователя
+
+        :return: список тегов
+        """
         self.cursor.execute(f"""SELECT tags FROM user WHERE id_of_user = {id_of_user}""")
         response_of_query = self.cursor.fetchone()
 
@@ -580,13 +800,25 @@ class MysqlDB:
         return json.loads(response_of_query[0])
 
     def update_the_filed_into_user(self, id_of_user: int, field: str, value: typing.Union[str, int, datetime.date]):
+        """
+        Функция является конструктором для изменения значений в таблице users
+        :param id_of_user: идентификатор пользователя
+        :param field: поле для изменения
+        :param value: значение на которое изменяется поле
+        :return: None
+        """
         transaction = f"""UPDATE user SET {field} = %s """
         transaction += f"""WHERE id_of_user = {id_of_user}"""
 
         self.cursor.execute(transaction, (value, ))
         self.connection.commit()
 
-    def get_vector_of_user_from_ranking_table(self, id_of_user: int) -> bool:
+    def check_existence_vector_of_user_from_ranking_table(self, id_of_user: int) -> bool:
+        """
+        Функция проверяет, если ли запись в таблице ranking_table_of_users с заданным id_of_user
+        :param id_of_user: идентификатор пользователя
+        :return: True или False
+        """
         try:
             self.cursor.execute(f"""SELECT vector_of_user FROM ranking_table_of_users WHERE id_of_user = {id_of_user}""")
             response_of_query = self.cursor.fetchone()
@@ -596,15 +828,34 @@ class MysqlDB:
             return False
 
     def get_count_of_users_who_pass_the_poll(self, id_of_poll: int) -> int:
+        """
+        Функция возвращает количество пользователей, которые прошли конкретный опрос
+
+        :param id_of_poll: идентификатор опроса
+        :return: int
+        """
         self.cursor.execute(f"""SELECT COUNT(id_of_user) FROM table_of_users_who_pass_the_poll WHERE id_of_poll = {id_of_poll}""")
         return self.cursor.fetchone()[0]
 
     def get_count_of_users_who_selected_of_specific_option(self, option: str, serial_number_of_question: int, id_of_poll: int):
+        """
+        Функция возвращает количество пользователей, которые выбрали конкретную опцию в вопросе
+        :param option: значение опции
+        :param serial_number_of_question: порядковый номер вопроса в опросе
+        :param id_of_poll: идентификатор опроса
+        :return: int
+        """
         self.cursor.execute(f"""SELECT COUNT(id_of_user) FROM data_of_passing_poll_from_user WHERE serial_number_of_question = {serial_number_of_question} AND
         id_of_poll = {id_of_poll} AND value = "{option}" """)
         return self.cursor.fetchone()[0]
 
     def get_text_answers_of_users(self, id_of_poll: int, serial_number_of_questions: int):
+        """
+        Функция возвращает список текстовых ответов пользователей на вопрос
+        :param id_of_poll: идентификатор опроса
+        :param serial_number_of_questions: порядковый номер вопроса в опросе
+        :return: list[str]
+        """
         self.cursor.execute(f"""SELECT value FROM data_of_passing_poll_from_user WHERE id_of_poll = {id_of_poll} AND
         serial_number_of_question = {serial_number_of_questions}""")
         return [value[0] for value in self.cursor.fetchall()]
@@ -612,6 +863,12 @@ class MysqlDB:
 # Сохранение данных, которые пользователь ввел в ответах на опрос
 
     def add_users_into_table_for_users_who_pass_the_poll(self, id_of_user, id_of_poll):
+        """
+        Функция нужна для создания записи в таблице table_of_users_who_pass_the_poll.
+        :param id_of_user: идентификатор пользователя
+        :param id_of_poll: идентификатор опроса
+        :return: None
+        """
         try:
             self.cursor.execute("""INSERT INTO table_of_users_who_pass_the_poll(id_of_user, id_of_poll) VALUES(%s, %s)""", (id_of_user, id_of_poll))
             self.connection.commit()
@@ -619,6 +876,15 @@ class MysqlDB:
             raise RepeatPollError("Попытка повторного прохождения опроса")
 
     def add_answer_into_table_data_of_passing_poll_from_user(self, serial_number: int, type_of_question: str, value: str, id_of_user: int, id_of_poll: int):
+        """
+        Функция создает запись в БД с ответом пользователя на вопрос в опросе
+        :param serial_number: порядковый номер вопроса в опросе
+        :param type_of_question: тип вопроса
+        :param value: значение, которое выбрал или ввел пользователь
+        :param id_of_user: идентификатор пользователя
+        :param id_of_poll: идентификатор опроса
+        :return: None
+        """
         try:
             self.cursor.execute("""INSERT INTO data_of_passing_poll_from_user (id, id_of_poll, id_of_user, serial_number_of_question, type_of_question, value) VALUES (%s, %s, %s, %s, %s, %s)""", (random.randint(0, 9999999), id_of_poll, id_of_user, serial_number, type_of_question, value))
             self.connection.commit()

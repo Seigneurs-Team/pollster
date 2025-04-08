@@ -13,6 +13,16 @@ from django.http import JsonResponse, HttpResponseForbidden
 
 @authentication()
 def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None):
+    """
+    Функция нужна для возврата страницы с прохождением конкретного опроса.
+    Страница включает в себя все вопросы опроса, а также опции к этим опросам.
+
+    :param requests:
+    :param poll_id: идентификатор опроса
+    :param id_of_user: идентификатор пользователя
+    :return: render(requests, 'passing_poll_page.html', context={'user': user, 'poll': poll, 'is_pass': is_pass})
+    или render(requests, 'NotFound.html')
+    """
     # получение опроса по id
     auth_sessionid = requests.COOKIES['auth_sessionid']
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(auth_sessionid, 'auth_sessionid')
@@ -28,6 +38,15 @@ def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None)
 
 @authentication()
 def request_on_passing_poll(request, id_of_user: int = None):
+    """
+    Функция нужна для того, чтобы сохранить данные, которые пользователь ввел в ответах на вопросы в опросе.
+    Сохраняется в БД идентификатор опроса, порядковый номер вопроса, тип вопроса и ответ на него, а также идентификатор
+    пользователя
+
+    :param request:
+    :param id_of_user: идентификатор пользователя
+    :return: 200, 403
+    """
     data_of_passing_poll = json.loads(request.body)
     auth_sessionid = request.COOKIES['auth_sessionid']
     id_of_poll = data_of_passing_poll['poll_id']
@@ -45,6 +64,13 @@ def request_on_passing_poll(request, id_of_user: int = None):
 
 
 def add_answers_into_db(answer: dict, id_of_poll: int, id_of_user: int):
+    """
+    Функция исполняет сохранение данных, которые пользователь ввел в ответах на вопросы в опросе.
+    :param answer: словарь с полями: question_id, type, value
+    :param id_of_poll: идентификатор опроса
+    :param id_of_user: идентификатор пользователя
+    :return: None
+    """
     serial_number = answer['question_id']
     type_of_question = answer['type']
     check_the_type(type_of_question)
@@ -57,6 +83,11 @@ def add_answers_into_db(answer: dict, id_of_poll: int, id_of_user: int):
 
 
 def check_the_type(type_of_question: str):
+    """
+    Проверка значений поля type на несоответствие со значениями из БД.
+    :param type_of_question: тип вопроса
+    :return: None
+    """
     types = client_mysqldb.get_types_of_question()
     if type_of_question not in types:
         raise TryToXSS("попытка XSS атаки")

@@ -12,6 +12,17 @@ from Configs.Responses_from_consumer import Responses
 
 @authentication_for_main_page
 def request_on_main_page(requests, is_authenticated: bool):
+    """
+    Функция нужна для отправки клиенту страницы html. Если пользователь авторизован в системе, то ему будут подобраны опросы
+    с помощью рекомендательной системы, иначе будут выданы первые пять опросов из БД.
+
+    :param requests:
+    :param is_authenticated: если True, то авторизованный пользователь отправляет запрос на загрузку страницы,
+    если False, то неавторизованный пользователь отправляет запрос на сервер.
+    Переменная нужна для понимания, какие опросы отправлять обратно клиенту.
+
+    :return: render(requests, 'index.html', context={'all_objects': polls, 'tags': tags, 'user': user})
+    """
     polls = client_mysqldb.get_polls()
     tags = ['развлечения', 'наука', 'животные', 'кухня', 'искусство', 'дети', 'музыка', 'кино и сериалы', 'путешествия', 'игры', 'мода и стиль', 'здоровье', 'образование']
     if is_authenticated is True:
@@ -28,13 +39,31 @@ def request_on_main_page(requests, is_authenticated: bool):
 
 
 def requests_on_get_polls(request, num_of_polls=5):
+    """
+    Функция нужна для получения выбранного количества опросов из БД
+    :param request:
+    :param num_of_polls: количество опросов
+
+    :return: список опросов. Каждый элемент массива является экземпляром класса Poll
+    """
     polls = client_mysqldb.get_polls(int(num_of_polls))
     return JsonResponse({"list": polls})
 
 
 def get_polls_for_user(id_of_user: int, polls: list):
+    """
+    Функция возвращает список опросов, которые рекомендательная система посчитала подходящими для конкретного пользователя.
+    Отправляется запрос в контейнер consumer, который принимает значение ID_OF_POLL и NUM_OF_POLLS. После вычислений
+    нейронной модели контейнер consumer возвращает список рекомендательных идентификаторов опросов.
+
+    :param id_of_user: идентификатор пользователя
+
+    :param polls: первичный список опросов, который может впоследствии изменить свое содержимое или нет
+
+    :return: список опросов типа Poll
+    """
     try:
-        if client_mysqldb.get_vector_of_user_from_ranking_table(id_of_user):
+        if client_mysqldb.check_existence_vector_of_user_from_ranking_table(id_of_user):
             response_of_rmq_request = producer.publish(Commands.get_similar_polls % (5, id_of_user))
             if response_of_rmq_request == Responses.RefusedConnection:
                 raise AssertionError

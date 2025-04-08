@@ -8,6 +8,13 @@ from authentication.check_user_on_auth import authentication_for_profile_page
 
 @authentication_for_profile_page
 def request_on_profile_page(requests, id_of_user):
+    """
+    Функция возвращает страницу пользователя только в том случае, если клиент авторизован в системе
+
+    :param requests:
+    :param id_of_user: идентификатор пользователя
+    :return: render(requests, 'profile_page.html', context={'user': user, 'tags': tags})
+    """
     user_polls = client_mysqldb.get_polls(id_of_user=id_of_user)
     pass_user_polls = client_mysqldb.get_pass_user_polls(id_of_user)
 

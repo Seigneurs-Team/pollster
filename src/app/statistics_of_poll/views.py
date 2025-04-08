@@ -8,6 +8,13 @@ from authentication.check_user_on_auth import authentication
 
 @authentication()
 def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_user: int = None):
+    """
+    Функция нужна для возврата страницы со статистикой опроса
+    :param requests:
+    :param id_of_poll: идентификатор опроса
+    :param id_of_user: идентификатор пользователя
+    :return: render(requests, 'statistics_page.html', context={'id_of_poll': id_of_poll, 'user': user})
+    """
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
     user = {'id': id_of_user, 'username': nickname}
 
@@ -16,6 +23,13 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
 
 @authentication(False)
 def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
+    """
+    Функция нужна для получения статистики по конкретному опросу.
+    :param requests:
+    :param id_of_poll: идентификатор опроса
+
+    :return: словарь состоящий из списка словарей вопросов, количества пройденных пользователей
+    """
     count_of_users_who_pass_the_poll = client_mysqldb.get_count_of_users_who_pass_the_poll(id_of_poll)
     list_of_questions = [question[4:] for question in client_mysqldb.get_questions(id_of_poll)]
     dict_for_statistics: dict = {
@@ -38,7 +52,7 @@ def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
 
             dict_of_questions['options'] = set_options(
                 list_of_options_name, list_of_right_answer_ids,
-                dict_of_questions['seral_number'], id_of_poll
+                dict_of_questions['serial_number'], id_of_poll
             )
         else:
             dict_of_questions['text_answers'] = client_mysqldb.get_text_answers_of_users(id_of_poll, dict_of_questions['serial_number'])

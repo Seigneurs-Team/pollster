@@ -12,6 +12,9 @@ from Configs.Responses_from_consumer import Responses
 
 
 class Producer:
+    """
+    Класс представляет собой интерфейсов работы с rabbitmq контейнером, как Publisher
+    """
     def __init__(self, host):
         self.parameters = pika.ConnectionParameters(heartbeat=0, host=host)
         self.connection = pika.BlockingConnection(self.parameters)
@@ -33,6 +36,15 @@ class Producer:
         self.channel.queue_declare(queue=Queue.ping_queue, durable=True)
 
     def publish(self, message: Any, properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent), queue=None, callback_queue=None):
+        """
+        Функция отправляет сообщение в очередь queue, Сообщение представляет собой команду.
+
+        :param message: команда для Consumer
+        :param properties: настройки передачи
+        :param queue: очередь, куда отправляется сообщение
+        :param callback_queue: очередь для ожидания ответа
+        :return: ответ от Consumer
+        """
         properties = pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent, reply_to=self.callback_queue)
         try:
             self.channel.basic_publish(
@@ -63,6 +75,11 @@ class Producer:
         self.channel.close()
 
     def consume_the_response(self):
+        """
+        Функция нужна для обозначения ожидания ответа от Consumer в очереди self.callback_queue
+
+        :return: None
+        """
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(
             queue=self.callback_queue,
@@ -71,12 +88,25 @@ class Producer:
         )
 
     def on_response(self, channel, method, properties, body: bytes):
+        """
+        Callback функция на ответ от Consumer
+        :param channel: канал связи
+        :param method: метод передачи
+        :param properties: настройки передачи
+        :param body: сообщение ответа в виде байтов
+        :return: None
+        """
         if re.search(r'ERROR', body.decode()):
             raise WronglyResponse(f'Ошибка: {body.decode()}')
         else:
             self.response = body.decode()
 
     def reconnect(self):
+        """
+        Функция нужна для переподключения к контейнеру rabbitmq
+
+        :return: None
+        """
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
 
