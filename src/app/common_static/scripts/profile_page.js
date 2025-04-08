@@ -5,6 +5,12 @@ async function sendChangeDataRequest(data, url) {
     return sendRequest(`/change_user_data/${url}`, 'POST', data);
 }
 
+
+async function sendDeletePollRequest( id) {
+    return sendRequest(`/delete_poll/${id}`, 'GET');
+}
+
+
 let tagsErrorMessage = $('#tags-error-message');
 let errorMessage = $('.error-message');
 
@@ -77,12 +83,9 @@ $(".delete-poll").on('click', async function () {
     event.preventDefault();
     console.log('deleting poll...');
     const id = $(this).attr('data-poll');
-    console.log(id)
+    
 
-    const response = await fetch(`/delete_poll/${id}`, {
-        method: 'GET',
-        credentials: 'include', // Отправляем куки
-    });
+    const response = sendDeletePollRequest(id)
     const responseData = await response.json();
     console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
