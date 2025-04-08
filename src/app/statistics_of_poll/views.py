@@ -31,7 +31,7 @@ def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
             'serial_number': question[3]
         }
 
-        if dict_of_questions['type_of_question'] == 'radiobutton' or \
+        if dict_of_questions['type_of_question'] == 'radio' or \
                 dict_of_questions['type_of_question'] == 'checkbox':
             list_of_options_name = client_mysqldb.get_options(dict_of_questions['id'])
             list_of_right_answer_ids = client_mysqldb.get_right_answers(dict_of_questions['id'])

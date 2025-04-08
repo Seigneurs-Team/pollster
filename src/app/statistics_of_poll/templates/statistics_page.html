@@ -10,33 +10,84 @@
 
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/passing_poll_page.css' %}">
+    <link rel="stylesheet" href="{% static 'css/statistics_page.css' %}">
+
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" href="{% static 'img/circle-logo.png' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/circle-logo.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
 
 </head>
 
 <body>
     <div class="content">
         <header data-background="{% static 'img\header.png' %}">
-        <a href="/" class="logo-stub"></a>
-            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo" src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+            <a href="/" class="logo-stub"></a>
+            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
+                    src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
         </header>
-
-
         <main>
-
             <button id="get-statistics" data-poll-id="{{id_of_poll}}">get statistics in console</button>
+            <p>Прошли опрос: {{questions.count_of_users}} человек</p>
+            <div id="questions">
+                {% for question in questions.questions %}
+                    <div id="{{question.id}}" class="question">
+                        <p class="question-text">{{ question.text_of_question }}</p>
+                        {% if question.type_of_question == "radio" or question.type_of_question == "checkbox" %}
+                            <ul class="options">
+                            {% for option in question.options %}
+                                {% for key, value in option.items %}
+
+                                    <li class="option">
+                                        <input type="{{question.type_of_question}}" name="{{question.id}}" id="{{ key }}" disabled
+                                        {% if value.is_right_answer %}
+                                        checked
+                                        {% endif %}
+                                        >
+                                        <label for="{{ key }}">{{ key }}: {{ value.count_of_selected }}</label>
+                                    </li>
+                                {% endfor %}
+                            {% endfor %}
+                            </ul>
+                            <div class="chart-wrapper">
+                                <canvas class="chart right-answers"></canvas>
+                                <canvas class="chart options"></canvas>
+                            </div>
+
+                        {% elif question.type_of_question == "short text"%}
+                            <p class="right_text_answer">Правильный ответ: {{ question.right_text_answer }}</p>
+                            <p>Другие ответы:</p>
+                            <ul>
+                            {% for wrong_answer in question.wrong_text_answers %}
+                                <li class="wrong_text_answer">{{ wrong_answer.text }}</li>
+                            {% endfor %}
+                            </ul>
+                            <div class="chart-wrapper">
+                                <canvas class="chart right-answers"></canvas>
+                            </div>
+                        {% elif question.type_of_question == "long text"%}
+                            <p>Ответы:</p>
+                            <ul>
+                            {% for answer in question.text_answers %}
+                                <li class="answer">{{ answer.text }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
         </main>
 
     </div>
-    <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}" data-cloud-2="{% static 'img/cloud 2.svg' %}">
-    {% include 'footer.html' %}
-</div>
+    <div class="footer-wrapper">
+        {% include 'footer.html' %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="{% static 'scripts/statistics_page.js' %}" type="module"></script>
 
