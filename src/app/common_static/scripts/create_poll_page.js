@@ -11,12 +11,6 @@ $(document).ready(function () {
     $(`.error-message`).each(function () {
         $(this).hide();
     });
-
-    // Стили для кнопок удаления
-    $('.delOption').css('background-image', 'url(' + $('main').data('deloption') + ')');
-
-    // Фон шапки
-    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
 });
 
 function deleteQuestion(target) {

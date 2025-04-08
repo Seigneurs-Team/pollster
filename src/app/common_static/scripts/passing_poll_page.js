@@ -7,7 +7,6 @@ const questionsDiv = $("#questions");
 $(document).ready(function() {
     renderAllQuestions();
     setupEventListeners();
-    setHeaderBackground();
 });
 
 /**
@@ -167,11 +166,4 @@ async function sendPassedPoll(data) {
     }
 
     return await response.json();
-}
-
-/**
- * Установка фона шапки
- */
-function setHeaderBackground() {
-    $('header').css('background-image', `url(${$('header').data('background')})`);
 }

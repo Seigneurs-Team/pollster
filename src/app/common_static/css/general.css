@@ -60,7 +60,7 @@ header {
     justify-content: space-between;
     height: 131px;
     margin: 8px 0;
-
+    background-image: url("../img/header.png");
     background-size: cover;
 }
 

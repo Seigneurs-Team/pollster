@@ -13,6 +13,11 @@ main {
 
     margin-top: 30px
 }
+
+main.sign-in {
+    background-image: url("../img/sign-in-background.png");
+}
+
 header {
     display:none;
 }
@@ -22,8 +27,11 @@ h1 {
 
 .password-wrapper {
     position: relative;
-    border: var(--violet) 1.5px solid;
     border-radius: var(--border-radius);
+}
+
+#password, #password-repeat {
+    border: var(--violet) 1.5px solid;
 }
 
 input {
@@ -42,6 +50,11 @@ input {
     display: inline-block;
     width: 20px;
     height: 20px;
+    background-image: url("../img/view.svg");
+}
+
+.password-control.no-view {
+    background-image: url("../img/no-view.svg");
 }
 
 .password {
