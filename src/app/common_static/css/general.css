@@ -130,9 +130,8 @@ footer {
     top: 0;
     max-width: 384px;
     min-height: 40px;
-
+    background-image: url( "../img/cloud 1.svg");
     font-size: 31px;
-
 }
 
 .footer-content .cloud-2 {
@@ -142,6 +141,7 @@ footer {
     right: 37px;
     font-size: 16px;
     max-width: 384px;
+    background-image: url( "../img/cloud 2.svg");
     min-height: 180px;
 }
 

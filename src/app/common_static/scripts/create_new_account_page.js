@@ -1,7 +1,6 @@
 import {getChallenge, findProof} from './POW.js';
 import { sendRequest } from './api.js';
-import { setFooterBackground } from './utils.js';
-setFooterBackground()
+
 
 async function sendRegistrationRequest(data) {
     return sendRequest('/register', 'POST', data);

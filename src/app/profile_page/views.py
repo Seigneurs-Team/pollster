@@ -13,7 +13,6 @@ def request_on_profile_page(requests, id_of_user):
 
     user_data = client_mysqldb.get_user_data_from_table(id_of_user)
     tags_of_user = json.loads(user_data[4]) if user_data[4] is not None else None
-    print(tags_of_user)
     tags = ['развлечения', 'наука', 'животные', 'кухня', 'искусство',  'дети', 'музыка', 'кино и сериалы', 'путешествия', 'игры', 'мода и стиль', 'здоровье', 'образование']
 
     if tags_of_user is not None:
