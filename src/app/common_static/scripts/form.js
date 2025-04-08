@@ -6,8 +6,6 @@ $('body').on('click', '.password-control', function () {
 
     var $passwordInput = $(this).parent('.password-wrapper').find('.password')
     var $control = $(this);
-    var viewIcon = $control.data('view');
-    var noViewIcon = $control.data('no-view');
     console.log($control)
 
     if ($passwordInput.attr('type') === 'password') {

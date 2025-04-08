@@ -94,25 +94,21 @@
                 {% else %}
                 {% for poll in user.usersPolls %}
                 <li class="poll-item">
-                    <a href="/statistics/{{poll.id_of_poll}}">
-                        <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image"></div>
-                        <div class="poll-info">
-                            <h2 class="poll-name">{{poll.name_of_poll}}</h2>
-                            <p class="poll-description">{{poll.description}}</p>
-                            <button>
-                                <div class="answers-left-poll"></div>
-                                Осталось {{10}} человек
-                            </button>
-                            <button>
-                                <div class="edit-poll"></div>
-                                Редактировать
-                            </button>
-                            <button>
-                                <div class="delete-poll"></div>
-                                Удалить
-                            </button>
+                    <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image"></div>
+                    <div class="poll-info">
+                        <h2 class="poll-name">{{poll.name_of_poll}}</h2>
+                        <p class="poll-description">{{poll.description}}</p>
+                        <div>
+                            <div class="answers-left-poll"></div>
+                            Осталось {{10}} человек
                         </div>
-                    </a>
+                        <div class="btns">
+                            <a href="/statistics/{{poll.id_of_poll}}"><button class="view-statistics"> Посмотреть
+                                    статистику </button></a>
+                            <button class="delete-poll"> Удалить </button>
+                        </div>
+                    </div>
+
                 </li>
                 {% endfor %}
                 {% endif %}

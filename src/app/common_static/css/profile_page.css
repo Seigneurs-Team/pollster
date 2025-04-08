@@ -181,7 +181,7 @@ li.poll-item {
     width: 100%;
 }
 
-li.poll-item a {
+li.poll-item {
     display: flex;
     flex-direction: row;
     padding: 15px;
@@ -208,4 +208,26 @@ li.poll-item a {
 
 .poll-info .poll-name, .poll-info button {
     text-align: left;
+}
+
+.btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.btns button {
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 400;
+    padding: 10px;
+}
+
+li.poll-item .delete-poll {
+    background: red;
+}
+
+
+li.poll-item .view-statistics {
+    background: green;
 }
