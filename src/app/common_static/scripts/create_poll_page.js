@@ -1,6 +1,5 @@
 import { createPoll } from './createPoll.js';
-import { setFooterBackground } from './utils.js';
-setFooterBackground()
+
 
 // Глобальные переменные
 let questionsId = 0;
@@ -44,7 +43,7 @@ $('.questions').on('click', '.delOption', function (event) {
 
 // Настройка обработчиков для вопроса
 function setupQuestionHandlers(questionType, questionId) {
-    if (questionType === "radiobutton") {
+    if (questionType === "radio") {
         $(`#${questionId} .addOptionRadio`).on('click', function () {
             addOption(this, 'radio', questionId);
         });
@@ -110,7 +109,7 @@ function answerType(questionType, questionId) {
             </div>`;
     } else if (questionType === "long text") {
         return '<p>Это вопрос с развернутым ответом</p>';
-    } else if (questionType === "radiobutton" || questionType === "checkbox") {
+    } else if (questionType === "radio" || questionType === "checkbox") {
         const type = questionType === "checkbox" ? "checkbox" : "radio";
         return `
             <div class="options">
@@ -119,7 +118,7 @@ function answerType(questionType, questionId) {
             </div>
             <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}">+</button>
         `;
-    } else if (questionType === "radiobutton img") {
+    } else if (questionType === "radio img") {
         return '';
     } else if (questionType === "checkbox img") {
         return '';
