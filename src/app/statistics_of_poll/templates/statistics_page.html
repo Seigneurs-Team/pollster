@@ -61,12 +61,12 @@
                             </ul>
                             <div class="chart-wrapper">
                                 <div class="chart-settings">
+                                    <b>Настройки диаграммы</b>
                                     <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
                                     <button class="line"><img src="{% static 'img/diagram-type-line.png' %}">Line</button>
                                     <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
                                 </div>
-                                <canvas class="chart right-answers"></canvas>
-                                <!-- <canvas class="chart options"></canvas> -->
+                                <canvas class="chart"></canvas>
                             </div>
 
                         {% elif question.type_of_question == "short text"%}
@@ -78,7 +78,13 @@
                             {% endfor %}
                             </ul>
                             <div class="chart-wrapper">
-                                <canvas class="chart right-answers"></canvas>
+                                <div class="chart-settings">
+                                    <b>Настройки диаграммы</b>
+                                    <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
+                                    <button class="line"><img src="{% static 'img/diagram-type-line.png' %}">Line</button>
+                                    <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
+                                </div>
+                                <canvas class="chart"></canvas>
                             </div>
                         {% elif question.type_of_question == "long text"%}
                             <p>Ответы:</p>

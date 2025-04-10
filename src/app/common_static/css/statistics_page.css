@@ -32,5 +32,6 @@ div#questions {
 }
 .chart-wrapper {
     display: flex;
-
+    margin: 10px 0;
+    column-gap: 30px;
 }

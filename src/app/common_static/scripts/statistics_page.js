@@ -17,7 +17,7 @@ async function sendStatisticslRequest(id) {
 $(document).ready(async function () {
     const pollID = $('main').data('poll-id')
     statistics = await sendStatisticslRequest(pollID)
-    console.log('statistics',statistics)
+    console.log('statistics', statistics)
     questions = statistics.questions
     console.log('questions: ', questions)
 
@@ -26,24 +26,27 @@ $(document).ready(async function () {
         // у short text график с правлиьными/неправильными ответами
         if (questions[i].type_of_question == "short text") {
 
-        drawRightAnswersChart(i)
-            
+            drawRightAnswersChart(i)
+
         }
         // а у вопросов с вариантами ответа по умолчанию будет график - количество выбора каждого варианта
         if (questions[i].type_of_question == "radio" || questions[i].type_of_question == "checkbox") {
 
             const [options, countOfSelected] = getOptions(i)
+            questions[i].options = options
+            questions[i].countOfSelected = countOfSelected
+
             drawOptionsChart(i, options, countOfSelected)
         }
     }
 })
-    
+
 
 
 function drawRightAnswersChart(i) {
     // количество выбранных правильных вариантов ответа: в labels всегда "right/wrong", в data 1й элемент - количество правльных, 2й - неправильных ответов. в вопросах с коротким ответом то же самое (но это для графика. а так все ответы будут списком выводиться)
 
-    new Chart($(`#${questions[i].id} .chart`), {
+    const myChart = new Chart($(`#${questions[i].id} .chart`), {
         type: 'doughnut',
         data: {
             labels: [
@@ -62,18 +65,19 @@ function drawRightAnswersChart(i) {
             }]
         },
     });
+    $(`#${questions[i].id}`).data('chart', myChart);
+
 }
 
-function drawOptionsChart(i, options, countOfSelected) {
-    console.log(questions[i].id)
+function drawOptionsChart(i, options, countOfSelected, type = 'bar') {
     // количество выбранных вариантов ответа: нужно получить список вариантов ответа и список количества выбора каждого из них
     /// можно использовать типы bar, polarArea, pie, doughnut
     const myChart = new Chart($(`#${questions[i].id} .chart`), {
-        type: 'bar',
+        type: type,
         data: {
             labels: options,
             datasets: [{
-                label: 'right/wrong ansers',
+                label: 'options',
                 data: countOfSelected,
                 backgroundColor: [
                     'rgb(255, 99, 132)',
@@ -85,8 +89,6 @@ function drawOptionsChart(i, options, countOfSelected) {
         },
     });
     $(`#${questions[i].id}`).data('chart', myChart);
-    console.log($(`#${questions[i].id}`).data('chart'))
-    console.log($(`#${questions[i].id}`).data('chart'))
 
 
 }
@@ -107,9 +109,18 @@ function getOptions(i) {
 }
 
 $('.chart-settings button').on('click', function () {
-    console.log($(this).closest(`.question`))
     const chart = $(this).closest(`.question`).data('chart');
-    console.log(chart);
     chart.destroy()
+    const id = $(this).closest(`.question`).attr('id');
 
+
+    const type = $(this).attr('class')
+    for (let i = 0; i < questions.length; i++) {
+        if (questions[i].id == id) {
+            drawOptionsChart(i, questions[i].options, questions[i].countOfSelected, type)
+            break;
+        }
+    }
 })
+
+
