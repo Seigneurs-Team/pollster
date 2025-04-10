@@ -8,7 +8,7 @@ export async function sendRequest(url, method, data, timeout = 0) {
     }
 
     try {
-        const response = await fetch(url, {
+        const promise = await fetch(url, {
             method,
             headers: {'Content-Type': 'application/json'},
             credentials: 'include',
@@ -17,8 +17,8 @@ export async function sendRequest(url, method, data, timeout = 0) {
         });
         
         clearTimeout(timeoutId);
-        console.log(response)
-        return response;
+        console.log(promise)
+        return promise;
     } catch (error) {
         clearTimeout(timeoutId);
         throw error;
