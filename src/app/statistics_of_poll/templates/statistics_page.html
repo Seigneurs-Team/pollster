@@ -31,9 +31,14 @@
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
                     src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
         </header>
-        <main>
-            <button id="get-statistics" data-poll-id="{{id_of_poll}}">get statistics in console</button>
-            <p>Прошли опрос: {{questions.count_of_users}} человек</p>
+        <main data-poll-id="{{id_of_poll}}">
+            <h1 class="poll-name">{{questions.name_of_poll}}</h1>
+            <p class="poll-tags">
+            <p class="poll-description">{{questions.description_of_poll}}</p>
+                {% for tag in questions.tags_of_poll %}
+            <div class="tag">{{tag}}</div>
+            {% endfor %}
+            <p class="num-of-passes"><b>Количество прохождений: </b>{{questions.count_of_users}}</p>
             <div id="questions">
                 {% for question in questions.questions %}
                     <div id="{{question.id}}" class="question">
@@ -55,8 +60,13 @@
                             {% endfor %}
                             </ul>
                             <div class="chart-wrapper">
+                                <div class="chart-settings">
+                                    <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
+                                    <button class="line"><img src="{% static 'img/diagram-type-line.png' %}">Line</button>
+                                    <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
+                                </div>
                                 <canvas class="chart right-answers"></canvas>
-                                <canvas class="chart options"></canvas>
+                                <!-- <canvas class="chart options"></canvas> -->
                             </div>
 
                         {% elif question.type_of_question == "short text"%}

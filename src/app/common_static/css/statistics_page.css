@@ -5,3 +5,32 @@ ul {
 canvas.chart {
     max-height: 300px;
 }
+
+div#questions {
+    border: none;
+    padding: 0;
+    margin: 30px 0;
+}
+.num-of-passes {
+    text-align: left;
+}
+.chart-settings {
+    display: flex;
+    flex-direction: column;
+    column-gap: 5px;
+
+}
+.chart-settings button{
+    background-color: transparent;
+    border: none;
+    display:flex;
+    align-items: center;
+    
+}
+.chart-settings button:hover{
+    color: black;
+}
+.chart-wrapper {
+    display: flex;
+
+}
