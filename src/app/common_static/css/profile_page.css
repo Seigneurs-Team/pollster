@@ -204,6 +204,8 @@ li.poll-item {
     width: 60%;
     text-align: left;
     padding: 0 10px;
+    row-gap: 3px;
+
 }
 
 .poll-info .poll-name, .poll-info button {
