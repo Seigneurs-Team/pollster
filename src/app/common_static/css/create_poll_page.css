@@ -193,7 +193,6 @@ button.deleteQuestion:hover {
 .delOption {
     border: none;
     background: transparent;
-    background-image: url("../img/delOption.svg");
 }
 .delOption:hover {
     background: transparent;
@@ -214,4 +213,15 @@ button.deleteQuestion:hover {
 .selected-tags > .tag{
     background: var(--violet);
     color: #FFF;
+}
+
+
+.form .addOptionCheckbox, .form .addOptionRadio {
+    background-image: url("../img/AddOption.svg");
+    min-height: 16px;
+    width: 16px;
+
+}
+.addOptionCheckbox:hover, .addOptionRadio:hover {
+    background-color: unset;
 }
