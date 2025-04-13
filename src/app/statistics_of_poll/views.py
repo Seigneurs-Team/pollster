@@ -53,13 +53,14 @@ def set_options(list_of_options_name: list, list_of_right_answer_ids: list, seri
     return list_of_options
 
 
-def get_the_count_of_right_and_wrong_answers(list_of_options_name: list, list_of_right_answer_ids: list) -> (int, int):
+def get_the_count_of_right_and_wrong_answers(list_of_options_name: list, list_of_right_answer_ids: list, serial_number: int, id_of_poll: int) -> (int, int):
     count_of_right_answers: int = 0
     count_of_wrong_answers: int = 0
 
     for index, option in enumerate(list_of_options_name):
-        if index in list_of_right_answer_ids: count_of_right_answers += 1
-        else: count_of_wrong_answers += 1
+        if index in list_of_right_answer_ids:
+            count_of_right_answers += client_mysqldb.get_count_of_users_who_selected_of_specific_option(option, serial_number, id_of_poll)
+        else: count_of_wrong_answers += client_mysqldb.get_count_of_users_who_selected_of_specific_option(option, serial_number, id_of_poll)
 
     return count_of_right_answers, count_of_wrong_answers
 
@@ -105,7 +106,7 @@ def set_statistic_for_radiobutton_of_checkbox_questions(dict_of_questions: dict,
 
     if more_statistic:
         count_of_right_answers, count_of_wrong_answers = get_the_count_of_right_and_wrong_answers(
-            list_of_options_name, list_of_right_answer_ids
+            list_of_options_name, list_of_right_answer_ids, dict_of_questions['serial_number'], id_of_poll
         )
         dict_of_questions['num_of_right_answers'] = count_of_right_answers
         dict_of_questions['num_of_wrong_answers'] = count_of_wrong_answers

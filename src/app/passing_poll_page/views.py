@@ -51,9 +51,9 @@ def request_on_passing_poll(request, id_of_user: int = None):
     auth_sessionid = request.COOKIES['auth_sessionid']
     id_of_poll = data_of_passing_poll['poll_id']
     try:
-        client_mysqldb.add_users_into_table_for_users_who_pass_the_poll(id_of_user, id_of_poll)
         for answer in data_of_passing_poll['answers']:
             add_answers_into_db(answer, id_of_poll, id_of_user)
+        client_mysqldb.add_users_into_table_for_users_who_pass_the_poll(id_of_user, id_of_poll)
     except RepeatPollError:
         return HttpResponseForbidden()
     except TryToXSS:
