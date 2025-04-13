@@ -1,5 +1,10 @@
 import {getChallenge, findProof} from './POW.js';
+import { sendRequest } from './api.js';
 
+
+async function sendRegistrationRequest(data) {
+    return sendRequest('/register', 'POST', data);
+}
 let errorMessage = $('#error-message');
 console.log(errorMessage);
 
@@ -12,12 +17,7 @@ $('#loginForm').on('submit', async function (event) {
     let passwordRepeat = $('input[name="password-repeat"]').val();
     let nickname = $('input[name="nickname"]').val();
 
-    // проверка данных формы
-    if (!(login && password)) {
-        errorMessage.text('Логин и пароль не могут быть пустыми!');
-    } else if (!isValidEmail(login)) {
-        errorMessage.text('Некорректный формат почты!');
-    } else if (password !== passwordRepeat) {
+    if (password !== passwordRepeat) {
         errorMessage.text('Пароли не совпадают!');
     } else {
         // Если пароли совпадают, очищаем сообщение об ошибке
@@ -39,21 +39,21 @@ $('#loginForm').on('submit', async function (event) {
             const nonce = await findProof(challenge);
 
             // Шаг 3: Формируем JSON с данными для регистрации
-            let dataJSON = JSON.stringify({
+            let data = {
                 login: login,
                 password: password,
                 pow: nonce,
                 nickname: nickname,
-            });
-            console.log('dataJSON', dataJSON);
+            }
+            console.log('data', data);
 
             // Шаг 4: Отправляем данные на сервер
-            const response = await sendRegistrationRequest(dataJSON);
+            const response = await sendRegistrationRequest(data);
 
             // Обработка ответа от сервера
-            if (response.response === 200) {
+            if (response.status === 200) {
                 // Успешная регистрация
-                $('#overlay-message').text(`Добро пожаловать, ${login}!`);
+                $('#overlay-message').text(`Добро пожаловать!`);
                 $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
             } else {
                 // Ошибка регистрации
@@ -72,27 +72,6 @@ $('#loginForm').on('submit', async function (event) {
         }
     }
 });
-
-// Шаг 3: Отправить данные регистрации на сервер
-async function sendRegistrationRequest(dataJSON) {
-    console.log('sending registration data...');
-    const response = await fetch('/register', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include', // Отправляем куки
-        body: dataJSON,
-    });
-
-    const responseData = await response.json();
-    console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
-
-    if (!response.ok) {
-        console.error('Ошибка при регистрации:', responseData);
-        throw new Error('Ошибка при регистрации');
-    }
-
-    return responseData;
-}
 
 // Функция для проверки совпадения паролей
 function checkPasswords() {

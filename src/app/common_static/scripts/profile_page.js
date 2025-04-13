@@ -1,3 +1,16 @@
+import {sendRequest} from './api.js';
+
+
+async function sendChangeDataRequest(data, url) {
+    return sendRequest(`/change_user_data/${url}`, 'POST', data);
+}
+
+
+async function sendDeletePollRequest( id) {
+    return sendRequest(`/delete_poll/${id}`, 'GET');
+}
+
+
 let tagsErrorMessage = $('#tags-error-message');
 let errorMessage = $('.error-message');
 
@@ -17,7 +30,7 @@ $(".log-out").on('click', async function () {
     const responseData = await response.json();
     console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
-    if (!response.ok) {
+    if (response.status!== 200) {
         alert('Ошибка при выходе из аккаунта:', responseData)
         console.error('Ошибка при выходе из аккаунта:', responseData);
         throw new Error('Ошибка при выходе из аккаунта');
@@ -36,7 +49,7 @@ $(".delete-account").on('click', async function () {
     const responseData = await response.json();
     console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
-    if (!response.ok) {
+    if (response.status!== 200) {
         alert('Ошибка при удалении аккаунта:', 'responseData')
         console.error('Ошибка при удалении аккаунта:', responseData);
         throw new Error('Ошибка при удалении аккаунта');
@@ -70,16 +83,13 @@ $(".delete-poll").on('click', async function () {
     event.preventDefault();
     console.log('deleting poll...');
     const id = $(this).attr('data-poll');
-    console.log(id)
+    
 
-    const response = await fetch(`/delete_poll/${id}`, {
-        method: 'GET',
-        credentials: 'include', // Отправляем куки
-    });
+    const response = sendDeletePollRequest(id)
     const responseData = await response.json();
     console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
-    if (!response.ok) {
+    if (response.status!== 200) {
         console.error('Ошибка при удалении опроса:', responseData);
         throw new Error('Ошибка при удалении опроса');
     }
@@ -103,11 +113,6 @@ $('.tag').click(function () {
     }
 });
 
-// Фон шапки
-$(document).ready(function () {
-    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
-});
-
 let initialUserData = {};
 
 $(document).ready(function () {
@@ -117,15 +122,14 @@ $(document).ready(function () {
         email: $('#email').val().trim(),
         number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
-        tags_of_user: $('.selected-tags .tag').map(function() {
+        tags_of_user: $('.selected-tags .tag').map(function () {
             return $(this).text().trim();
         }).get()
     };
 
     $('.about-you input').removeAttr('disabled')
 
-    // Фон шапки
-    $('header').css('background-image', 'url(' + $('header').data('background') + ')');
+    
 });
 
 $('.save-changes').on('click', async function (event) {
@@ -138,7 +142,7 @@ $('.save-changes').on('click', async function (event) {
         email: $('#email').val().trim(),
         number_of_phone: $('#phone').val().trim(),
         dateOfBirth: $('#date-of-birth').val().trim(),
-        tags_of_user: $('.selected-tags .tag').map(function() {
+        tags_of_user: $('.selected-tags .tag').map(function () {
             return $(this).text().trim();
         }).get()
     };
@@ -167,13 +171,11 @@ $('.save-changes').on('click', async function (event) {
     for (const [field, value] of Object.entries(changes)) {
         try {
             console.log(`{${field}: ${value}}`)
+            const data = {[field]: value}
 
-            const dataJSON = JSON.stringify( {[field]: value})
-            console.log('dataJSON: ', dataJSON)
-                // `{"${field}": "${value}"}`
-            const response = await sendChangeDataRequest(dataJSON, field);
+            const response = await sendChangeDataRequest(data, field);
             console.log('response: ', response)
-            if (response.ok) {
+            if (response.status === 200) {
                 initialUserData[field] = value; // Обновляем исходные данные
                 console.log(`${field}: ${value} successfully!`)
 
@@ -189,18 +191,6 @@ $('.save-changes').on('click', async function (event) {
 
     alert('Изменения сохранены!');
 });
-
-// Функция отправки данных
-async function sendChangeDataRequest(dataJSON, url) {
-    console.log('Отправка данных:', dataJSON, 'на URL:', `/change_user_data/${url}`);
-    const response = await fetch(`/change_user_data/${url}`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: dataJSON
-    });
-    return response;
-}
 
 // Вспомогательные функции
 function isValidEmail(email) {

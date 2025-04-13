@@ -1,9 +1,22 @@
 // отправка опроса на сервер
 const host = 'http://127.0.0.1:8000';
 import {hasHTMLTags} from './create_poll_page.js';
+import { sendRequest } from './api.js';
+
+async function sendCreatePollRequest(data) {
+    const response = await sendRequest('/create_poll', 'POST', data);
+    console.log('response:', response)
+    console.log('response.status === 200', response.status === 200)
+    // Обработка ответа от сервера
+    if (response.status === 200) {
+        // Успешное создание опроса
+        alert('Опрос успешно создан')
+        window.location.href = '/'; // Перенаправление на домашнюю страницу
+    }
+}
 
 
-export function submitPoll() {
+export function createPoll() {
 
     // Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
     let questions = $('.question').map(function () {
@@ -11,7 +24,7 @@ export function submitPoll() {
         let options = []
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
-        if (type === 'radiobutton' || type === 'checkbox') {
+        if (type === 'radio' || type === 'checkbox') {
             let rightAnswersId = []
 
             // id ответов начинаются с 0
@@ -78,33 +91,9 @@ export function submitPoll() {
 
     // если введенные данные корректны, отправляем опрос на сервер
     if (checkCorrectData(pollData)) {
-        sendData(pollData);
+        sendCreatePollRequest(pollData);
     }
 }
-
-
-function sendData(pollData) {
-    // данные  отправляются на сервер
-    let jsonPollData = JSON.stringify(pollData)
-
-    const Http = new XMLHttpRequest();
-
-    Http.open("POST", host + "/create_poll", true);
-    Http.setRequestHeader("Content-Type", "application/json");
-    Http.send(jsonPollData);
-
-    Http.onload = function () {
-        var response = JSON.parse(Http.response);
-        console.log('result: ', response);
-        if (response) {
-            alert('Опрос успешно создан')
-            window.location.href = '/'; // Перенаправление на домашнюю страницу
-        }
-    };
-
-    console.log("pollData в json:", jsonPollData)
-}
-
 
 function checkCorrectData(pollData) { // проверка на корректные данные в форме перед ее отправкой. пока что тут только проверка на пустое название. TODO сделать проверку на ненулевое количество вопросов, на ненулевое количество вариантов ответа в radio и checkbox. не непустой текст вопросов
     let isInvalid = false;

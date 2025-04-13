@@ -60,7 +60,7 @@ header {
     outline: none;
 }
 
-.search input[type="checkbox"]. .search input[type="radio"] {
+.search input[type="checkbox"] .search input[type="radio"] {
     margin-right: 10px;
 }
 
@@ -93,6 +93,7 @@ input[type="checkbox"], input[type="radio"] {
 .filters {
     text-align: left;
 }
+
 .filters > ul {
     margin-bottom: 10px;
 }
@@ -101,18 +102,18 @@ input[type="checkbox"], input[type="radio"] {
     padding-left: 20px;
 }
 
-.tags, .selected-tags, .not-selected-tags {
+.filters .tags, .selected-tags, .not-selected-tags {
     display: inline;
 }
 
-.tag {
+.filters .tag {
     font-size: 14px;
     padding: 5px;
     margin: 2px;
     border: var(--violet) solid 1.5px;
 }
 
-.selected-tags > .tag{
+.selected-tags > .tag {
     background: var(--violet);
     color: #FFF;
 }
@@ -123,8 +124,6 @@ input[type="checkbox"], input[type="radio"] {
     padding: 6px 10px;
     margin-top: 10px;
 }
-
-
 
 .search img {
     width: 18px;
@@ -153,10 +152,19 @@ input[type="checkbox"], input[type="radio"] {
 .circles {
     width: 100%;
 }
+
 .slogan {
-    display:flex;
+    display: flex;
     flex-direction: row;
     width: 100%;
     justify-content: space-around;
     font-size: 16px;
+}
+
+h1 {
+    margin-top: 24px;
+}
+
+ul.polls {
+    margin-top: 24px;
 }

@@ -6,6 +6,7 @@
 
 .poll-img img {
     width: 100%;
+    border-radius: 28px;
 }
 
 main {
@@ -37,12 +38,16 @@ main {
     border: var(--violet) solid 2px;
 }
 
-#questions {
+form {
     display: none;
-    text-align: center;
+}
+
+#questions {
+    text-align: left;
     border: var(--violet) solid 0.5px;
     border-radius: 30px;
     padding: 60px;
+    margin: 30px 0;
 }
 
 .question {
@@ -76,4 +81,14 @@ main {
 
 .question label {
     padding-left: 15px;
+}
+
+.tag {
+    display: inline;
+    color: rgb(52, 115, 242);
+    margin-right: 4px;
+}
+
+.tag::before {
+    content: "#";
 }

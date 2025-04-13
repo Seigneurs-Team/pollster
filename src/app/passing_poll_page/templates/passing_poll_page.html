@@ -13,9 +13,12 @@
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/circle-logo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
     <script>
         // Выбираем poll из контекста Django и передаём его в JavaScript
         const questionsList = {{ poll.questions | safe }};
@@ -24,23 +27,37 @@
 
 <body>
     <div class="content">
-        <header data-background="{% static 'img\header.png' %}">
-            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo" src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+        <header>
+            <a href="/" class="logo-stub"></a>
+            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
+                    src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
 
         <main>
             <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
-            <h1 class="poll-name">Прохождение опроса<br>{{poll.name_of_poll}}</h1>
+            <h1 class="poll-name">{{poll.name_of_poll}}</h1>
             <p class="poll-description">{{poll.description}}</p> <span class="poll_id">#{{poll.id_of_poll}}</span>
-            <p class="poll-tags">{{poll.tags}} </p>
+            <p class="poll-tags">
+                {% for tag in poll.tags %}
+            <div class="tag">{{tag}}</div>
+            {% endfor %}
+            </p>
+            {% if is_pass %}
+            <p>вы уже прошли этот опрос</p>
+            {% else %}
             <button class="start">Прохождение опроса</button>
-            <div id="questions"></div>
-            <button class="submit" data-poll-id="{{poll.id_of_poll}}">Отправить</button>
+            <form>
+                <div id="questions"></div>
+                <button class="submit" data-poll-id="{{poll.id_of_poll}}">Отправить</button>
+            </form>
+            {% endif %}
         </main>
 
     </div>
-    {% include 'footer.html' %}
+    <div class="footer-wrapper">
+        {% include 'footer.html' %}
+    </div>
 
     <script src="{% static 'scripts/passing_poll_page.js' %}" type="module"></script>
 
