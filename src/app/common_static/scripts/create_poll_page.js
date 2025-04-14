@@ -77,7 +77,10 @@ $(".answerType").on('click', function () {
                 <input class="questionText" type="text" maxlength="200" placeholder="Задайте вопрос">
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
             </div>
-            <button class="questionImage">+ Картинка опроса (необязательно)</button>
+<label class="questionImage">
+                    + Картинка вопроса (необязательно)
+                    <input type="file" class="questionImageInput" accept="image/png, image/jpeg">
+                </label>
             <div class="questionContent">${content}</div>
             <button class="deleteQuestion">Удалить вопрос</button>
         </div>
@@ -112,11 +115,49 @@ function answerType(questionType, questionId) {
             </div>
             <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}">+</button>
         `;
-    } else if (questionType === "radio img") {
-        return '';
-    } else if (questionType === "checkbox img") {
-        return '';
+    } else if (questionType === "radio img" || questionType === "checkbox img") {
+        const type = questionType === "checkbox img" ? "checkbox" : "radio";
+        return `
+            <div class="options">
+                ${renderOptionImg(type, questionId, 1)}
+                ${renderOptionImg(type, questionId, 2)}
+            </div>
+            <button class="addOption${type === "checkbox" ? "Checkbox" : "Radio"}Img"></button>
+        `;
     }
+}
+
+// Новая функция для генерации вариантов с изображениями
+function renderOptionImg(type, questionId, optionId) {
+    return `
+        <div class="option-img">
+            <input type="${type}" name="${questionId}" id="${questionId}_${optionId}" class="check">
+            <div class="input-wrapper">
+                <input type="file" 
+                       class="value-img" 
+                       accept="image/png, image/jpeg" 
+                       data-question-id="${questionId}"
+                       data-option-id="${optionId}">
+                <button class="delOption">
+                    <img src="${$('main').data('deloption')}" alt="удалить вариант ответа">
+                </button>
+                <div class="error-message">Максимальный размер файла: 5MB</div>
+            </div>
+        </div>
+    `;
+}
+
+// Модифицируем функцию добавления вариантов
+function addOption(target, type, questionsId) {
+    let options = $(target).closest('.question').find('.options');
+    let optionsCount = options.find('.option, .option-img').length + 1;
+
+    // Определяем тип генерации
+    const isImgType = $(target).closest('.question').attr('data-type').includes('img');
+    const renderFunction = isImgType ? renderOptionImg : renderOption;
+
+    options.append($(renderFunction(type.replace('Img', ''), questionsId, optionsCount)));
+    $(`#${questionsId}_${optionsCount}-input`).focus();
 }
 
 // Генерация HTML для варианта ответа
@@ -136,14 +177,6 @@ function renderOption(type, questionId, optionId) {
     `;
 }
 
-// Добавление варианта ответа
-function addOption(target, type, questionsId) {
-    let options = $(target).closest('.question').find('.options');
-    let optionsCount = options.find('.option').length + 1;
-
-    options.append($(renderOption(type, questionsId, optionsCount)));
-    $(`#${questionsId}_${optionsCount}-input`).focus();
-}
 
 // Удаление варианта ответа
 function delOption(target) {
@@ -152,7 +185,7 @@ function delOption(target) {
 }
 
 // Обработка выбора тегов
-$('.tag').click(function() {
+$('.tag').click(function () {
     if ($(this).parent().hasClass('not-selected-tags') && $('.selected-tags').children().length < 4) {
         $(this).appendTo('.selected-tags');
     } else if ($(this).parent().hasClass('selected-tags')) {
@@ -189,3 +222,14 @@ $("#submitPollBtn").on('click', createPoll);
 
 // Экспорт функции для проверки HTML-тегов
 export { hasHTMLTags };
+
+// При выборе файла
+$('.option-img input[type="file"]').change(function() {
+    const preview = $(this).closest('.option-img').find('.image-preview');
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => preview.css('background-image', `url(${e.target.result})`);
+        reader.readAsDataURL(file);
+    }
+});

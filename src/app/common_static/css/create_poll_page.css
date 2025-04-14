@@ -104,7 +104,7 @@ h1 {
 }
 
 .options .input-wrapper {
-    width: calc(100% - 40px);
+    width: calc(100% - 20px);
     display: flex;
     justify-content: space-between;
 }
@@ -182,8 +182,12 @@ button.deleteQuestion:hover {
     display: none;
 }
 
-.deleteQuestion, .addQuestion, .questionImage,#submitPollBtn {
+.deleteQuestion, .addQuestion, #submitPollBtn {
     width: 100%;
+}
+
+.questionImage {
+    width: calc(100% - 23px);
 }
 
 .option input[type="text"] {
