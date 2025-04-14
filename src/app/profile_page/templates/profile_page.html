@@ -33,10 +33,8 @@
         <main class="profile">
             <img class="profile-photo" src="{% static 'img\profile img.png' %}" alt="profile photo">
             <div class="name">
-                <button class="edit-name-btn">
-                    <img src="{% static 'img\Edit.svg' %}" class="opn-filter">
-                </button>
-                <input type="text" name="edit_name_input" id="" value="{{user.username}}" maxlength="100" required>
+                <input type="text" name="edit_name_input" id="edit_name_input" value="{{user.username}}" maxlength="100"
+                    required>
             </div>
             <span>О вас</span>
             <div class="about-you">
@@ -120,17 +118,20 @@
                     <p>Здесь пока ничего нет...</p>
                     {% else %}
                     {% for poll in user.completedPolls %}
-                    <li class="poll-item">
-                        <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image"></div>
-                        <div class="poll-info">
-                            <h2 class="poll-name">{{poll.name_of_poll}}</h2>
-                            <p class="poll-description">{{poll.description}}</p>
-                            <p class="poll-tags">{{item.tags}} </p>
-                            <div>
-                                <div class="answers-left-poll">Осталось {{10}} человек</div>
-                            </div>
-                        </div>
+                    <li class="poll-wrapper">
+                        <a class="poll-item" href="passing_poll/{{poll.id_of_poll}}/">
 
+                            <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image">
+                            </div>
+                            <div class="poll-info">
+                                <h2 class="poll-name">{{poll.name_of_poll}}</h2>
+                                <p class="poll-description">{{poll.description}}</p>
+                                <p class="poll-tags">{{item.tags}} </p>
+                                <div>
+                                    <div class="answers-left-poll">Осталось {{10}} человек</div>
+                                </div>
+                            </div>
+                        </a>
                     </li>
                     {% endfor %}
                     {% endif %}

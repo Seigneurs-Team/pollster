@@ -85,13 +85,16 @@ $(".delete-poll").on('click', async function () {
     const id = $(this).attr('data-poll');
     
 
-    const response = sendDeletePollRequest(id)
+    const response = await sendDeletePollRequest(id)
     const responseData = await response.json();
     console.log('Ответ сервера:', responseData); // Выводим ответ сервера в консоль
 
     if (response.status!== 200) {
         console.error('Ошибка при удалении опроса:', responseData);
         throw new Error('Ошибка при удалении опроса');
+    } else {
+        // если опрос успешно удален - скрываем его
+        $(this).closest('.poll-item').hide()
     }
 
     return responseData;
