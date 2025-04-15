@@ -37,12 +37,12 @@
         <main>
             <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="logo"></div>
             <h1 class="poll-name">{{poll.name_of_poll}}</h1>
-            <p class="poll-description">{{poll.description}}</p> <span class="poll_id">#{{poll.id_of_poll}}</span>
-            <p class="poll-tags">
+            <p class="poll-description">{{poll.description}}</p>
+            <div class="poll-tags">
                 {% for tag in poll.tags %}
             <div class="tag">{{tag}}</div>
             {% endfor %}
-            </p>
+            </div>
             {% if is_pass %}
             <p>вы уже прошли этот опрос</p>
             {% else %}

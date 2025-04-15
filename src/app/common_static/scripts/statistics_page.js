@@ -121,6 +121,22 @@ $('.chart-settings button').on('click', function () {
             break;
         }
     }
+
+    // закрытие окна настроек диаграммы
+    closeModal(this)
 })
 
 
+// Открытие модального окна для выбора типа вопроса
+$(".opn-chart-settings").on('click', function () {
+    $(this).closest('.question').children().find('.modal').show()
+});
+
+// Закрытие модального окна
+$('.modal-close').on('click', function () {
+    closeModal(this)
+});
+
+function closeModal(modal) {
+    $(modal).closest('.modal').hide();
+}

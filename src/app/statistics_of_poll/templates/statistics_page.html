@@ -35,69 +35,88 @@
             <h1 class="poll-name">{{questions.name_of_poll}}</h1>
             <p class="poll-tags">
             <p class="poll-description">{{questions.description_of_poll}}</p>
-                {% for tag in questions.tags_of_poll %}
+            {% for tag in questions.tags_of_poll %}
             <div class="tag">{{tag}}</div>
             {% endfor %}
             <p class="num-of-passes"><b>Количество прохождений: </b>{{questions.count_of_users}}</p>
             <div id="questions">
                 {% for question in questions.questions %}
-                    <div id="{{question.id}}" class="question">
-                        <p class="question-text">{{ question.text_of_question }}</p>
-                        {% if question.type_of_question == "radio" or question.type_of_question == "checkbox" %}
-                            <ul class="options">
-                            {% for option in question.options %}
-                                {% for key, value in option.items %}
+                <div id="{{question.id}}" class="question">
+                    <p class="question-text">{{ question.text_of_question }}</p>
+                    {% if question.type_of_question == "radio" or question.type_of_question == "checkbox" %}
+                    <ul class="options">
+                        {% for option in question.options %}
+                        {% for key, value in option.items %}
 
-                                    <li class="option">
-                                        <input type="{{question.type_of_question}}" name="{{question.id}}" id="{{ key }}" disabled
-                                        {% if value.is_right_answer %}
-                                        checked
-                                        {% endif %}
-                                        >
-                                        <label for="{{ key }}">{{ key }}: {{ value.count_of_selected }}</label>
-                                    </li>
-                                {% endfor %}
-                            {% endfor %}
-                            </ul>
-                            <div class="chart-wrapper">
+                        <li class="option">
+                            <input type="{{question.type_of_question}}" name="{{question.id}}" id="{{ key }}" disabled
+                                {% if value.is_right_answer %} checked {% endif %}>
+                            <label for="{{ key }}">{{ key }}: {{ value.count_of_selected }}</label>
+                        </li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                    <div class="chart-wrapper">
+                        <canvas class="chart"></canvas>
+                        <button class="opn-chart-settings">Настройки диаграммы</button>
+                        <div id="chart-settings-modal" class="modal">
+                            <div class="modal-content">
+                                <span class="modal-close">&times;</span> <!-- Кнопка закрытия -->
                                 <div class="chart-settings">
-                                    <b>Настройки диаграммы</b>
+
+                                    <span class="modal-h1">Настройки диаграммы</span>
+                                    <span class="modal-h2">Выберите тип диаграммы</span>
+
                                     <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
-                                    <button class="line"><img src="{% static 'img/diagram-type-line.png' %}">Line</button>
+                                    <button class="line"><img
+                                            src="{% static 'img/diagram-type-line.png' %}">Line</button>
                                     <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
                                 </div>
-                                <canvas class="chart"></canvas>
                             </div>
-
-                        {% elif question.type_of_question == "short text"%}
-                            <p class="right_text_answer">Правильный ответ: {{ question.right_text_answer }}</p>
-                            <p>Другие ответы:</p>
-                            <ul>
-                            {% for wrong_answer in question.wrong_text_answers %}
-                                <li class="wrong_text_answer">{{ wrong_answer.text }}</li>
-                            {% endfor %}
-                            </ul>
-                            <div class="chart-wrapper">
-                                <div class="chart-settings">
-                                    <b>Настройки диаграммы</b>
-                                    <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
-                                    <button class="line"><img src="{% static 'img/diagram-type-line.png' %}">Line</button>
-                                    <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
-                                </div>
-                                <canvas class="chart"></canvas>
-                            </div>
-                        {% elif question.type_of_question == "long text"%}
-                            <p>Ответы:</p>
-                            <ul>
-                            {% for answer in question.text_answers %}
-                                <li class="answer">{{ answer.text }}</li>
-                            {% endfor %}
-                            </ul>
-                        {% endif %}
+                        </div>
                     </div>
+                    {% elif question.type_of_question == "short text"%}
+                    <p class="right_text_answer">Правильный ответ: {{ question.right_text_answer }}</p>
+                    <p>Другие ответы:</p>
+                    <ul class="answers-list">
+                        {% for wrong_answer in question.wrong_text_answers %}
+                        <li class="wrong_text_answer">{{ wrong_answer.text }}</li>
+                        {% endfor %}
+                    </ul>
+                      <div class="chart-wrapper">
+                        <canvas class="chart"></canvas>
+                        <button class="opn-chart-settings">Настройки диаграммы</button>
+                        <div id="chart-settings-modal" class="modal">
+                            <div class="modal-content">
+                                <span class="modal-close">&times;</span> <!-- Кнопка закрытия -->
+                                <div class="chart-settings">
+
+                                    <span class="modal-h1">Настройки диаграммы</span>
+                                    <span class="modal-h2">Выберите тип диаграммы</span>
+
+                                    <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
+                                    <button class="line"><img
+                                            src="{% static 'img/diagram-type-line.png' %}">Line</button>
+                                    <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% elif question.type_of_question == "long text"%}
+                    <p>Ответы:</p>
+                    <ul class="answers-list">
+                        {% for answer in question.text_answers %}
+                        <li class="answer">{{ answer.text }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
                 {% endfor %}
             </div>
-        </main>
+    </div>
+    </main>
 
     </div>
     <div class="footer-wrapper">
