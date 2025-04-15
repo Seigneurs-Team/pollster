@@ -49,7 +49,7 @@
 
 .modal-close:hover,
 .modal-close:focus {
-    color: black;
+    color: var(--violet);;
     text-decoration: none;
     cursor: pointer;
 }

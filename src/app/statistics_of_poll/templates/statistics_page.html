@@ -51,7 +51,7 @@
                         <li class="option">
                             <input type="{{question.type_of_question}}" name="{{question.id}}" id="{{ key }}" disabled
                                 {% if value.is_right_answer %} checked {% endif %}>
-                            <label for="{{ key }}">{{ key }}: {{ value.count_of_selected }}</label>
+                            <label for="{{ key }}">{{ key }} <span>{{ value.count_of_selected }}</span></label>
                         </li>
                         {% endfor %}
                         {% endfor %}

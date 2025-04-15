@@ -61,9 +61,8 @@ div#questions {
   margin: 0;
 }
 .answers-list li {
-  font-family: "Trebuchet MS", "Lucida Sans";
   border-bottom: 1px solid #efefef;
-  padding: 10px 0;
+  padding: 3px 0;
   font-weight: 400;;
 
 }
@@ -72,20 +71,13 @@ div#questions {
 /* список ваирантов ответов */
 .options * {transition: .4s linear;}
 .options {
-  background: white;
-  list-style-type: circle;
-  list-style-position: inside;
   padding: 0 10px;
   margin: 0;
 }
 .options li {
-  font-family: "Trebuchet MS", "Lucida Sans";
   border-bottom: 1px solid #efefef;
-  padding: 10px 0;
-}
-.options a {
-  text-decoration: none;
-  color: #555;
+  padding: 3px 0;
+
 }
 .options li span {
   float: right;
@@ -95,8 +87,12 @@ div#questions {
   font-size: 13px;
   color: #999;
 }
-.options li:hover a {color: #c93961;}
-.options li:hover span {
-  color: #c93961;
-  border: 1px solid #c93961;
+
+.opn-chart-settings {
+    width: 200px;
+    background-color: var(--violet);
+    color: white;
+    border-radius: var(--border-radius);
+    height: 40px;
+    margin: 10px auto 0 auto;
 }
