@@ -48,8 +48,8 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
             producer.publish(Commands.get_vector_poll % poll.id_of_poll)
         return JsonResponse({"result": result})
     except TryToXSS:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("Попытка XSS атаки")
     except AssertionError:
         return HttpResponseForbidden()
     except mysql.connector.errors.DataError:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("Ошибка базы данных")

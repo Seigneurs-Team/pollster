@@ -36,6 +36,19 @@ services:
         condition: service_started
     restart: unless-stopped
 
+
+  log_system:
+    build:
+      dockerfile: ./Dockerfile_Log_System
+    image: log_system:latest
+    networks:
+      back:
+        ipv4_address: 172.16.235.7
+    depends_on:
+      rabbitmq_container:
+        condition: service_started
+    restart: unless-stopped
+
   rabbitmq_container:
     image: rabbitmq:latest
     networks:

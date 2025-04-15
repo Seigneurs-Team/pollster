@@ -1,4 +1,7 @@
+import json
+
 from django.shortcuts import render
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import JsonResponse
 from databases.mysql_db import client_mysqldb
 
@@ -9,9 +12,11 @@ from Tools_for_rabbitmq.producer import producer
 from Configs.Commands_For_RMQ import Commands
 from Configs.Responses_from_consumer import Responses
 
+from log_system.Levels import Levels
+
 
 @authentication_for_main_page
-def request_on_main_page(requests, is_authenticated: bool):
+def request_on_main_page(requests: WSGIRequest, is_authenticated: bool):
     """
     Функция нужна для отправки клиенту страницы html. Если пользователь авторизован в системе, то ему будут подобраны опросы
     с помощью рекомендательной системы, иначе будут выданы первые пять опросов из БД.
@@ -27,6 +32,8 @@ def request_on_main_page(requests, is_authenticated: bool):
     tags = ['развлечения', 'наука', 'животные', 'кухня', 'искусство', 'дети', 'музыка', 'кино и сериалы', 'путешествия', 'игры', 'мода и стиль', 'здоровье', 'образование']
     if is_authenticated is True:
         id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
+        producer.publish_log('Получил запрос на рендеринг главной страницы', Levels.Debug, id_of_user, requests=requests)
+
         nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
         user = {'is_authenticated': is_authenticated, 'id': id_of_user, 'username': nickname}
         polls = client_mysqldb.get_polls(only_for_user=True, id_of_user=id_of_user)
@@ -34,6 +41,8 @@ def request_on_main_page(requests, is_authenticated: bool):
         polls = get_polls_for_user(id_of_user, polls)
 
     else:
+        producer.publish_log('Получил запрос на рендеринг главной страницы', Levels.Debug, None, requests=requests)
+
         user = {'is_authenticated': is_authenticated}
     return render(requests, 'index.html', context={'all_objects': polls, 'tags': tags, 'user': user})
 
