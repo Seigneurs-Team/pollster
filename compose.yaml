@@ -48,8 +48,6 @@ services:
       rabbitmq_container:
         condition: service_started
     restart: unless-stopped
-    volumes:
-      - ./:/log:./
 
   rabbitmq_container:
     image: rabbitmq:latest
