@@ -1,4 +1,5 @@
 import json
+import typing
 
 import pika
 from typing import Any, Optional, Union
@@ -9,6 +10,8 @@ from Configs.Hosts import Hosts
 from Configs.Exceptions import WronglyResponse, ConnectionRefused
 
 from Configs.Responses_from_consumer import Responses
+
+from Configs.Commands_For_RMQ import Commands
 
 
 class Producer:
@@ -23,6 +26,7 @@ class Producer:
         self.exchange = ''
         self.queue = Queue.poll_queue
         self.callback_queue = Queue.poll_queue_callback
+        self.log_queue = Queue.log_queue
 
         self.declare_queue()
         self.consume_the_response()
@@ -34,8 +38,9 @@ class Producer:
         self.channel.queue_declare(queue=self.queue, durable=True)
         self.channel.queue_declare(queue=self.callback_queue, durable=True)
         self.channel.queue_declare(queue=Queue.ping_queue, durable=True)
+        self.channel.queue_declare(queue=self.log_queue, durable=True)
 
-    def publish(self, message: Any, properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent), queue=None, callback_queue=None):
+    def publish(self, message: Any, properties: pika.BasicProperties = None, queue=None, callback_queue=None):
         """
         Функция отправляет сообщение в очередь queue, Сообщение представляет собой команду.
 
@@ -45,20 +50,22 @@ class Producer:
         :param callback_queue: очередь для ожидания ответа
         :return: ответ от Consumer
         """
-        properties = pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent, reply_to=self.callback_queue)
+        properties_with_reply_to = pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent, reply_to=self.callback_queue)
         try:
             self.channel.basic_publish(
                 exchange=self.exchange,
                 routing_key=self.queue if queue is None else queue,
                 body=message.encode(),
-                properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent, reply_to=self.callback_queue)
+                properties=properties_with_reply_to if properties is None else properties
             )
 
             count: int = 0
             while self.response is None:
-                self.connection.process_data_events(time_limit=2)
+                if properties is not None:
+                    return
+                self.connection.process_data_events(time_limit=0.3)
                 count += 1
-                if count == 2:
+                if count == 5:
                     raise ConnectionRefused('соединение с контейнером потеряно')
             else:
                 response = self.response
@@ -70,6 +77,25 @@ class Producer:
 
         except ConnectionRefused:
             return Responses.RefusedConnection
+
+    def publish_log(self, message: str, level: str, id_of_user: Optional[int], requests: Any = None, other_data: dict = None):
+        other_data = other_data if other_data is not None else {}
+        dict_of_data = (
+            {
+                'message': message,
+                'ip': requests.META["REMOTE_ADDR"] if requests is not None else '',
+                'userid': id_of_user,
+                'endpoint': requests.path
+            }
+        )
+
+        for k, v in other_data.items():
+            dict_of_data[k] = v
+
+        dict_of_data = json.dumps(dict_of_data)
+        message = Commands.save_log % (dict_of_data, level)
+
+        self.publish(message, queue=self.log_queue, properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Transient))
 
     def close_connection(self):
         self.channel.close()

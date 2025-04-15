@@ -10,6 +10,10 @@ import json
 
 from django.http import JsonResponse, HttpResponseForbidden
 
+from Tools_for_rabbitmq.producer import producer
+from Configs.Commands_For_RMQ import Commands
+from log_system.Levels import Levels
+
 
 @authentication()
 def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None):
@@ -23,6 +27,7 @@ def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None)
     :return: render(requests, 'passing_poll_page.html', context={'user': user, 'poll': poll, 'is_pass': is_pass})
     или render(requests, 'NotFound.html')
     """
+    producer.publish_log('Получил запрос на рендеринг страницы прохождения опроса', Levels.Debug, id_of_user, requests=requests)
     # получение опроса по id
     auth_sessionid = requests.COOKIES['auth_sessionid']
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(auth_sessionid, 'auth_sessionid')
@@ -50,10 +55,19 @@ def request_on_passing_poll(request, id_of_user: int = None):
     data_of_passing_poll = json.loads(request.body)
     auth_sessionid = request.COOKIES['auth_sessionid']
     id_of_poll = data_of_passing_poll['poll_id']
+    producer.publish_log(
+        'Получил POST запрос с данными, который пользователь ввел в опросе',
+        Levels.Info, id_of_user, request, other_data={'id_of_poll': id_of_poll})
     try:
-        for answer in data_of_passing_poll['answers']:
+        producer.publish_log(
+            'Начало итерации с ответами пользователя', Levels.Info,
+            id_of_user, requests=request, other_data={'id_of_poll': id_of_poll, 'count_of_answers': len(data_of_passing_poll['answers'])}
+        )
+        for i, answer in enumerate(data_of_passing_poll['answers']):
             add_answers_into_db(answer, id_of_poll, id_of_user)
+            producer.publish_log(f"Шаг итерации {i}", Levels.Info, id_of_user, requests=request, other_data={'id_of_poll': id_of_poll})
         client_mysqldb.add_users_into_table_for_users_who_pass_the_poll(id_of_user, id_of_poll)
+        producer.publish_log("Данные были успешно сохранены", Levels.Info, id_of_user, requests=request, other_data={'id_of_poll': id_of_poll})
     except RepeatPollError:
         return HttpResponseForbidden()
     except TryToXSS:

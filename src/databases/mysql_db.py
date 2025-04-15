@@ -1,4 +1,5 @@
 import datetime
+import functools
 import json
 import random
 import typing
@@ -382,6 +383,7 @@ class MysqlDB:
         else:
             return None
 
+    @functools.cache
     def get_types_of_question(self):
         """
         Функция возвращает типы вопросов из БД
