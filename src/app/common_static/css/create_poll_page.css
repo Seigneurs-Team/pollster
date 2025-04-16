@@ -225,3 +225,16 @@ button.deleteQuestion:hover {
 .addOptionCheckbox:hover, .addOptionRadio:hover {
     background-color: unset;
 }
+
+.answerType:disabled {
+    color: grey;
+    border-color: grey;
+}
+
+.answerType:disabled:hover {
+    background-color: white;
+}
+
+.answerType:disabled::after {
+    content: "          (В разработке)";
+}
