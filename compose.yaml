@@ -14,9 +14,8 @@ services:
     depends_on:
       mysql_db:
         condition: service_healthy
-        restart: true
       rabbitmq_container:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
 
   dionysus:
@@ -31,9 +30,8 @@ services:
     depends_on:
       mysql_db:
         condition: service_healthy
-        restart: true
       rabbitmq_container:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
 
 
@@ -46,14 +44,22 @@ services:
         ipv4_address: 172.16.235.7
     depends_on:
       rabbitmq_container:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
+    volumes:
+      - ./:/log:./
 
   rabbitmq_container:
     image: rabbitmq:latest
     networks:
       back:
         ipv4_address: 172.16.235.3
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      start_period: 10s
+      interval: 10s
+      timeout: 1s
+      retries: 4
     restart: unless-stopped
 
 
