@@ -96,3 +96,27 @@ div#questions {
     height: 40px;
     margin: 10px auto 0 auto;
 }
+
+.chart-wrapper-inner {
+    display:flex;
+}
+
+.chart-type-btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.change-chart-data {
+    width: 200px;
+    background-color: var(--violet);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 7px 0;
+}
+
+.change-chart-data.active {
+    background-color: white;
+    border: var(--violet) 1px solid;
+    color: black;
+}

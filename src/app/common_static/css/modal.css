@@ -20,7 +20,7 @@
 .modal-content {
     width: 310px;
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 40vh auto;
     padding: 20px;
     border-radius: 15px;
 
@@ -34,7 +34,6 @@
 .modal-content>.answerType {
     width: 100%;
     border: var(--violet) solid 1.5px;
-
     border-radius: 15px;
     margin-top: 10px;
 }
@@ -49,7 +48,8 @@
 
 .modal-close:hover,
 .modal-close:focus {
-    color: var(--violet);;
+    color: var(--violet);
+    ;
     text-decoration: none;
     cursor: pointer;
 }

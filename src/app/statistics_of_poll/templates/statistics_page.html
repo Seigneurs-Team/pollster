@@ -57,7 +57,13 @@
                         {% endfor %}
                     </ul>
                     <div class="chart-wrapper">
-                        <canvas class="chart"></canvas>
+                        <div class="chart-wrapper-inner">
+                            <div class="chart-type-btns">
+                                <button class="change-chart-data chart-data-options active">Варианты ответа</button>
+                                <button class="change-chart-data chart-data-rw-answers">Правильные/неправильные ответы</button>
+                            </div>
+                            <canvas class="chart"></canvas>
+                        </div>
                         <button class="opn-chart-settings">Настройки диаграммы</button>
                         <div id="chart-settings-modal" class="modal">
                             <div class="modal-content">
@@ -83,7 +89,7 @@
                         <li class="wrong_text_answer">{{ wrong_answer.text }}</li>
                         {% endfor %}
                     </ul>
-                      <div class="chart-wrapper">
+                    <div class="chart-wrapper">
                         <canvas class="chart"></canvas>
                         <button class="opn-chart-settings">Настройки диаграммы</button>
                         <div id="chart-settings-modal" class="modal">
@@ -94,10 +100,12 @@
                                     <span class="modal-h1">Настройки диаграммы</span>
                                     <span class="modal-h2">Выберите тип диаграммы</span>
 
-                                    <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
+                                    <button class="pie"><img
+                                            src="{% static 'img/diagram-type-pie.png' %}">Круговая</button>
                                     <button class="line"><img
-                                            src="{% static 'img/diagram-type-line.png' %}">Line</button>
-                                    <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
+                                            src="{% static 'img/diagram-type-line.png' %}">График</button>
+                                    <button class="bar"><img
+                                            src="{% static 'img/diagram-type-bar.png' %}">Кольцевая</button>
                                 </div>
                             </div>
                         </div>

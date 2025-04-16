@@ -140,3 +140,43 @@ $('.modal-close').on('click', function () {
 function closeModal(modal) {
     $(modal).closest('.modal').hide();
 }
+
+$('.change-chart-data').on('click', function () {
+    const chart = $(this).closest('.question').data('chart');
+    const id = $(this).closest(`.question`).attr('id');
+    const dataType = $(this).hasClass('chart-data-options') ? 'options' : 'rw-answers'
+
+
+    changeChartData(this, chart, id, dataType)
+})
+
+// изменяет данные, по которым строится диаграмма: варианты ответа - правильные/неправильные ответы
+function changeChartData(btn, chart, id, dataType) {
+    console.log('Changing...')
+
+    chart.destroy()
+
+    // кнопки переключения 
+    const chartDataRWAnswers = $(btn).closest('.question').children().find('.chart-data-rw-answers')
+    const chartDataOptions = $(btn).closest('.question').children().find('.chart-data-options')
+
+    for (let i = 0; i < questions.length; i++) {
+        if (questions[i].id == id) {
+            if (dataType == 'options') {
+                drawOptionsChart(i, questions[i].options, questions[i].countOfSelected, 'pie')
+
+                // активная кнопка
+                chartDataRWAnswers.removeClass('active')
+                chartDataOptions.addClass('.ctive')
+
+            } else if (dataType == 'rw-answers') {
+                drawRightAnswersChart(i)
+
+                // активная кнопка
+                chartDataOptions.removeClass('active')
+                chartDataRWAnswers.addClass('active')
+            }
+            break;
+        }
+    }
+}
