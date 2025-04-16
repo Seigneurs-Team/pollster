@@ -99,14 +99,16 @@ div#questions {
 
 .chart-wrapper-inner {
     display:flex;
+    flex-direction: column;
+
 }
 
 .chart-type-btns {
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
+    column-gap: 3px;
 }
-
+/* 
 .change-chart-data {
     width: 200px;
     background-color: var(--violet);
@@ -119,4 +121,36 @@ div#questions {
     background-color: white;
     border: var(--violet) 1px solid;
     color: black;
+} */
+
+/* Style the buttons that are used to open the tab content */
+.chart-type-btns button {
+    background-color: inherit;
+    /*float: left;*/
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.chart-type-btns button:hover {
+    background-color: var(--violet);
+}
+
+/* Create an active/current tablink class */
+.chart-type-btns button.active {
+    background-color: #ccc;
+    background-color: var(--violet);
+    color: #fff;
+    font-weight: 400;
+}
+
+.chart-data-rw-answers {
+    border-top-right-radius: 10px;
+}
+
+.chart-data-options {
+    border-top-left-radius: 10px;
 }
