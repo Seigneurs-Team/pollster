@@ -135,7 +135,6 @@ class Producer:
         """
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
-        self.declare_queue()
         self.consume_the_response()
 
 
