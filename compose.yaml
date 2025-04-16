@@ -56,10 +56,10 @@ services:
         ipv4_address: 172.16.235.3
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
-      start_period: 10s
-      interval: 10s
-      timeout: 1s
-      retries: 4
+      start_period: 30s
+        interval: 10s
+        timeout: 20s
+        retries: 5
     restart: unless-stopped
 
 
