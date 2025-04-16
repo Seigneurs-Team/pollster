@@ -2,6 +2,7 @@ import { sendRequest } from './api.js';
 
 let statistics = {}
 let questions = []
+const chartsTypes = []
 
 async function sendStatisticslRequest(id) {
     console.log('getting statistics...');
@@ -27,7 +28,7 @@ $(document).ready(async function () {
         if (questions[i].type_of_question == "short text") {
 
             drawRightAnswersChart(i)
-
+            chartsTypes[i] = 'rw-answers'
         }
         // а у вопросов с вариантами ответа по умолчанию будет график - количество выбора каждого варианта
         if (questions[i].type_of_question == "radio" || questions[i].type_of_question == "checkbox") {
@@ -37,23 +38,24 @@ $(document).ready(async function () {
             questions[i].countOfSelected = countOfSelected
 
             drawOptionsChart(i, options, countOfSelected)
+            chartsTypes[i] = 'options'
         }
     }
 })
 
 
 // количество выбранных правильных вариантов ответа: в labels всегда "right/wrong", в data 1й элемент - количество правльных, 2й - неправильных ответов. в вопросах с коротким ответом то же самое (но это для графика. а так все ответы будут списком выводиться)
-function drawRightAnswersChart(i) {
+function drawRightAnswersChart(i, type = 'doughnut') {
 
     const myChart = new Chart($(`#${questions[i].id} .chart`), {
-        type: 'doughnut',
+        type: type,
         data: {
             labels: [
                 'right',
                 'wrong'
             ],
             datasets: [{
-                label: 'right/wrong ansers',
+                label: 'Ответило',
                 data: [questions[i].num_of_right_answers, questions[i].num_of_wrong_answers],
                 backgroundColor: [
                     'rgb(255, 99, 132)',
@@ -76,7 +78,7 @@ function drawOptionsChart(i, options, countOfSelected, type = 'bar') {
         data: {
             labels: options,
             datasets: [{
-                label: 'options',
+                label: 'Выбрало',
                 data: countOfSelected,
                 backgroundColor: [
                     'rgb(255, 99, 132)',
@@ -111,13 +113,19 @@ $('.chart-settings button').on('click', function () {
     const chart = $(this).closest(`.question`).data('chart');
     chart.destroy()
     const id = $(this).closest(`.question`).attr('id');
+    const chartType = $(this).attr('class')
 
 
-    const type = $(this).attr('class')
     for (let i = 0; i < questions.length; i++) {
         if (questions[i].id == id) {
-            drawOptionsChart(i, questions[i].options, questions[i].countOfSelected, type)
-            break;
+            const questionType = questions[i]['type_of_question']
+
+            if (questionType == 'short text') {
+                drawRightAnswersChart(i, chartType)
+            } else {
+                drawOptionsChart(i, questions[i].options, questions[i].countOfSelected, chartType)
+                break;
+            }
         }
     }
 
