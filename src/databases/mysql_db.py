@@ -192,11 +192,11 @@ class MysqlDB:
         :return: list
         """
         if only_for_user is False:
-            transaction = """SELECT name_of_poll, description, tags, id FROM polls"""
+            transaction = """SELECT name_of_poll, description, tags, id, id_of_author FROM polls"""
             if id_of_user is not None:
                 transaction += f" WHERE id_of_author = {id_of_user}" if id_of_user is not None else ''
         else:
-            transaction = f"""SELECT name_of_poll, description, tags, id FROM polls
+            transaction = f"""SELECT name_of_poll, description, tags, id, id_of_author FROM polls
             LEFT JOIN table_of_users_who_pass_the_poll ON table_of_users_who_pass_the_poll.id_of_poll = polls.id AND
             table_of_users_who_pass_the_poll.id_of_user = {id_of_user}
             WHERE table_of_users_who_pass_the_poll.id_of_poll IS NULL"""
@@ -204,7 +204,7 @@ class MysqlDB:
         result = connection_object.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
         for poll in result:
-            polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user))
+            polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user, client_mysqldb.get_user_data_from_table(poll[4])[0]))
         return polls_list
 
     @get_connection_and_cursor
@@ -805,7 +805,7 @@ class MysqlDB:
             connection_object.cursor.execute(transaction)
             result = connection_object.cursor.fetchall()
             for poll in result:
-                polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), id_of_poll, id_of_user))
+                polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), id_of_poll, id_of_user, self.get_user_data_from_table(id_of_user)[0]))
         return polls_list
 
     @get_connection_and_cursor
@@ -937,6 +937,7 @@ class MysqlDB:
         transaction += f"""WHERE id_of_user = {id_of_user}"""
 
         connection_object.cursor.execute(transaction, (value,))
+        connection_object.connection.commit()
 
     @get_connection_and_cursor
     def check_existence_vector_of_user_from_ranking_table(self, id_of_user: int, connection_object: ConnectionAndCursor = None) -> bool:
