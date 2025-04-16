@@ -28,7 +28,9 @@ function renderAllQuestions() {
  */
 function setupEventListeners() {
     $(".start").on('click', handleStartButtonClick);
-    $(".submit").on('click', handleSubmitButtonClick);
+    $(".submit").on('click', (e) => {e.preventDefault();
+     handleSubmitButtonClick(e)
+});
 }
 
 /**
@@ -98,6 +100,7 @@ function addOption(type, questionId, option, counter) {
  * Обработка отправки результатов
  */
 async function handleSubmitButtonClick(event) {
+    console.log('hi from handleSubmitButtonClick')
     const poll_id = $(event.currentTarget).attr('data-poll-id');
     const results = {
         poll_id: poll_id,
