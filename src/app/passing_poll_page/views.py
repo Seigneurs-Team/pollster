@@ -59,49 +59,21 @@ def request_on_passing_poll(request, id_of_user: int = None):
         'Получил POST запрос с данными, который пользователь ввел в опросе',
         Levels.Info, id_of_user, request, other_data={'id_of_poll': id_of_poll})
     try:
+        client_mysqldb.add_users_into_table_for_users_who_pass_the_poll(id_of_user, id_of_poll)
         producer.publish_log(
-            'Начало итерации с ответами пользователя', Levels.Info,
+            'Начало сохранения ответов пользователя', Levels.Info,
             id_of_user, requests=request, other_data={'id_of_poll': id_of_poll, 'count_of_answers': len(data_of_passing_poll['answers'])}
         )
-        for i, answer in enumerate(data_of_passing_poll['answers']):
-            add_answers_into_db(answer, id_of_poll, id_of_user)
-            producer.publish_log(f"Шаг итерации {i}", Levels.Info, id_of_user, requests=request, other_data={'id_of_poll': id_of_poll})
-        client_mysqldb.add_users_into_table_for_users_who_pass_the_poll(id_of_user, id_of_poll)
+        client_mysqldb.save_answers_users_into_table_of_passing_poll_from_user(data_of_passing_poll['answers'], id_of_user, id_of_poll)
         producer.publish_log("Данные были успешно сохранены", Levels.Info, id_of_user, requests=request, other_data={'id_of_poll': id_of_poll})
     except RepeatPollError:
         return HttpResponseForbidden()
     except TryToXSS:
+        producer.publish_log(
+            'Была пресечена попытка XSS атаки', Levels.Warning,
+            id_of_user, requests=request, other_data={'id_of_poll': id_of_poll}
+        )
         client_mysqldb.delete_cookie_from_session_table(auth_sessionid, 'auth_sessionid', id_of_user)
         return HttpResponseForbidden()
     else:
         return JsonResponse({'response': 200})
-
-
-def add_answers_into_db(answer: dict, id_of_poll: int, id_of_user: int):
-    """
-    Функция исполняет сохранение данных, которые пользователь ввел в ответах на вопросы в опросе.
-    :param answer: словарь с полями: question_id, type, value
-    :param id_of_poll: идентификатор опроса
-    :param id_of_user: идентификатор пользователя
-    :return: None
-    """
-    serial_number = answer['question_id']
-    type_of_question = answer['type']
-    check_the_type(type_of_question)
-    value: typing.Union[str, list] = answer['value']
-    if isinstance(value, list):
-        for value_of_list in value:
-            client_mysqldb.add_answer_into_table_data_of_passing_poll_from_user(serial_number, type_of_question, value_of_list, id_of_user, id_of_poll)
-    elif isinstance(value, str):
-        client_mysqldb.add_answer_into_table_data_of_passing_poll_from_user(serial_number, type_of_question, value, id_of_user, id_of_poll)
-
-
-def check_the_type(type_of_question: str):
-    """
-    Проверка значений поля type на несоответствие со значениями из БД.
-    :param type_of_question: тип вопроса
-    :return: None
-    """
-    types = client_mysqldb.get_types_of_question()
-    if type_of_question not in types:
-        raise TryToXSS("попытка XSS атаки")

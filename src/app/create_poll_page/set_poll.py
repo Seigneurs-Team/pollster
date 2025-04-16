@@ -1,6 +1,6 @@
 from Configs.Poll import (Poll, Question, Option, RightAnswer, RightTextAnswer)
 from random import randint
-from app.passing_poll_page.views import check_the_type
+from databases.mysql_db import check_the_type
 
 import json
 

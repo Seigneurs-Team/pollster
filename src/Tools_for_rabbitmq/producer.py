@@ -71,7 +71,7 @@ class Producer:
                 response = self.response
                 self.response = None
                 return json.loads(response)
-        except exceptions.ChannelWrongStateError:
+        except (exceptions.ChannelWrongStateError, pika.exceptions.StreamLostError, AssertionError):
             self.reconnect()
             self.publish(message=message, properties=properties, queue=queue)
 
@@ -95,7 +95,7 @@ class Producer:
         dict_of_data = json.dumps(dict_of_data)
         message = Commands.save_log % (dict_of_data, level)
 
-        self.publish(message, queue=self.log_queue, properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Transient))
+        self.publish(message, queue=self.log_queue, properties=pika.BasicProperties(delivery_mode=1))
 
     def close_connection(self):
         self.channel.close()
@@ -135,6 +135,8 @@ class Producer:
         """
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
+        self.declare_queue()
+        self.consume_the_response()
 
 
 producer = Producer(Hosts.rabbitmq)

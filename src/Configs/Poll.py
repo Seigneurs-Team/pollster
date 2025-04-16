@@ -9,6 +9,7 @@ class Poll:
     tags: str
     id_of_poll: int
     id_of_author: Union[None, int]
+    nickname_of_author: str
 
 
 @dataclass
