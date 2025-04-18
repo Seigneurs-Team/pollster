@@ -19,3 +19,6 @@ $('.tag').click(function() {
         $(this).appendTo('.not-selected-tags');
     }
 });
+
+$('.popup input').attr("disabled", "disabled")
+$('.popup button').attr("disabled", "disabled")

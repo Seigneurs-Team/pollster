@@ -43,7 +43,7 @@
                 <img src="{% static 'img\Filter.svg' %}" class="opn-filter">
                 <div class="popup" id="popup">
                     <div class="popup-content">
-                        <h2>Фильтры</h2>
+                        <h2>Фильтры (в разработке)</h2>
                         <div class="filters">
 
                             <ul>
@@ -98,7 +98,7 @@
                 <a href="passing_poll/{{poll.id_of_poll}}/">
                     <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                     <p class="poll-description">{{poll.description}}</p>
-                    <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image"></div>
+                    <div class="poll-img"><img src="{% static 'img\poll default img.jpg' %}" alt="poll image"></div>
                     <div class="poll-tags">
                         {% for tag in poll.tags %}
                         <div class="tag">{{tag}}</div>

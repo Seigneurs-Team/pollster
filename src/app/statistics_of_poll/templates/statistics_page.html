@@ -31,7 +31,9 @@
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
                     src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
         </header>
+        
         <main data-poll-id="{{id_of_poll}}">
+            <div class="poll-img"><img src="{% static 'img\poll default img.jpg' %}" alt="logo"></div>
             <h1 class="poll-name">{{questions.name_of_poll}}</h1>
             <p class="poll-tags">
             <p class="poll-description">{{questions.description_of_poll}}</p>
@@ -56,6 +58,8 @@
                         {% endfor %}
                         {% endfor %}
                     </ul>
+                    
+                    {% if questions.count_of_users > 0 %}
                     <div class="chart-wrapper">
                         <div class="chart-wrapper-inner">
                             <div class="chart-type-btns">
@@ -81,6 +85,8 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
+
                     {% elif question.type_of_question == "short text"%}
                     <p class="right_text_answer">Правильный ответ: {{ question.right_text_answer }}</p>
                     <p>Другие ответы:</p>
@@ -89,6 +95,8 @@
                         <li class="wrong_text_answer">{{ wrong_answer.text }}</li>
                         {% endfor %}
                     </ul>
+
+                    {% if questions.count_of_users > 0 %}
                     <div class="chart-wrapper">
                         <canvas class="chart"></canvas>
                         <button class="opn-chart-settings">Настройки диаграммы</button>
@@ -110,6 +118,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
 
                     {% elif question.type_of_question == "long text"%}
                     <p>Ответы:</p>

@@ -92,7 +92,7 @@
                     {% else %}
                     {% for poll in user.usersPolls %}
                     <li class="poll-item">
-                        <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image"></div>
+                        <div class="poll-img"><img src="{% static 'img\poll default img.jpg' %}" alt="poll image"></div>
                         <div class="poll-info">
                             <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                             <p class="poll-description">{{poll.description}}</p>
@@ -121,7 +121,7 @@
                     <li class="poll-wrapper">
                         <a class="poll-item" href="passing_poll/{{poll.id_of_poll}}/">
 
-                            <div class="poll-img"><img src="{% static 'img\poll default img.png' %}" alt="poll image">
+                            <div class="poll-img"><img src="{% static 'img\poll default img.jpg' %}" alt="poll image">
                             </div>
                             <div class="poll-info">
                                 <h2 class="poll-name">{{poll.name_of_poll}}</h2>

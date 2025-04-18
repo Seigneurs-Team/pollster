@@ -1,4 +1,24 @@
 import { sendRequest } from './api.js';
+const COLORS = [
+    '#F678A7',
+'#4dc9f6',
+'#A155B9',
+
+    '#62AEC5',
+    '#ADD2E4',
+    '#E64072',
+    '#165BA9',
+    '#FFA4B6',
+
+    '#f67019',
+    '#f53794',
+    '#537bc4',
+    '#acc236',
+    '#166a8f',
+    '#00a950',
+    '#58595b',
+    '#8549ba'
+];
 
 let statistics = {}
 let questions = []
@@ -57,11 +77,7 @@ function drawRightAnswersChart(i, type = 'doughnut') {
             datasets: [{
                 label: 'Ответило',
                 data: [questions[i].num_of_right_answers, questions[i].num_of_wrong_answers],
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)'
-                ],
+                backgroundColor: COLORS,
                 hoverOffset: 4
             }]
         },
@@ -80,11 +96,7 @@ function drawOptionsChart(i, options, countOfSelected, type = 'bar') {
             datasets: [{
                 label: 'Выбрало',
                 data: countOfSelected,
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)'
-                ],
+                backgroundColor: COLORS,
                 hoverOffset: 4
             }]
         },
@@ -174,7 +186,7 @@ function changeChartData(btn, chart, id, dataType) {
 
                 // активная кнопка
                 chartDataRWAnswers.removeClass('active')
-                chartDataOptions.addClass('.ctive')
+                chartDataOptions.addClass('active')
 
             } else if (dataType == 'rw-answers') {
                 drawRightAnswersChart(i)
