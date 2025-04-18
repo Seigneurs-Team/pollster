@@ -110,7 +110,7 @@ function answerType(questionType, questionId) {
                 ${renderOption(type, questionId, 1)}
                 ${renderOption(type, questionId, 2)}
             </div>
-            <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}">+</button>
+            <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}"></button>
         `;
     } else if (questionType === "radio img") {
         return '';

@@ -1,17 +1,17 @@
 /* media.css - Адаптивные стили для всех страниц */
 
 @media (max-width: 768px) {
+
     /* Общие стили */
     .content {
-        width: calc(100% - 30px);
-        padding: 0 15px;
+        width: calc(100% - 20px);
     }
 
-    .content > * {
+    .content>* {
         max-width: 100%;
     }
 
-    .main > * {
+    .main>* {
         max-width: 100%;
     }
 
@@ -52,34 +52,21 @@
         margin: 5px 0;
     }
 
-    /* Страница регистрации/входа */
-    .registration, #loginForm {
-        width: 100%;
-        padding: 0 15px;
-    }
 
-    .password-wrapper {
-        width: 100%;
-    }
 
-    .submit {
-        width: 100%;
-        max-width: 200px;
-        margin: 20px auto;
-    }
 
     /* Страница опросов */
     li.poll-item {
-        max-width: 100%;
+        max-width: calc(100% - 30px);
         margin: 0 auto;
     }
 
-    li.poll-item a {
+    li.poll-item {
         display: flex;
         flex-direction: column;
     }
 
-    li.poll-item a > * {
+    li.poll-item>* {
         width: 100%;
     }
 
@@ -116,13 +103,14 @@
     }
 
     .about-you {
+        background-color: #fff;
         max-width: 100%;
         margin: 30px auto;
         padding: 15px;
     }
 
     #createPollBtn {
-        max-width: calc(100% - 6px);
+        max-width: calc(100% - 12px);
     }
 
     /* Создание опроса */
@@ -155,7 +143,8 @@
     }
 
     /* Формы */
-    input, textarea {
+    input,
+    textarea {
         font-size: 16px;
         max-width: 100%;
     }
@@ -165,7 +154,7 @@
         width: fit-content;
     }
 
-    .footer-content > div {
+    .footer-content>div {
         position: initial;
         margin: 30px auto;
         float: none;
@@ -183,10 +172,39 @@
         display: none;
     }
 
+    main.sign-in,
+    main.create-new-account {
+        padding: 0;
+        min-height: 100vh;
+        margin-top: 0;
+        padding-top: 30px;
+
+    }
+
+    .circles-wrapper {
+        padding: 20px 0;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .second-circle {
+        margin-top: 30px;
+    }
+
+    .circle {
+        position: initial;
+
+    }
+
+    #loginForm {
+        margin: auto;
+
+    }
 
 }
 
 @media (max-width: 480px) {
+
     /* Дополнительные правки для маленьких экранов */
     h1 {
         font-size: 24px;
@@ -200,7 +218,7 @@
         font-size: 14px;
     }
 
-    .start, .submit {
+    .start {
         height: 50px;
         line-height: 50px;
     }
@@ -219,5 +237,20 @@
 
     .footer-content {
         padding: 0 15px;
+    }
+
+    main.sign-in,
+    main.create-new-account {
+        background-image: url(../img/sign-in-background-mobile.svg);
+        background-position: center bottom;
+        background-size: auto;
+
+    }
+
+    main.profile {
+        background-image: url(../img/profile-background-mobile.svg);
+        background-position: center top;
+        background-size: auto;
+        background-repeat: no-repeat;
     }
 }

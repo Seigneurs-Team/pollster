@@ -94,6 +94,7 @@
 
 .about-you-btns {
     display: flex;
+    column-gap: 16px;
 }
 
 .save-changes {
@@ -125,6 +126,14 @@ header {
 
 .tags, .selected-tags, .not-selected-tags {
     display: inline;
+}
+
+#edit_name_input {
+    padding: 0 5px;
+    text-align: center;
+    border-radius: 3px;
+    height: 30px;
+    width: 200px;
 }
 
 .about-you .tag {
@@ -177,15 +186,16 @@ label {
     text-align: center;
 }
 
-li.poll-item {
-    width: 100%;
+.poll-wrapper {
+    width: calc(100% - 30px);
 }
 
-li.poll-item {
+.poll-item {
+    width: 100%;
     display: flex;
     flex-direction: row;
     padding: 15px;
-    border: 1px black solid;
+    border: 2px var(--violet) solid;
     border-radius: 15px;
 }
 
@@ -204,6 +214,8 @@ li.poll-item {
     width: 60%;
     text-align: left;
     padding: 0 10px;
+    row-gap: 3px;
+    column-gap: 16px;
 }
 
 .poll-info .poll-name, .poll-info button {
@@ -223,11 +235,18 @@ li.poll-item {
     padding: 10px;
 }
 
-li.poll-item .delete-poll {
+.poll-item .delete-poll {
     background: red;
 }
 
+.poll-item .delete-poll:hover {
+    background: #d00000;
+}
 
-li.poll-item .view-statistics {
+.poll-item .view-statistics {
     background: green;
+}
+
+.poll-item .view-statistics:hover {
+    background: #006400;
 }

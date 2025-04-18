@@ -5,3 +5,152 @@ ul {
 canvas.chart {
     max-height: 300px;
 }
+
+div#questions {
+    border: none;
+    padding: 0;
+    margin: 30px 0;
+}
+.num-of-passes {
+    text-align: left;
+}
+
+.modal-content {
+    margin: 40vh auto;
+}
+
+.chart-settings {
+    display: flex;
+    flex-direction: column;
+    column-gap: 5px;
+
+}
+.chart-settings button{
+    background-color: transparent;
+    border: none;
+    display:flex;
+    align-items: center;
+    
+}
+.chart-settings button:hover{
+    color: black;
+}
+.chart-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    column-gap: 30px;
+}
+.modal-h1 {
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: center;
+}
+.modal-h2 {
+    font-weight: 700;
+    text-align: left;
+}
+
+/* список ответов */
+.answers-list * {transition: .4s linear;}
+.answers-list {
+  background: white;
+  list-style-type: circle;
+  list-style-position: inside;
+  padding: 0 10px;
+  margin: 0;
+}
+.answers-list li {
+  border-bottom: 1px solid #efefef;
+  padding: 3px 0;
+  font-weight: 400;;
+
+}
+
+
+/* список ваирантов ответов */
+.options * {transition: .4s linear;}
+.options {
+  padding: 0 10px;
+  margin: 0;
+}
+.options li {
+  border-bottom: 1px solid #efefef;
+  padding: 3px 0;
+
+}
+.options li span {
+  float: right;
+  display: inline-block;
+  border: 1px solid #efefef;
+  padding: 0 5px;
+  font-size: 13px;
+  color: #999;
+}
+
+.opn-chart-settings {
+    width: 200px;
+    background-color: var(--violet);
+    color: white;
+    border-radius: var(--border-radius);
+    height: 40px;
+    margin: 10px auto 0 auto;
+}
+
+.chart-wrapper-inner {
+    display:flex;
+    flex-direction: column;
+
+}
+
+.chart-type-btns {
+    display: flex;
+    justify-content: center;
+    column-gap: 3px;
+}
+/* 
+.change-chart-data {
+    width: 200px;
+    background-color: var(--violet);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 7px 0;
+}
+
+.change-chart-data.active {
+    background-color: white;
+    border: var(--violet) 1px solid;
+    color: black;
+} */
+
+/* Style the buttons that are used to open the tab content */
+.chart-type-btns button {
+    background-color: inherit;
+    /*float: left;*/
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.chart-type-btns button:hover {
+    background-color: var(--violet);
+}
+
+/* Create an active/current tablink class */
+.chart-type-btns button.active {
+    background-color: #ccc;
+    background-color: var(--violet);
+    color: #fff;
+    font-weight: 400;
+}
+
+.chart-data-rw-answers {
+    border-top-right-radius: 10px;
+}
+
+.chart-data-options {
+    border-top-left-radius: 10px;
+}

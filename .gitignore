@@ -2,4 +2,5 @@
 /.idea/
 *.pyc
 *.log
-/data/
+data/info.json
+data/debug.json

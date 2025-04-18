@@ -23,10 +23,22 @@ main {
     margin: 20px 0;
 }
 
+.start {
+    margin-top: 20px;
+}
 
-.start, .submit {
+.start, .first-circle {
     color: #fff;
     width: 325px;
+    height: 68px;
+    background-color: var(--violet);
+    border-radius: var(--border-radius);
+}
+
+.submit {
+    
+    color: #fff;
+    width: 200px;
     height: 68px;
     background-color: var(--violet);
     border-radius: var(--border-radius);
@@ -53,7 +65,7 @@ form {
 .question {
     text-align: left;
     font-weight: 700;
-    margin-bottom: 35px;
+    margin-bottom: 60px;
 }
 
 .question-text {

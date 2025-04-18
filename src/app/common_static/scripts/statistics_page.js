@@ -1,119 +1,61 @@
 import { sendRequest } from './api.js';
 
-// тестовые данные
-const statistics = {
-    "count_of_users": 1,
-    "questions": [
-        {
-            "id": 93047,
-            "type_of_question": "radio",
-            "text_of_question": "Вопрос1",
-            "serial_number": 1,
-            "num_of_right_answers": 1,
-            "num_of_wrong_answers": 0,
-            "options": [
-                {
-                    "1": {
-                        "count_of_selected": 0,
-                        "is_right_answer": false
-                    }
-                },
-                {
-                    "2": {
-                        "count_of_selected": 1,
-                        "is_right_answer": true
-                    }
-                }
-            ]
-        },
-        {
-            "id": 66667,
-            "type_of_question": "checkbox",
-            "text_of_question": "Вопрос2",
-            "serial_number": 2,
-            "num_of_right_answers": 1,
-            "num_of_wrong_answers": 2,
-            "options": [
-                {
-                    "1": {
-                        "count_of_selected": 1,
-                        "is_right_answer": false
-                    }
-                },
-                {
-                    "2": {
-                        "count_of_selected": 3,
-                        "is_right_answer": true
-                    }
-                },
-                {
-                    "3": {
-                        "count_of_selected": 2,
-                        "is_right_answer": true
-                    }
-                }
-            ]
-        },
-        {
-            "id": 77777,
-            "right_text_answer": "great",
-            "type_of_question": "short text",
-            "text_of_question": "how are you doing?",
-            "serial_number": 3,
-            "num_of_right_answers": 3,
-            "num_of_wrong_answers": 2
-        }
-    ]
-}
-const questions = statistics.questions
+let statistics = {}
+let questions = []
+const chartsTypes = []
 
 async function sendStatisticslRequest(id) {
-    const response = await sendRequest(`/get_statistics/${id}`, 'GET');
-    // Обработка ответа от сервера
-    if (response.status === 200) {
-        alert('Статистика успешно получена')
+    console.log('getting statistics...');
+    try {
+        const response = await sendRequest(`/get_statistics/${id}`, 'GET');
+        return await response.json(); // Парсим JSON и возвращаем результат
+    } catch (error) {
+        console.error('Ошибка:', error);
+        throw error; // Пробрасываем ошибку
     }
-    return await response.json();
-
 }
 
-$(document).ready(function () {
+$(document).ready(async function () {
+    const pollID = $('main').data('poll-id')
+    statistics = await sendStatisticslRequest(pollID)
+    console.log('statistics', statistics)
+    questions = statistics.questions
+    console.log('questions: ', questions)
+
     // отрисовываем графики
     for (let i = 0; i < questions.length; i++) {
-        // у каждого вопроса,который есть в statistics (т.е. все, кроме long text) будет график соотношения правильных и неправильных ответов
-        drawRightAnswersChart(i)
+        // у short text график с правлиьными/неправильными ответами
+        if (questions[i].type_of_question == "short text") {
 
-        // а у вопросов с вариантами ответа будет второй график - количество выбора каждого варианта
+            drawRightAnswersChart(i)
+            chartsTypes[i] = 'rw-answers'
+        }
+        // а у вопросов с вариантами ответа по умолчанию будет график - количество выбора каждого варианта
         if (questions[i].type_of_question == "radio" || questions[i].type_of_question == "checkbox") {
 
             const [options, countOfSelected] = getOptions(i)
-            drawOprionsChart(i, options, countOfSelected)
+            questions[i].options = options
+            questions[i].countOfSelected = countOfSelected
+
+            drawOptionsChart(i, options, countOfSelected)
+            chartsTypes[i] = 'options'
         }
     }
 })
 
-$('#get-statistics').on('click', async function () {
-    console.log('getting statistics...')
-    const pollID = $('#get-statistics').data('poll-id') 
 
-    const response = await sendStatisticslRequest(pollID)
-    console.log('Ответ сервера:', response);
+// количество выбранных правильных вариантов ответа: в labels всегда "right/wrong", в data 1й элемент - количество правльных, 2й - неправильных ответов. в вопросах с коротким ответом то же самое (но это для графика. а так все ответы будут списком выводиться)
+function drawRightAnswersChart(i, type = 'doughnut') {
 
-})
-
-
-function drawRightAnswersChart(i) {
-    // количество выбранных правильных вариантов ответа: в labels всегда "right/wrong", в data 1й элемент - количество правльных, 2й - неправильных ответов. в вопросах с коротким ответом то же самое (но это для графика. а так все ответы будут списком выводиться)
-
-    new Chart($(`#${questions[i].id} .chart.right-answers`), {
-        type: 'doughnut',
+    const myChart = new Chart($(`#${questions[i].id} .chart`), {
+        type: type,
         data: {
             labels: [
                 'right',
                 'wrong'
             ],
             datasets: [{
-                label: 'right/wrong ansers',
+                label: 'Ответило',
                 data: [questions[i].num_of_right_answers, questions[i].num_of_wrong_answers],
                 backgroundColor: [
                     'rgb(255, 99, 132)',
@@ -124,17 +66,19 @@ function drawRightAnswersChart(i) {
             }]
         },
     });
+    $(`#${questions[i].id}`).data('chart', myChart);
+
 }
 
-function drawOprionsChart(i, options, countOfSelected) {
+function drawOptionsChart(i, options, countOfSelected, type = 'bar') {
     // количество выбранных вариантов ответа: нужно получить список вариантов ответа и список количества выбора каждого из них
-/// можно использовать типы bar, polarArea, pie, doughnut
-    new Chart($(`#${questions[i].id} .chart.options`), {
-        type: 'bar',
+    /// можно использовать типы bar, polarArea, pie, doughnut
+    const myChart = new Chart($(`#${questions[i].id} .chart`), {
+        type: type,
         data: {
             labels: options,
             datasets: [{
-                label: 'right/wrong ansers',
+                label: 'Выбрало',
                 data: countOfSelected,
                 backgroundColor: [
                     'rgb(255, 99, 132)',
@@ -145,6 +89,9 @@ function drawOprionsChart(i, options, countOfSelected) {
             }]
         },
     });
+    $(`#${questions[i].id}`).data('chart', myChart);
+
+
 }
 
 function getOptions(i) {
@@ -160,4 +107,83 @@ function getOptions(i) {
         countOfSelected.push(option[key].count_of_selected);
     }
     return [options, countOfSelected]
+}
+
+$('.chart-settings button').on('click', function () {
+    const chart = $(this).closest(`.question`).data('chart');
+    chart.destroy()
+    const id = $(this).closest(`.question`).attr('id');
+    const chartType = $(this).attr('class')
+
+
+    for (let i = 0; i < questions.length; i++) {
+        if (questions[i].id == id) {
+            const questionType = questions[i]['type_of_question']
+
+            if (questionType == 'short text') {
+                drawRightAnswersChart(i, chartType)
+            } else {
+                drawOptionsChart(i, questions[i].options, questions[i].countOfSelected, chartType)
+                break;
+            }
+        }
+    }
+
+    // закрытие окна настроек диаграммы
+    closeModal(this)
+})
+
+
+// Открытие модального окна для выбора типа вопроса
+$(".opn-chart-settings").on('click', function () {
+    $(this).closest('.question').children().find('.modal').show()
+});
+
+// Закрытие модального окна
+$('.modal-close').on('click', function () {
+    closeModal(this)
+});
+
+function closeModal(modal) {
+    $(modal).closest('.modal').hide();
+}
+
+$('.change-chart-data').on('click', function () {
+    const chart = $(this).closest('.question').data('chart');
+    const id = $(this).closest(`.question`).attr('id');
+    const dataType = $(this).hasClass('chart-data-options') ? 'options' : 'rw-answers'
+
+
+    changeChartData(this, chart, id, dataType)
+})
+
+// изменяет данные, по которым строится диаграмма: варианты ответа - правильные/неправильные ответы
+function changeChartData(btn, chart, id, dataType) {
+    console.log('Changing...')
+
+    chart.destroy()
+
+    // кнопки переключения 
+    const chartDataRWAnswers = $(btn).closest('.question').children().find('.chart-data-rw-answers')
+    const chartDataOptions = $(btn).closest('.question').children().find('.chart-data-options')
+
+    for (let i = 0; i < questions.length; i++) {
+        if (questions[i].id == id) {
+            if (dataType == 'options') {
+                drawOptionsChart(i, questions[i].options, questions[i].countOfSelected, 'pie')
+
+                // активная кнопка
+                chartDataRWAnswers.removeClass('active')
+                chartDataOptions.addClass('.ctive')
+
+            } else if (dataType == 'rw-answers') {
+                drawRightAnswersChart(i)
+
+                // активная кнопка
+                chartDataOptions.removeClass('active')
+                chartDataRWAnswers.addClass('active')
+            }
+            break;
+        }
+    }
 }

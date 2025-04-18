@@ -14,15 +14,15 @@ ul.polls {
 
 }
 
-li.poll-item {
+.poll-item {
     width: 360px;
 
 }
-li.poll-item a {
+.poll-item a {
     display: flex;
     flex-direction: column;
 }
-li.poll-item .poll-img img {
+.poll-item .poll-img img {
     width: 100%;
     /* Ширина изображений */
     height: 100%;
@@ -33,7 +33,7 @@ li.poll-item .poll-img img {
 
 }
 
-li.poll-item .poll_id {
+.poll-item .poll_id {
     float: right;
     font-size: 13px;
     font-weight: 500;
@@ -41,7 +41,7 @@ li.poll-item .poll_id {
 }
 
 
-li.poll-item .till-the-end {
+.poll-item .till-the-end {
     float: right;
     font-size: 14px;
     line-height: 12px;
@@ -49,12 +49,12 @@ li.poll-item .till-the-end {
 
 }
 
-li.poll-item .till-the-end svg {
+.poll-item .till-the-end svg {
     width: 20px;
 }
 
 
-li.poll-item .delete-poll svg {
+.poll-item .delete-poll svg {
     display: inline;
     width: 20px;
 }
@@ -86,6 +86,7 @@ h2.poll-name {
 .poll-tags {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     font-size: 14px;
     color: rgb(52, 115, 242);
 }
