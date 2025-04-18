@@ -35,6 +35,15 @@ main {
     border-radius: var(--border-radius);
 }
 
+.submit {
+    
+    color: #fff;
+    width: 200px;
+    height: 68px;
+    background-color: var(--violet);
+    border-radius: var(--border-radius);
+}
+
 .start:hover {
     color: var(--violet);
     background-color: #fff;

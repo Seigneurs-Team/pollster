@@ -85,6 +85,7 @@ export function createPoll() {
         name_of_poll: $('#pollTitle').val(),
         description: $('#pollDescription').val(),
         tags: tags,
+        private: $('#private').is(':checked') ? true : false,
         questions: questions,
     };
     console.log("pollData:", pollData)

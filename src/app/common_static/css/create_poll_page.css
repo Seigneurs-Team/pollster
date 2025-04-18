@@ -238,3 +238,8 @@ button.deleteQuestion:hover {
 .answerType:disabled::after {
     content: "          (В разработке)";
 }
+
+input#private {
+    min-height: auto;
+    margin-bottom: 35px;
+}

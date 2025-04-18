@@ -186,6 +186,10 @@ label {
     text-align: center;
 }
 
+.poll-wrapper {
+    width: calc(100% - 30px);
+}
+
 .poll-item {
     width: 100%;
     display: flex;
