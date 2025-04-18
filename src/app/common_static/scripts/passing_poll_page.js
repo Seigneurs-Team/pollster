@@ -165,7 +165,7 @@ async function sendPassedPoll(data) {
         throw new Error('Ошибка при отправке данных');
     } else {
         alert('Результаты прохождения сохранены')
-        // window.location.href = '/'; // Перенаправление на домашнюю страницу
+        window.location.href = '/'; // Перенаправление на домашнюю страницу
     }
 
     return await response.json();

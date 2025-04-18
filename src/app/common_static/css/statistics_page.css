@@ -4,6 +4,7 @@ ul {
 
 canvas.chart {
     max-height: 300px;
+    margin: 9px;
 }
 
 div#questions {
@@ -63,7 +64,7 @@ div#questions {
 .answers-list li {
   border-bottom: 1px solid #efefef;
   padding: 3px 0;
-  font-weight: 400;;
+  font-weight: 400;
 
 }
 
@@ -107,21 +108,8 @@ div#questions {
     display: flex;
     justify-content: center;
     column-gap: 3px;
+    margin-top: 15px;
 }
-/* 
-.change-chart-data {
-    width: 200px;
-    background-color: var(--violet);
-    color: white;
-    border-radius: var(--border-radius);
-    padding: 7px 0;
-}
-
-.change-chart-data.active {
-    background-color: white;
-    border: var(--violet) 1px solid;
-    color: black;
-} */
 
 /* Style the buttons that are used to open the tab content */
 .chart-type-btns button {
