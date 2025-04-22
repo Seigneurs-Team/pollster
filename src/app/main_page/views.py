@@ -28,7 +28,7 @@ def request_on_main_page(requests: WSGIRequest, is_authenticated: bool):
 
     :return: render(requests, 'index.html', context={'all_objects': polls, 'tags': tags, 'user': user})
     """
-    polls = client_mysqldb.get_polls()
+    polls = client_mysqldb.get_polls(main_page=True)
     tags = ['развлечения', 'наука', 'животные', 'кухня', 'искусство', 'дети', 'музыка', 'кино и сериалы', 'путешествия', 'игры', 'мода и стиль', 'здоровье', 'образование']
     if is_authenticated is True:
         id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(requests.COOKIES['auth_sessionid'], 'auth_sessionid')

@@ -1,5 +1,5 @@
 import json
-import time
+from generate_qr_code import generate_qr_code_of_link
 
 import mysql.connector
 from django.shortcuts import render
@@ -46,6 +46,10 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
         )
         if result:
             producer.publish(Commands.get_vector_poll % poll.id_of_poll)
+        if json_data['private']:
+            code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
+            base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % ('127.0.0.1:8000', code))
+            return JsonResponse({"result": result, "qr_code": base_64_qr_code, "url": "http://%s/%s" % ('127.0.0.1:8000', code)})
         return JsonResponse({"result": result})
     except TryToXSS:
         return HttpResponseForbidden("Попытка XSS атаки")

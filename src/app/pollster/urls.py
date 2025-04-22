@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from app.main_page.views import request_on_main_page, requests_on_get_polls
 from app.create_poll_page.views import request_on_create_poll_page, request_on_create_new_poll

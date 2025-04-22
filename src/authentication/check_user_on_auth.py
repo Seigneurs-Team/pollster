@@ -126,3 +126,36 @@ def authentication_for_change_user_data(func):
         except (AssertionError, CookieWasExpired) as _ex:
             return HttpResponseRedirect('/sign_in')
     return wrapped_func
+
+
+def authentication_for_passing_poll_page(func):
+    def wrapped_func(request: WSGIRequest, *args, **kwargs):
+        try:
+            id_of_user = check_user(request, get_id_of_user=True)
+            kwargs['id_of_user'] = id_of_user
+            if type(kwargs['poll_id']) is int:
+                if client_mysqldb.check_poll_on_private(kwargs["poll_id"]):
+                    return HttpResponseForbidden()
+            return func(request, *args, **kwargs)
+        except (AssertionError, CookieWasExpired) as _ex:
+            return HttpResponseRedirect('/sign_in')
+
+    return wrapped_func
+
+
+def authentication_for_statistics(return_id_of_user: bool = True):
+    def wrapped_high_func(func):
+        def wrapped_func(request: WSGIRequest, *args, **kwargs):
+            try:
+                id_of_user = check_user(request, get_id_of_user=True)
+                if return_id_of_user:
+                    kwargs['id_of_user'] = id_of_user
+                if client_mysqldb.check_poll_on_private(kwargs['id_of_poll']):
+                    if id_of_user == client_mysqldb.get_metadata_of_poll(kwargs['id_of_poll'])[3]:
+                        return func(request, *args, **kwargs)
+                    else:
+                        return HttpResponseForbidden()
+            except (AssertionError, CookieWasExpired) as _ex:
+                return HttpResponseRedirect('/sign_in')
+        return wrapped_func
+    return wrapped_high_func

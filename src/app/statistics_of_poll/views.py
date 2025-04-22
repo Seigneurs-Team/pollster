@@ -1,14 +1,15 @@
 import json
+from generate_qr_code import generate_qr_code_of_link
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
 from django.shortcuts import render
 
 from databases.mysql_db import client_mysqldb
-from authentication.check_user_on_auth import authentication
+from authentication.check_user_on_auth import authentication_for_statistics
 
 
-@authentication()
+@authentication_for_statistics()
 def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_user: int = None):
     """
     Функция нужна для возврата страницы со статистикой опроса
@@ -22,10 +23,17 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
 
     dict_of_statistic = get_statistic(id_of_poll)
 
-    return render(requests, 'statistics_page.html', context={'id_of_poll': id_of_poll, 'user': user, 'questions': dict_of_statistic})
+    context: dict = {'id_of_poll': id_of_poll, 'user': user, 'questions': dict_of_statistic}
+
+    if client_mysqldb.check_poll_on_private(id_of_poll):
+        code = client_mysqldb.get_code_from_private_polls(id_of_poll)
+        context['qr_code'] = generate_qr_code_of_link("http://%s/%s" % ("127.0.0.1", code))
+        context['url_on_poll'] = "http://%s/%s" % ("127.0.0.1", code)
+
+    return render(requests, 'statistics_page.html', context=context)
 
 
-@authentication(False)
+@authentication_for_statistics(False)
 def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
     """
     Функция нужна для получения статистики по конкретному опросу.

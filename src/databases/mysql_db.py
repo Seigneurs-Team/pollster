@@ -125,6 +125,10 @@ class MysqlDB:
         PRIMARY KEY (id_of_poll), 
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS private_polls(id_of_poll INT UNSIGNED, code VARCHAR(15) UNIQUE,
+        PRIMARY KEY (id_of_poll), 
+        FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
+
         #users
         #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
         connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type VARCHAR(100), PRIMARY KEY (id_of_type))""")
@@ -183,23 +187,32 @@ class MysqlDB:
         return json.loads(response_of_query[0])
 
     @get_connection_and_cursor
-    def get_polls(self, num_of_polls: int = 4, only_for_user: bool = False, id_of_user: int = None, connection_object: ConnectionAndCursor = None) -> list:
+    def get_polls(self, num_of_polls: int = 4, only_for_user: bool = False, id_of_user: int = None, connection_object: ConnectionAndCursor = None, main_page: bool = False) -> list:
         """
         Функция возвращает list, состоящий из id: int, tags: string, name_of_poll: string, description: string
+        :param main_page:
+        :param connection_object:
         :param num_of_polls: количество опросов, которые должна вернуть функция
         :param id_of_user: уникальный идентификатор пользователя
         :param only_for_user: bool значение, которое определяет - искать опросы для конкретного пользователя или нет
         :return: list
         """
         if only_for_user is False:
-            transaction = """SELECT name_of_poll, description, tags, id, id_of_author FROM polls"""
-            if id_of_user is not None:
-                transaction += f" WHERE id_of_author = {id_of_user}" if id_of_user is not None else ''
+            if main_page:
+                transaction = """SELECT name_of_poll, description, tags, id, id_of_author FROM polls
+                LEFT JOIN private_polls ON private_polls.id_of_poll = polls.id
+                WHERE private_polls.id_of_poll IS NULL"""
+            else:
+                transaction = """SELECT name_of_poll, description, tags, id, id_of_author FROM polls"""
+                if id_of_user is not None:
+                    transaction += f" WHERE id_of_author = {id_of_user}" if id_of_user is not None else ''
         else:
             transaction = f"""SELECT name_of_poll, description, tags, id, id_of_author FROM polls
             LEFT JOIN table_of_users_who_pass_the_poll ON table_of_users_who_pass_the_poll.id_of_poll = polls.id AND
             table_of_users_who_pass_the_poll.id_of_user = {id_of_user}
-            WHERE table_of_users_who_pass_the_poll.id_of_poll IS NULL"""
+            LEFT JOIN private_polls ON polls.id = private_polls.id_of_poll
+            WHERE table_of_users_who_pass_the_poll.id_of_poll IS NULL
+            AND private_polls.id_of_poll IS NULL"""
         connection_object.cursor.execute(transaction)
         result = connection_object.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
@@ -276,6 +289,7 @@ class MysqlDB:
         """
         Функция возвращает вопросы связанные с конкретным опросом по его id
 
+        :param connection_object:
         :param id_of_poll: идентификатор опроса
 
         :return: список вопросов
@@ -295,6 +309,7 @@ class MysqlDB:
     def get_options(self, id_of_question: int, connection_object: ConnectionAndCursor = None) -> list[str]:
         """
         Функция выполняет выборку записей из таблицы options по ключевому ключу id_of_question
+        :param connection_object:
         :param id_of_question: идентификатор вопроса
         :return: возвращает список объекта Option
         """
@@ -307,6 +322,7 @@ class MysqlDB:
     def get_text_right_answers(self, id_of_question: int, connection_object: ConnectionAndCursor = None) -> str:
         """
         Функция выполняет выборку записей из таблицы text_rights_answers по ключевому ключу id_of_question
+        :param connection_object:
         :param id_of_question: идентификатор вопроса
         :return: возвращает список объекта RightTextAnswer
         """
@@ -342,6 +358,7 @@ class MysqlDB:
     ) -> bool:
         """
         Функция создает опрос в базе данных
+        :param connection_object:
         :param poll: объект класса Poll
         :param list_of_questions: объект класса list[Question]
         :param list_of_options: объект класса list[Option]
@@ -371,6 +388,7 @@ class MysqlDB:
     def add_new_entry_into_polls_table(self, poll: Poll, connection_object: ConnectionAndCursor = None) -> None:
         """
         Добавляет запись в таблицу polls
+        :param connection_object:
         :param poll: объект класса Poll
         :return:
         """
@@ -385,6 +403,7 @@ class MysqlDB:
     def add_new_entry_into_questions_table(self, question: Question, connection_object: ConnectionAndCursor = None) -> None:
         """
         Добавляет запись в таблицу questions
+        :param connection_object:
         :param question: объект класса Question
         :return:
         """
@@ -399,6 +418,7 @@ class MysqlDB:
     def add_new_entry_into_options_table(self, option: Option, connection_object: ConnectionAndCursor = None) -> None:
         """
         Добавляет запись в таблицу options
+        :param connection_object:
         :param option: объект класса Option
         :return:
         """
@@ -413,6 +433,7 @@ class MysqlDB:
     def add_new_entry_into_right_answers_table(self, right_answer: RightAnswer, connection_object: ConnectionAndCursor = None) -> None:
         """
         Добавляет запись в таблицу rightAnswers
+        :param connection_object:
         :param right_answer: объект класса RightAnswer
         :return:
         """
@@ -423,6 +444,7 @@ class MysqlDB:
     def add_new_entry_into_text_rights_answers_table(self, right_text_answer: RightTextAnswer, connection_object: ConnectionAndCursor = None) -> None:
         """
         Добавляет запись в таблицу text_rights_answers
+        :param connection_object:
         :param right_text_answer: объект класса RightTextAnswer
         :return:
         """
@@ -461,6 +483,7 @@ class MysqlDB:
         """
         Функция возвращает идентификатор автора опроса по конкретному идентификатору опроса
 
+        :param connection_object:
         :param id_of_poll: идентификатор опроса
         :return: идентификатор автора
         """
@@ -475,6 +498,7 @@ class MysqlDB:
     def delete_poll(self, id_of_poll: int, connection_object: ConnectionAndCursor = None):
         """
         Функция удаляет опрос из БД
+        :param connection_object:
         :param id_of_poll: идентификатор опроса
         :return:
         """
@@ -487,6 +511,7 @@ class MysqlDB:
         Функция создает запись в ranking_table. Запись представляет собой идентификатор опроса и вектор тегов,
         представленный в виде байтов
 
+        :param connection_object:
         :param id_of_poll: идентификатор опроса
         :param vector_of_poll: поток байтов вектора тегов опроса
         :return: None
@@ -499,6 +524,7 @@ class MysqlDB:
         """
         Функция возвращает идентификаторы опросов и векторизованные теги опросов, которые не были пройдены пользователем
 
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
 
         :return: идентификатор опроса и вектор тегов в байтовом представлении
@@ -507,7 +533,9 @@ class MysqlDB:
         FROM ranking_table LEFT JOIN table_of_users_who_pass_the_poll 
         ON ranking_table.id_of_poll = table_of_users_who_pass_the_poll.id_of_poll AND
         table_of_users_who_pass_the_poll.id_of_user = {id_of_user}
-        WHERE table_of_users_who_pass_the_poll.id_of_poll IS NULL""")
+        LEFT JOIN private_polls ON private_polls.id_of_poll = ranking_table.id_of_poll
+        WHERE table_of_users_who_pass_the_poll.id_of_poll IS NULL
+        AND private_polls.id_of_poll is NULL""")
 
         response_of_query = connection_object.cursor.fetchall()
 
@@ -539,21 +567,49 @@ class MysqlDB:
         WHERE data_of_passing_poll_from_user.id_of_poll = {id_of_poll} 
         AND data_of_passing_poll_from_user.type_of_question = "short text"
         AND data_of_passing_poll_from_user.serial_number_of_question = {serial_number}
-        AND data_of_passing_poll_from_user.value IS NULL""")
+        AND text_rights_answers.id_of_question IS NULL""")
 
         return connection_object.cursor.fetchone()[0]
 
+    @get_connection_and_cursor
+    def add_entry_into_private_polls(self, id_of_poll: int, connection_object: ConnectionAndCursor = None) -> str:
+        try:
+            code = generate_random_string(15)
+            connection_object.cursor.execute("""INSERT INTO private_polls(id_of_poll, code) VALUES (%s, %s)""", (id_of_poll, code))
+            connection_object.connection.commit()
+            return code
+        except mysql.connector.IntegrityError:
+            self.add_entry_into_private_polls(id_of_poll, connection_object=connection_object)
+
+    @get_connection_and_cursor
+    def get_id_of_private_poll(self, code: str, connection_object: ConnectionAndCursor = None):
+        connection_object.cursor.execute(f"""SELECT id_of_poll FROM private_polls WHERE code = "{code}" """)
+        response = connection_object.cursor.fetchone()[0]
+
+        return response
+
+    @get_connection_and_cursor
+    def get_id_of_private_polls(self, connection_object: ConnectionAndCursor = None):
+        connection_object.cursor.execute(f"""SELECT id_of_poll FROM private_polls""")
+        response = [private_poll[0] for private_poll in connection_object.cursor.fetchall()]
+
+        return response
+
+    @get_connection_and_cursor
+    def check_poll_on_private(self, id_of_poll: int, connection_object: ConnectionAndCursor = None):
+        connection_object.cursor.execute(f"SELECT COUNT(*) FROM private_polls WHERE id_of_poll = {id_of_poll}")
+        response = connection_object.cursor.fetchone()
+        return True if response[0] == 1 else False
+
+    @get_connection_and_cursor
+    def get_code_from_private_polls(self, id_of_poll: int, connection_object: ConnectionAndCursor = None):
+        connection_object.cursor.execute(f"""SELECT code FROM private_polls WHERE id_of_poll = {id_of_poll}""")
+        return connection_object.cursor.fetchone()[0]
+
+
+
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
-
-    def reconnect(self):
-        """
-        Функция нужна для переподключения к БД
-
-        :return: None
-        """
-        self.connection, self.cursor = self.connect_to_db()
-
     @get_connection_and_cursor
     def delete_tables(self, connection_object: ConnectionAndCursor = None):
         """
@@ -599,6 +655,7 @@ class MysqlDB:
     def create_user(self, login: str, password: str, type_of_user: int, nickname: str, connection_object: ConnectionAndCursor = None):
         """
         Функция создает пользователя в БД. Также есть проверка на то, что пользователь уже существует в БД с таким логином
+        :param connection_object:
         :param login: логин
         :param password: пароль
         :param type_of_user: тип пользователя (user, staff)
@@ -621,6 +678,7 @@ class MysqlDB:
         """
         Функция возвращает пароль и идентификатор пользователя по логину
 
+        :param connection_object:
         :param login: логин
 
         :return: пароль и идентификатор пользователя
@@ -637,6 +695,7 @@ class MysqlDB:
         """
         Функция возвращает никнейм пользователя по куки. Также в функции присутствует механизм проверки смерти куки.
 
+        :param connection_object:
         :param cookie: куки значение
 
         :param name_of_cookie: куки название
@@ -664,6 +723,7 @@ class MysqlDB:
     def get_id_of_user_from_table_with_cookies(self, cookie: str, name_of_cookie: str, connection_object: ConnectionAndCursor = None) -> str:
         """
         Функция возвращает идентификатор пользователя по куки из таблицы sessions
+        :param connection_object:
         :param cookie: куки значение
         :param name_of_cookie: имя куки
         :return: идентификатор пользователя
@@ -678,6 +738,7 @@ class MysqlDB:
         """
         Функция нужна для выборки данных пользователя из таблицы
 
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
 
         :return: tuple состоящий из никнейма, номера телефона, даты рождения и тегов
@@ -689,6 +750,7 @@ class MysqlDB:
     def create_cookie_into_pow_table(self, cookie: str, connection_object: ConnectionAndCursor = None):
         """
         Функция создает запись в таблице pow_table
+        :param connection_object:
         :param cookie:
         :return: None
         """
@@ -702,6 +764,7 @@ class MysqlDB:
     def update_pow_in_pow_table(self, cookie: str, pow: int, connection_object: ConnectionAndCursor = None):
         """
         Функция обновляет запись в таблице pow_table
+        :param connection_object:
         :param cookie:
         :param pow:
         :return: None
@@ -713,6 +776,7 @@ class MysqlDB:
     def get_pow(self, cookie: str, connection_object: ConnectionAndCursor = None):
         """
         Функция нудна для получения pow значения из таблицы pow_table по куки
+        :param connection_object:
         :param cookie: куки
         :return: None
         """
@@ -727,6 +791,7 @@ class MysqlDB:
     def create_cookie_into_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, expired: datetime.datetime, connection_object: ConnectionAndCursor = None):
         """
         Функция нужна для создания сессии клиента в системе
+        :param connection_object:
         :param cookie: куки
         :param name_of_cookie: название куки
         :param id_of_user: идентификатор пользователя
@@ -751,6 +816,7 @@ class MysqlDB:
     def delete_cookie_from_session_table(self, cookie: str, name_of_cookie: str, id_of_user: int, connection_object: ConnectionAndCursor = None):
         """
         Удаление записи в sessions
+        :param connection_object:
         :param cookie: значение куки
         :param name_of_cookie: название куки
         :param id_of_user: идентификатор пользователя
@@ -763,6 +829,7 @@ class MysqlDB:
     def update_cookie_in_session_table(self, cookie: str, id_of_user: int, name_of_cookie: str, expired: int, connection_object: ConnectionAndCursor = None):
         """
         Функция обновляет значение куки и время жизни в таблице sessions.
+        :param connection_object:
         :param cookie: значение куки
         :param id_of_user: идентификатор пользователя
         :param name_of_cookie: название куки
@@ -776,6 +843,7 @@ class MysqlDB:
     def delete_pow_entry_from_pow_table(self, cookie, connection_object: ConnectionAndCursor = None):
         """
         Функция удаляет запись в таблице pow_table
+        :param connection_object:
         :param cookie: значение куки
         :return:
         """
@@ -787,6 +855,7 @@ class MysqlDB:
         """
         Функция возвращает список опросов, которые пользователь прошел успешно
 
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
 
         :param num_of_polls: количество опросов
@@ -812,6 +881,7 @@ class MysqlDB:
     def check_user_on_pass_the_poll(self, id_of_user: int, id_of_poll: int, connection_object: ConnectionAndCursor = None):
         """
         Проверка на то, что пользователь прошел опрос
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :param id_of_poll: идентификатор опроса
         :return: True или False
@@ -824,6 +894,7 @@ class MysqlDB:
     def delete_entry_from_users(self, id_of_user: int, connection_object: ConnectionAndCursor = None):
         """
         Функция удаляет пользователя из БД
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :return: None
         """
@@ -834,6 +905,7 @@ class MysqlDB:
     def check_availability_entry_in_sessions(self, id_of_user, connection_object: ConnectionAndCursor = None) -> bool:
         """
         Функция проверяет существование записи в таблице session со значением id_of_user
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :return: True или False
         """
@@ -883,6 +955,7 @@ class MysqlDB:
     def add_entry_in_ranking_table_of_users(self, id_of_user: int, vector_of_user: bytes, connection_object: ConnectionAndCursor = None):
         """
         Функция создает запись в таблице ranking_table_of_users.
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :param vector_of_user: поток байт вектора тегов пользователя
         :return: None
@@ -898,6 +971,7 @@ class MysqlDB:
     def get_vector_of_user(self, id_of_user: int, connection_object: ConnectionAndCursor = None):
         """
         Функция возвращает вектор тегов пользователя из таблицы vector_of_user
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :return: Вектор тегов пользователя
         """
@@ -913,6 +987,7 @@ class MysqlDB:
         """
         Функция возвращает список тегов пользователя
 
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
 
         :return: список тегов
@@ -928,6 +1003,7 @@ class MysqlDB:
     def update_the_filed_into_user(self, id_of_user: int, field: str, value: typing.Union[str, int, datetime.date], connection_object: ConnectionAndCursor = None):
         """
         Функция является конструктором для изменения значений в таблице users
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :param field: поле для изменения
         :param value: значение на которое изменяется поле
@@ -943,6 +1019,7 @@ class MysqlDB:
     def check_existence_vector_of_user_from_ranking_table(self, id_of_user: int, connection_object: ConnectionAndCursor = None) -> bool:
         """
         Функция проверяет, если ли запись в таблице ranking_table_of_users с заданным id_of_user
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :return: True или False
         """
@@ -959,6 +1036,7 @@ class MysqlDB:
         """
         Функция возвращает количество пользователей, которые прошли конкретный опрос
 
+        :param connection_object:
         :param id_of_poll: идентификатор опроса
         :return: int
         """
@@ -969,6 +1047,7 @@ class MysqlDB:
     def get_count_of_users_who_selected_of_specific_option(self, option: str, serial_number_of_question: int, id_of_poll: int, connection_object: ConnectionAndCursor = None):
         """
         Функция возвращает количество пользователей, которые выбрали конкретную опцию в вопросе
+        :param connection_object:
         :param option: значение опции
         :param serial_number_of_question: порядковый номер вопроса в опросе
         :param id_of_poll: идентификатор опроса
@@ -982,6 +1061,7 @@ class MysqlDB:
     def get_text_answers_of_users(self, id_of_poll: int, serial_number_of_questions: int, connection_object: ConnectionAndCursor = None):
         """
         Функция возвращает список текстовых ответов пользователей на вопрос
+        :param connection_object:
         :param id_of_poll: идентификатор опроса
         :param serial_number_of_questions: порядковый номер вопроса в опросе
         :return: list[str]
@@ -996,6 +1076,7 @@ class MysqlDB:
     def add_users_into_table_for_users_who_pass_the_poll(self, id_of_user, id_of_poll, connection_object: ConnectionAndCursor = None):
         """
         Функция нужна для создания записи в таблице table_of_users_who_pass_the_poll.
+        :param connection_object:
         :param id_of_user: идентификатор пользователя
         :param id_of_poll: идентификатор опроса
         :return: None
@@ -1010,6 +1091,7 @@ class MysqlDB:
     def add_answer_into_table_data_of_passing_poll_from_user(self, serial_number: int, type_of_question: str, value: str, id_of_user: int, id_of_poll: int, connection_object: ConnectionAndCursor = None):
         """
         Функция создает запись в БД с ответом пользователя на вопрос в опросе
+        :param connection_object:
         :param serial_number: порядковый номер вопроса в опросе
         :param type_of_question: тип вопроса
         :param value: значение, которое выбрал или ввел пользователь

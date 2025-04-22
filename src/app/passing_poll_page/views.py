@@ -4,19 +4,18 @@ from django.shortcuts import render
 
 from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import NotFoundPoll, RepeatPollError, TryToXSS
-from authentication.check_user_on_auth import authentication
+from authentication.check_user_on_auth import authentication_for_passing_poll_page
 
 import json
 
 from django.http import JsonResponse, HttpResponseForbidden
 
 from Tools_for_rabbitmq.producer import producer
-from Configs.Commands_For_RMQ import Commands
 from log_system.Levels import Levels
 
 
-@authentication()
-def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None):
+@authentication_for_passing_poll_page
+def request_on_passing_poll_page(requests, poll_id: typing.Union[int, str], id_of_user: int = None):
     """
     Функция нужна для возврата страницы с прохождением конкретного опроса.
     Страница включает в себя все вопросы опроса, а также опции к этим опросам.
@@ -41,7 +40,7 @@ def request_on_passing_poll_page(requests, poll_id: int, id_of_user: int = None)
         return render(requests, 'NotFound.html')
 
 
-@authentication()
+@authentication_for_passing_poll_page
 def request_on_passing_poll(request, id_of_user: int = None):
     """
     Функция нужна для того, чтобы сохранить данные, которые пользователь ввел в ответах на вопросы в опросе.
