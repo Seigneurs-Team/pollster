@@ -133,9 +133,13 @@ def authentication_for_passing_poll_page(func):
         try:
             id_of_user = check_user(request, get_id_of_user=True)
             kwargs['id_of_user'] = id_of_user
-            if type(kwargs['poll_id']) is int:
+            if 'poll_id' in kwargs:
                 if client_mysqldb.check_poll_on_private(kwargs["poll_id"]):
                     return HttpResponseForbidden()
+            else:
+                id_of_poll = client_mysqldb.get_id_of_private_poll(kwargs['code_of_poll'])
+                kwargs['poll_id'] = id_of_poll
+                del kwargs['code_of_poll']
             return func(request, *args, **kwargs)
         except (AssertionError, CookieWasExpired) as _ex:
             return HttpResponseRedirect('/sign_in')
