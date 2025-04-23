@@ -8,6 +8,8 @@ from django.shortcuts import render
 from databases.mysql_db import client_mysqldb
 from authentication.check_user_on_auth import authentication_for_statistics
 
+from Configs.Hosts import Hosts
+
 
 @authentication_for_statistics()
 def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_user: int = None):
@@ -27,8 +29,8 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
 
     if client_mysqldb.check_poll_on_private(id_of_poll):
         code = client_mysqldb.get_code_from_private_polls(id_of_poll)
-        context['qr_code'] = generate_qr_code_of_link("http://%s/%s" % ("127.0.0.1", code))
-        context['url_on_poll'] = "http://%s/%s" % ("127.0.0.1", code)
+        context['qr_code'] = generate_qr_code_of_link("http://%s/%s" % (Hosts.domain, code))
+        context['url_on_poll'] = "http://%s/%s" % (Hosts.domain, code)
 
     return render(requests, 'statistics_page.html', context=context)
 

@@ -1,3 +1,4 @@
+import base64
 import dataclasses
 import datetime
 import json
@@ -129,6 +130,9 @@ class MysqlDB:
         PRIMARY KEY (id_of_poll), 
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS cover_of_polls(cover BLOB, id_of_poll INT UNSIGNED PRIMARY KEY,
+        FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
+
         #users
         #id_of_user состоит из последовательности длинной 6 цифр со знаком минус
         connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type VARCHAR(100), PRIMARY KEY (id_of_type))""")
@@ -217,7 +221,8 @@ class MysqlDB:
         result = connection_object.cursor.fetchmany(num_of_polls)
         polls_list: list[Poll] = []
         for poll in result:
-            polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user, client_mysqldb.get_user_data_from_table(poll[4])[0]))
+            cover = self.get_cover_of_poll_in_base64_format(poll[3], connection_object=connection_object)
+            polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user, client_mysqldb.get_user_data_from_table(poll[4])[0], cover))
         return polls_list
 
     @get_connection_and_cursor
@@ -231,7 +236,7 @@ class MysqlDB:
             if result is None:
                 continue
 
-            polls_list.append(Poll(result[0], result[1], json.loads(result[2]), idx, result[3], client_mysqldb.get_user_data_from_table(result[3])[0]))
+            polls_list.append(Poll(result[0], result[1], json.loads(result[2]), idx, result[3], client_mysqldb.get_user_data_from_table(result[3])[0], self.get_cover_of_poll_in_base64_format(idx, connection_object=connection_object)))
 
         return polls_list
 
@@ -256,11 +261,13 @@ class MysqlDB:
 
         :return: словарь состоящий из списков вопросов, описания опроса, названия опроса и тегов
         """
+        cover = self.get_cover_of_poll_in_base64_format(id_of_poll)
         dict_of_poll: dict = {
             'id_of_poll': id_of_poll,
             'name_of_poll': questions_entries[0][1],
             'description': questions_entries[0][3],
             'tags': json.loads(questions_entries[0][2]),
+            'cover': cover,
             'questions': []
         }
 
@@ -606,7 +613,20 @@ class MysqlDB:
         connection_object.cursor.execute(f"""SELECT code FROM private_polls WHERE id_of_poll = {id_of_poll}""")
         return connection_object.cursor.fetchone()[0]
 
+    @get_connection_and_cursor
+    def add_cover_into_cover_of_polls(self, id_of_poll: int, cover: bytes, connection_object: ConnectionAndCursor = None):
+        connection_object.cursor.execute("""INSERT INTO cover_of_polls(cover, id_of_poll) VALUES (%s, %s)""", (cover, id_of_poll))
+        connection_object.connection.commit()
 
+    @get_connection_and_cursor
+    def get_cover_of_poll_in_base64_format(self, id_of_poll: int, connection_object: ConnectionAndCursor = None):
+        connection_object.cursor.execute(f"""SELECT cover FROM cover_of_polls WHERE id_of_poll = {id_of_poll}""")
+        response_of_query = connection_object.cursor.fetchone()
+        if response_of_query is not None:
+            cover = base64.b64encode(response_of_query[0]).decode()
+            return cover
+        else:
+            return None
 
 #-----------------------------------------------------------------------------------------------------------------------
 # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц

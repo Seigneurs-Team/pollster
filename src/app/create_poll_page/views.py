@@ -1,3 +1,4 @@
+import base64
 import json
 from generate_qr_code import generate_qr_code_of_link
 
@@ -12,6 +13,10 @@ from authentication.check_user_on_auth import authentication
 
 from Tools_for_rabbitmq.producer import producer
 from Configs.Commands_For_RMQ import Commands
+
+from Configs.Hosts import Hosts
+
+from Configs.Poll import SizeOfImage
 
 
 @authentication()
@@ -41,6 +46,11 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     json_data = json.loads(request.body)
     try:
         poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer = set_poll(json_data, id_of_user)
+        if 'cover' in json_data:
+            if (len(json_data['cover']) * 3) // 4 > SizeOfImage.size_of_cover:
+                return HttpResponseForbidden("слишком большой размер изображения")
+            cover = base64.b64decode(json_data['cover'])
+            client_mysqldb.add_cover_into_cover_of_polls(cover, poll.id_of_poll)
         result = client_mysqldb.create_pool(
             poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer
         )
@@ -48,9 +58,8 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
             producer.publish(Commands.get_vector_poll % poll.id_of_poll)
         if json_data['private']:
             code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
-            print(code)
-            base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % ('127.0.0.1:8000', code))
-            return JsonResponse({"result": result, "qr_code": base_64_qr_code, "url": "http://%s/%s" % ('127.0.0.1:8000', code)})
+            base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % (Hosts.domain, code))
+            return JsonResponse({"result": result, "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
         return JsonResponse({"result": result})
     except TryToXSS:
         return HttpResponseForbidden("Попытка XSS атаки")
