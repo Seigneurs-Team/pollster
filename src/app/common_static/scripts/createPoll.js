@@ -6,13 +6,47 @@ import { sendRequest } from './api.js';
 async function sendCreatePollRequest(data) {
     const response = await sendRequest('/create_poll', 'POST', data);
     console.log('response:', response)
-    console.log('response.status === 200', response.status === 200)
+
+    const responseJson = await response.json()
+    console.log('responseJson:', responseJson)
+    console.log('responseJson.response:', responseJson.response)
+    console.log('responseJson.url:', responseJson.url)
+    console.log('responseJson.qr_code:', responseJson.qr_code)
+
+    
     // Обработка ответа от сервера
     if (response.status === 200) {
         // Успешное создание опроса
+        showQR( responseJson.url, responseJson.qr_code)
         alert('Опрос успешно создан')
-        window.location.href = '/'; // Перенаправление на домашнюю страницу
+        // window.location.href = '/'; // Перенаправление на домашнюю страницу
     }
+}
+
+function showQR( url, qr_code) {
+
+    // Создаем элемент <img> с jQuery и устанавливаем src
+    const $qrCodeImage = $('<img>', {
+        src: `data:image/png;base64,${qr_code}`,
+        alt: 'QR-код опроса',
+        css: {
+            maxWidth: '100%',
+            height: 'auto'
+        }
+    });
+
+    // Вставляем изображение в контейнер
+    $('#qr-code-container').append($qrCodeImage);
+
+    const $link = $('<a>', {
+        href: `${url}`,
+        text: url
+    });
+    $('#poll-link').append($link);
+    
+    $('#overlay').show();
+
+
 }
 
 
