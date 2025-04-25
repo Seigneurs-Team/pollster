@@ -8,9 +8,10 @@ async function sendRegistrationRequest(data) {
 
 
 $('#loginForm').on('submit', async function (event) {
+    console.log('clicked')
     event.preventDefault(); // предотвращает стандартное поведение формы
 
-    [login, password, passwordRepeat, nickname] = getFormData()
+    let [login, password, passwordRepeat, nickname] = getFormData()
 
     // Если пароли совпадают, очищаем сообщение об ошибке
     errorMessage.text('');
@@ -43,7 +44,7 @@ $('#loginForm').on('submit', async function (event) {
         const response = await sendRegistrationRequest(data);
 
         // Обработка ответа от сервера
-        responseProcessing(await response.json())
+        responseProcessing(response)
 
     } catch (error) {
         console.error('Ошибка:', error);
@@ -65,8 +66,6 @@ function checkPasswords() {
         errorMessage.text('');
     } else {
         errorMessage.text('Пароли не совпадают!');
-        // блокируем кнопку отправки формы
-        $('.submit').prop('disabled', true);
     }
 }
 
@@ -80,6 +79,7 @@ function getFormData() {
 }
 
 function responseProcessing(response) {
+    console.log(response.status)
     if (response.status === 200) {
         $('#overlay-message').text(`Добро пожаловать!`);
         $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();

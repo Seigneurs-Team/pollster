@@ -15,7 +15,7 @@ ul.polls {
 }
 
 .poll-item {
-    width: 340px;
+    width: 339px;
 
     padding: var(--border-radius);
     border-radius: var(--border-radius);

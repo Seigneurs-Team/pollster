@@ -1,110 +1,108 @@
 // отправка опроса на сервер
 const host = 'http://127.0.0.1:8000';
-import {hasHTMLTags} from './create_poll_page.js';
+import { hasHTMLTags } from './create_poll_page.js';
 import { sendRequest } from './api.js';
-
-async function sendCreatePollRequest(data) {
-    const response = await sendRequest('/create_poll', 'POST', data);
-    console.log('response:', response)
-
-    const responseJson = await response.json()
-    console.log('responseJson:', responseJson)
-    console.log('responseJson.response:', responseJson.response)
-    console.log('responseJson.url:', responseJson.url)
-    console.log('responseJson.qr_code:', responseJson.qr_code)
-
-    
-    // Обработка ответа от сервера
-    if (response.status === 200) {
-        // Успешное создание опроса
-        showQR( responseJson.url, responseJson.qr_code)
-        alert('Опрос успешно создан')
-        // window.location.href = '/'; // Перенаправление на домашнюю страницу
-    }
-}
-
-function showQR( url, qr_code) {
-
-    // Создаем элемент <img> с jQuery и устанавливаем src
-    const $qrCodeImage = $('<img>', {
-        src: `data:image/png;base64,${qr_code}`,
-        alt: 'QR-код опроса',
-        css: {
-            maxWidth: '100%',
-            height: 'auto'
-        }
-    });
-
-    // Вставляем изображение в контейнер
-    $('#qr-code-container').append($qrCodeImage);
-
-    const $link = $('<a>', {
-        href: `${url}`,
-        text: url
-    });
-    $('#poll-link').append($link);
-    
-    $('#overlay').show();
-
-
-}
 
 
 export function createPoll() {
+    let questions = getQuestions()
+
+    let tags = getTags()
+
+    let pollData = {
+        name_of_poll: $('#pollTitle').val(),
+        description: $('#pollDescription').val(),
+        tags: tags,
+        private: $('#private').is(':checked'),
+        questions: questions,
+    };
+
+    const coverImage = $('.addPollImage').data('base64') || null;
+    if (coverImage) {
+        pollData.cover = coverImage.split(',')[1] // отделяем metadata
+    }
+
+    console.log("pollData:", pollData)
+
+    // если введенные данные корректны, отправляем опрос на сервер
+    if (checkCorrectData(pollData)) {
+        sendCreatePollRequest(pollData);
+    }
+}
+
+function getQuestions() {
 
     // Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
     let questions = $('.question').map(function () {
         let type = $(this).attr('data-type')
-        let options = []
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
         if (type === 'radio' || type === 'checkbox') {
-            let rightAnswersId = []
+            return makeQuestionWithOptions(type)
 
-            // id ответов начинаются с 0
-            let counter = -1
-            $(this).find('.option').each(function () {
-                // Извлекаем значение из input.value, убираем пробелы в начале и в конце
-                let value = $(this).find('.value').val().trim();
-                // Если значение не пустое, добавляем его в массив options
-                if (value) {
-                    options.push(value);
-                    counter++
-                }
-                if ($(this).find('.check').is(':checked')) {
-                    rightAnswersId.push(counter);
-                    // записывать буду порядковый номер правильных ответов, который возьму в качестве id. лучше использовать id, чем сравнение строк
-                }
-            });
-
-            return {
-                id: $(this).attr('id'),
-                type: type,
-                text: $(this).find('.questionText').val(),
-                options: options,
-                rightAnswersId: rightAnswersId,
-            }
         } else if (type === 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
-            let answer = $(this).find('.right-answer').val()
-            
-            return {
-                id: $(this).attr('id'),
-                type: type,
-                text: $(this).find('.questionText').val(),
-                rightAnswer: answer,
-            }
+            return makeShortTextQuestion(type, this)
+
         } else if (type === 'long text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
-
-            return {
-                id: $(this).attr('id'),
-                type: type,
-                text: $(this).find('.questionText').val(),
-            }
+            return makeLongTextQuestion(type, this)
         }
-
 
     }).get() // Преобразуем результат в массив
 
+    return questions
+
+}
+
+function makeQuestionWithOptions(type) {
+    let options = []
+
+    let rightAnswersId = []
+
+    // id ответов начинаются с 0
+    let counter = -1
+    $(this).find('.option').each(function () {
+        // Извлекаем значение из input.value, убираем пробелы в начале и в конце
+        let value = $(this).find('.value').val().trim();
+        // Если значение не пустое, добавляем его в массив options
+        if (value) {
+            options.push(value);
+            counter++
+        }
+        if ($(this).find('.check').is(':checked')) {
+            rightAnswersId.push(counter);
+            // записывать буду порядковый номер правильных ответов, который возьму в качестве id. лучше использовать id, чем сравнение строк
+        }
+    });
+
+    return {
+        id: $(this).attr('id'),
+        type: type,
+        text: $(this).find('.questionText').val(),
+        options: options,
+        rightAnswersId: rightAnswersId,
+    }
+}
+
+function makeShortTextQuestion(type, question) {
+    let answer = $(question).find('.right-answer').val()
+
+    return {
+        id: $(question).attr('id'),
+        type: type,
+        text: $(question).find('.questionText').val(),
+        rightAnswer: answer,
+    }
+}
+
+function makeLongTextQuestion(type, question) {
+    return {
+        id: $(question).attr('id'),
+        type: type,
+        text: $(question).find('.questionText').val(),
+    }
+}
+
+function getTags() {
     let tags = [];
 
     // Перебираем все элементы, у которых id начинается с "tag-"
@@ -112,22 +110,8 @@ export function createPoll() {
         tags.push($(this).text().trim()); // получаем текст тэга
     });
 
-    // Выводим массив tags в консоль для проверки
     console.log('tags: ', tags);
-    // Собираем данные
-    let pollData = {
-        name_of_poll: $('#pollTitle').val(),
-        description: $('#pollDescription').val(),
-        tags: tags,
-        private: $('#private').is(':checked') ? true : false,
-        questions: questions,
-    };
-    console.log("pollData:", pollData)
-
-    // если введенные данные корректны, отправляем опрос на сервер
-    if (checkCorrectData(pollData)) {
-        sendCreatePollRequest(pollData);
-    }
+    return tags
 }
 
 function checkCorrectData(pollData) { // проверка на корректные данные в форме перед ее отправкой. пока что тут только проверка на пустое название. TODO сделать проверку на ненулевое количество вопросов, на ненулевое количество вариантов ответа в radio и checkbox. не непустой текст вопросов
@@ -173,4 +157,48 @@ function checkCorrectData(pollData) { // проверка на корректн�
         $('.error-message.submit').hide()
         return true
     }
+}
+
+async function sendCreatePollRequest(data) {
+    const response = await sendRequest('/create_poll', 'POST', data);
+
+    const responseJson = await response.json()
+    console.log('responseJson:', responseJson)
+
+
+    // Обработка ответа от сервера
+    if (response.status === 200) {
+        // Успешное создание опроса
+        if ($('#private').is(':checked')) {
+            showQR(responseJson.url, responseJson.qr_code)
+
+        } else {
+            alert('Опрос успешно создан')
+            window.location.href = '/'; // Перенаправление на домашнюю страницу
+        }
+    }
+}
+
+function showQR(url, qr_code) {
+
+    // Создаем элемент <img> с jQuery и устанавливаем src
+    const $qrCodeImage = $('<img>', {
+        src: `data:image/png;base64,${qr_code}`,
+        alt: 'QR-код опроса',
+        css: {
+            maxWidth: '100%',
+            height: 'auto'
+        }
+    });
+
+    // Вставляем изображение в контейнер
+    $('#qr-code-container').append($qrCodeImage);
+
+    const $link = $('<a>', {
+        href: `${url}`,
+        text: url
+    });
+    $('#poll-link').append($link);
+
+    $('#overlay-share-poll').show();
 }

@@ -152,7 +152,7 @@ function delOption(target) {
 }
 
 // Обработка выбора тегов
-$('.tag').click(function() {
+$('.tag').click(function () {
     if ($(this).parent().hasClass('not-selected-tags') && $('.selected-tags').children().length < 4) {
         $(this).appendTo('.selected-tags');
     } else if ($(this).parent().hasClass('selected-tags')) {
@@ -187,5 +187,63 @@ $(`input[type="text"], textarea`).each(function () {
 // Отправка опроса
 $("#submitPollBtn").on('click', createPoll);
 
+
+// "Вернуться на главную"
+$('.overlay').on('click', '#go-home', function () {
+    window.location.href = '/';
+});
+// Очищаем выбранные файлы при загрузке страницы
+$('input[type=file]').val(null);
+
+// Обработчик изменения файла
+$('.input-file input[type=file]').on('change', function(e) {
+    // Проверяем, что файл выбран
+    if (!this.files || !this.files[0]) return;
+    
+    // Получаем первый выбранный файл
+    const file = this.files[0];
+    const $files_list = $(this).closest('.input-file').find('.imagePreview');
+    
+    // Очищаем превью перед добавлением нового
+    $files_list.empty();
+    
+    // Создаем превью изображения
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        $('.addPollImage').data('base64', event.target.result); // для отправки на сервер
+        $files_list.append(`
+            <div class="imagePreview-item">
+                <img class="imagePreview-img" src="${e.target.result}">
+                <span class="imagePreview-name">${file.name}</span>
+                <span class="imagePreview-remove">x</span>
+            </div>
+        `);
+        
+        // Делаем инпут неактивным после загрузки
+        $(this).closest('.input-file').find('input[type=file]').prop('disabled', true);
+        $('.addPollImage').addClass('loaded');
+    };
+    reader.readAsDataURL(file);
+});
+
+// Обработчик удаления изображения
+$('.imagePreview').on('click', '.imagePreview-remove', function(e) {
+    // Блокируем все возможные всплытия
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Находим родительский контейнер
+    const $inputFile = $(this).closest('.input-file');
+    
+    // Очищаем превью
+    $inputFile.find('.imagePreview').empty();
+    
+    // Сбрасываем значение инпута и делаем его активным
+    $inputFile.find('input[type=file]').val('').prop('disabled', false);
+    $('.addPollImage').removeClass('loaded');
+
+    return false;
+});
 // Экспорт функции для проверки HTML-тегов
 export { hasHTMLTags };
