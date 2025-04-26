@@ -1,0 +1,47 @@
+
+.input-file {
+	position: relative;
+	display: inline-block;
+}
+.input-file input[type=file] {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+	display: block;
+	width: 0;
+	height: 0;
+}
+ 
+.imagePreview-item {
+	position: relative;
+    width: 100%;
+}
+.imagePreview-name {
+	text-align: center;
+	display: block;
+	font-size: 12px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.imagePreview-remove {
+	color: #fff;
+	text-decoration: none;
+	display: inline-block;
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	top: 5px;
+	right: 5px;
+	background: #ff0202;
+	width: 14px;
+    height: 14px;
+    text-align: center;
+    line-height: 12px;
+	border-radius: 50%;
+    font-size: 12px;
+    font-weight: 400;
+}
+.addPollImage img {
+    max-width: 100%;
+    max-height: 300px;
+}

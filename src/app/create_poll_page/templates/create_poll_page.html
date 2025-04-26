@@ -10,8 +10,11 @@
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/input-file.css' %}">
+
     <link rel="stylesheet" href="{% static 'css/create_poll_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
+    
 
     <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,10 +39,10 @@
 
             <div class="form">
                 <h1>Создание опроса</h1>
-
-                <label class="addPollImage">
-                    + Добавить картинку
-                    <input type="file" name="avatar" accept="image/png, image/jpeg" />
+                <label class="input-file addPollImage">
+                    <span class="load-img">Загрузить картинку</span>
+                    <input type="file" accept="image/png, image/jpeg" name="file" />
+                    <div class="imagePreview"></div>
                 </label>
 
                 <div class="input-wrapper">
@@ -94,6 +97,15 @@
                             (картинки)
                         </button>
                     </div>
+                </div>
+            </div>
+            <div class="overlay" id="overlay-share-poll">
+                <div id="overlay-share-poll_content">
+
+                    <div id="qr-code-container">
+                    </div>
+                    <div id="poll-link"></div>
+                    <button id="go-home">Вернуться на главную</button>
                 </div>
             </div>
         </main>

@@ -16,7 +16,7 @@ h1 {
 
 }
 
-.form > * {
+.form>* {
     margin: auto;
 }
 
@@ -25,9 +25,11 @@ h1 {
 }
 
 .addPollImage {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: 150px;
-    line-height: 150px;
     margin: auto;
     border: var(--violet) dashed 4px;
     border-radius: var(--border-radius);
@@ -39,14 +41,17 @@ h1 {
 
 }
 
-.addPollImage:hover, .questionImage:hover {
+.addPollImage:hover,
+.questionImage:hover {
     color: #fff;
     background-color: var(--violet);
 
 }
 
-.addPollImage input[type="file"], .questionImage input[type="file"] {
-    display: none; /* Скрытие оригинального input */
+.addPollImage input[type="file"],
+.questionImage input[type="file"] {
+    display: none;
+    /* Скрытие оригинального input */
 }
 
 .form .form-label {
@@ -55,7 +60,9 @@ h1 {
     display: block;
 }
 
-.form-label, .form input:not(.value)[type="text"], .form textarea {
+.form-label,
+.form input:not(.value)[type="text"],
+.form textarea {
     width: 100%;
 }
 
@@ -94,11 +101,15 @@ h1 {
     line-height: 28px;
 }
 
-.addQuestion, .questionImage {
+.addQuestion,
+.questionImage {
     border: var(--violet) dashed 1.5px;
 }
 
-.form > .input-wrapper, .form > button, .addPollImage, .tags-wrapper {
+.form>.input-wrapper,
+.form>button,
+.addPollImage,
+.tags-wrapper {
     margin-bottom: 35px;
 
 }
@@ -115,7 +126,8 @@ h1 {
 }
 
 .form input,
-.form button, .questionImage {
+.form button,
+.questionImage {
     min-height: 30px;
 }
 
@@ -128,11 +140,11 @@ h1 {
     display: inline-block;
     background: white;
     text-align: left;
-padding: 0 10px;
+    padding: 0 10px;
 }
 
 
-.question > * {
+.question>* {
     margin-bottom: 10px;
 }
 
@@ -182,7 +194,10 @@ button.deleteQuestion:hover {
     display: none;
 }
 
-.deleteQuestion, .addQuestion, .questionImage,#submitPollBtn {
+.deleteQuestion,
+.addQuestion,
+.questionImage,
+#submitPollBtn {
     width: 100%;
 }
 
@@ -194,12 +209,15 @@ button.deleteQuestion:hover {
     border: none;
     background: transparent;
 }
+
 .delOption:hover {
     background: transparent;
-    
+
 }
 
-.tags, .selected-tags, .not-selected-tags {
+.tags,
+.selected-tags,
+.not-selected-tags {
     display: inline;
 }
 
@@ -210,19 +228,22 @@ button.deleteQuestion:hover {
     border: var(--violet) solid 1.5px;
 }
 
-.selected-tags > .tag{
+.selected-tags>.tag {
     background: var(--violet);
     color: #FFF;
 }
 
 
-.form .addOptionCheckbox, .form .addOptionRadio {
+.form .addOptionCheckbox,
+.form .addOptionRadio {
     background-image: url("../img/AddOption.svg");
     min-height: 16px;
     width: 16px;
 
 }
-.addOptionCheckbox:hover, .addOptionRadio:hover {
+
+.addOptionCheckbox:hover,
+.addOptionRadio:hover {
     background-color: unset;
 }
 
@@ -242,4 +263,56 @@ button.deleteQuestion:hover {
 input#private {
     min-height: auto;
     margin-bottom: 35px;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#overlay-share-poll_content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    color: black;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#go-home {
+    border: var(--violet) solid 1.5px;
+    border-radius: var(--border-radius);
+    padding: 3px 16px;
+}
+
+.addPollImage.loaded span.load-img {
+    display: none;
+
+}
+
+.addPollImage.loaded {
+    height: auto;
+    border: var(--violet) 4px solid;
+    min-height: auto;
+}
+.addPollImage.loaded:hover {
+    background-color: #FFF;
+    color: var(--violet);
+
+}
+
+.addPollImage.loaded img {
+    border-radius: var(--border-radius);
 }

@@ -140,7 +140,6 @@ form > * {
     align-items: center;
     z-index: 1000;
 }
-
 #overlay-content {
     background: white;
     padding: 20px;
