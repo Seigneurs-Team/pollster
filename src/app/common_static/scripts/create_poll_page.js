@@ -238,6 +238,9 @@ $('.imagePreview').on('click', '.imagePreview-remove', function(e) {
     
     // Очищаем превью
     $inputFile.find('.imagePreview').empty();
+
+    $('.addPollImage').removeData('base64'); // очищаем data атрибут, чтобы старая картинка не отправилась на сервер
+
     
     // Сбрасываем значение инпута и делаем его активным
     $inputFile.find('input[type=file]').val('').prop('disabled', false);
