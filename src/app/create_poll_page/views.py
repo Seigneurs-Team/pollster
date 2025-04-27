@@ -47,13 +47,13 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     try:
         poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer = set_poll(json_data, id_of_user)
         if 'cover' in json_data:
-            if (len(json_data['cover']) * 3) // 4 > SizeOfImage.size_of_cover:
+            if (((len(json_data['cover']) * 3) // 4) // 1048576) > SizeOfImage.size_of_cover:
                 return HttpResponseForbidden("слишком большой размер изображения")
-            cover = base64.b64decode(json_data['cover'])
-            client_mysqldb.add_cover_into_cover_of_polls(cover, poll.id_of_poll)
         result = client_mysqldb.create_pool(
             poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer
         )
+        cover = base64.b64decode(json_data['cover'])
+        client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, cover)
         if result:
             producer.publish(Commands.get_vector_poll % poll.id_of_poll)
         if json_data['private']:
