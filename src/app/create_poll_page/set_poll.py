@@ -1,3 +1,5 @@
+import typing
+
 from Configs.Poll import (Poll, Question, Option, RightAnswer, RightTextAnswer)
 from random import randint
 from databases.mysql_db import check_the_type

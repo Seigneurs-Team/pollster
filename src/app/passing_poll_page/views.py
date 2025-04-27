@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import NotFoundPoll, RepeatPollError, TryToXSS
-from authentication.check_user_on_auth import authentication_for_passing_poll_page
+from authentication.check_user_on_auth import authentication_for_passing_poll_page, authentication
 
 import json
 
@@ -40,7 +40,7 @@ def request_on_passing_poll_page(requests, poll_id: typing.Union[int, str], id_o
         return render(requests, 'NotFound.html')
 
 
-@authentication_for_passing_poll_page
+@authentication()
 def request_on_passing_poll(request, id_of_user: int = None):
     """
     Функция нужна для того, чтобы сохранить данные, которые пользователь ввел в ответах на вопросы в опросе.

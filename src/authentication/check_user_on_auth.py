@@ -1,3 +1,5 @@
+import json
+
 import mysql.connector.errors
 
 from databases.mysql_db import client_mysqldb
@@ -159,6 +161,8 @@ def authentication_for_statistics(return_id_of_user: bool = True):
                         return func(request, *args, **kwargs)
                     else:
                         return HttpResponseForbidden()
+                else:
+                    return func(request, *args, **kwargs)
             except (AssertionError, CookieWasExpired) as _ex:
                 return HttpResponseRedirect('/sign_in')
         return wrapped_func
