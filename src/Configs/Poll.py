@@ -39,4 +39,4 @@ class RightAnswer(Question):
 
 @dataclass
 class SizeOfImage:
-    size_of_cover: int = 3072
+    size_of_cover: int = 10240
