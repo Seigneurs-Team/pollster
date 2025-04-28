@@ -203,14 +203,15 @@ $('.input-file input[type=file]').on('change', function(e) {
     // Получаем первый выбранный файл
     const file = this.files[0];
     const $files_list = $(this).closest('.input-file').find('.imagePreview');
-    
+    const input = this; 
+
     // Очищаем превью перед добавлением нового
     $files_list.empty();
     
     // Создаем превью изображения
     let reader = new FileReader();
     reader.onload = function(e) {
-        $('.addPollImage').data('base64', event.target.result); // для отправки на сервер
+        $('.addPollImage').data('base64', e.target.result); // для отправки на сервер
         $files_list.append(`
             <div class="imagePreview-item">
                 <img class="imagePreview-img" src="${e.target.result}">
@@ -220,7 +221,7 @@ $('.input-file input[type=file]').on('change', function(e) {
         `);
         
         // Делаем инпут неактивным после загрузки
-        $(this).closest('.input-file').find('input[type=file]').prop('disabled', true);
+        $(input).closest('.input-file').find('input[type=file]').prop('disabled', true);
         $('.addPollImage').addClass('loaded');
     };
     reader.readAsDataURL(file);
