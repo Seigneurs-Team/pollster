@@ -1,6 +1,6 @@
 from django.http.response import JsonResponse
 from databases.mysql_db import client_mysqldb
-from src.generate_qr_code import generate_qr_code_of_link
+from generate_qr_code import generate_qr_code_of_link
 from Configs.Hosts import Hosts
 
 
