@@ -1,11 +1,11 @@
 
 
 // нажатие на кнопку filter
-$(".opn-filter").on('click', function () {
-    $(".popup").toggle();
+$(".opn-popup").on('click', function () {
+    $(".popup").toggleClass('popup__active');
 });
 $("#applyFilters").on('click', function () {
-    $(".popup").toggle();
+    $(".popup").toggleClass('popup__active');
 });
 
 // добавление тэгов
@@ -22,3 +22,20 @@ $('.tag').click(function() {
 
 $('.popup input').attr("disabled", "disabled")
 $('.popup button').attr("disabled", "disabled")
+
+
+// Закрытие при клике вне
+$(document).on('click', function(e) {
+    if (!$(e.target).closest('.popup').length && 
+        !$(e.target).hasClass('opn-popup') && 
+        $('.popup').attr('class').includes('popup__active')) {
+            console.log(!$(e.target).closest('.popup').length)
+            console.log(!$(e.target).hasClass('opn-popup'))
+        $(".popup").toggleClass('popup__active');
+    }
+});
+
+// Запрещаем закрытие при клике внутри попапа
+$(".popup").click(function(e) {
+    e.stopPropagation();
+});
