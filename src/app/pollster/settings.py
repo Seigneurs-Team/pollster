@@ -129,7 +129,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'common_static'), # все статические файлы общие
+    os.path.join(BASE_DIR, 'static'), # статические файлы 
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
