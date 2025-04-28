@@ -114,7 +114,7 @@ h1 {
 
 }
 
-.options .input-wrapper {
+.options .input-wrapper, .add-tag-wrapper  {
     width: calc(100% - 40px);
     display: flex;
     justify-content: space-between;

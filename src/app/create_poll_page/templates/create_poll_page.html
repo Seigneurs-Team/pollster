@@ -70,6 +70,14 @@
                         </div>
                     </div>
                 </div>
+                <label class="form-label" for="newTagInput">Создайте свой тэг</label>
+                <div class="input-wrapper add-tag-wrapper">
+                    <input type="text" id="newTagInput" maxlength="20">
+                    <button class="addTag">
+                        <img src="${% static 'img\plus.svg' %}" alt="добавить тэг">
+                    </button>
+                </div>
+                <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
 
                 <input type="checkbox" name="private" id="private">
                 <label for="private">Сделать опрос приватным</label>
