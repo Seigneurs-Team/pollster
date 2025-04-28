@@ -17,6 +17,7 @@ from Configs.Poll import (
     RightTextAnswer
 )
 from app.create_poll_page.random_id import get_random_id
+from app.create_poll_page.change_id import set_new_real_id
 from typing import List
 
 from Configs.Exceptions import NotFoundPoll, ErrorSameLogins, NotFoundCookieIntoPowTable, CookieWasExpired, RepeatPollError, TryToXSS
@@ -103,34 +104,34 @@ class MysqlDB:
     @get_connection_and_cursor
     def create_table(self, connection_object: ConnectionAndCursor = None):
         #polls
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT UNSIGNED, tags VARCHAR(100), name_of_poll VARCHAR(100), description TEXT, id_of_author INT, PRIMARY KEY (id))""")
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS polls(id INT AUTO_INCREMENT, tags VARCHAR(100), name_of_poll VARCHAR(100), description TEXT, id_of_author INT, PRIMARY KEY (id))""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT UNSIGNED, 
-        id_of_poll INT UNSIGNED, text_of_question VARCHAR(100), type_of_question VARCHAR(50), serial_number INT,
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS questions(id_of_question INT AUTO_INCREMENT, 
+        id_of_poll INT, text_of_question VARCHAR(100), type_of_question VARCHAR(50), serial_number INT,
         PRIMARY KEY (id_of_question),
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT UNSIGNED PRIMARY KEY, id_of_question INT UNSIGNED, 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS options(id_of_option INT AUTO_INCREMENT PRIMARY KEY, id_of_question INT, 
         option_name VARCHAR(100),
         FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT UNSIGNED, rightAnswerId INT UNSIGNED, 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS rightAnswers(id_of_question INT, rightAnswerId INT, 
         PRIMARY KEY (id_of_question, rightAnswerId), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT UNSIGNED, text_of_right_answer TEXT, 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS text_rights_answers(id_of_question INT, text_of_right_answer TEXT, 
         PRIMARY KEY (id_of_question), FOREIGN KEY (id_of_question) REFERENCES questions (id_of_question) ON DELETE CASCADE)""")
 
         connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS types_of_question(id INT, type VARCHAR(50), PRIMARY KEY (id))""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table(id_of_poll INT UNSIGNED, vector_of_poll BLOB, 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table(id_of_poll INT, vector_of_poll BLOB, 
         PRIMARY KEY (id_of_poll), 
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS private_polls(id_of_poll INT UNSIGNED, code VARCHAR(15) UNIQUE,
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS private_polls(id_of_poll INT, code VARCHAR(15) UNIQUE,
         PRIMARY KEY (id_of_poll), 
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS cover_of_polls(cover BLOB, id_of_poll INT UNSIGNED PRIMARY KEY,
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS cover_of_polls(cover BLOB, id_of_poll INT PRIMARY KEY,
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
         #users
@@ -157,11 +158,11 @@ class MysqlDB:
         PRIMARY KEY (id_of_superuser), 
         FOREIGN KEY (id_of_superuser) REFERENCES users (id_of_user) ON DELETE CASCADE)""")
         #данные, которые пользователь ввел в ответах на опрос
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_users_who_pass_the_poll(id_of_user INT, id_of_poll INT UNSIGNED, 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS table_of_users_who_pass_the_poll(id_of_user INT, id_of_poll INT, 
         PRIMARY KEY (id_of_user, id_of_poll), 
         FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE, 
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT AUTO_INCREMENT, id_of_poll INT UNSIGNED, id_of_user INT, serial_number_of_question INT, type_of_question VARCHAR(50), value TEXT, PRIMARY KEY (id))""")
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS data_of_passing_poll_from_user(id INT AUTO_INCREMENT, id_of_poll INT, id_of_user INT, serial_number_of_question INT, type_of_question VARCHAR(50), value TEXT, PRIMARY KEY (id))""")
         connection_object.connection.commit()
 
         self.set_types_of_questions()
@@ -362,7 +363,7 @@ class MysqlDB:
             list_of_right_answers: list[RightAnswer],
             list_of_text_right_answers: list[RightTextAnswer],
             connection_object: ConnectionAndCursor = None
-    ) -> bool:
+    ) -> (bool, Poll) or (bool, None):
         """
         Функция создает опрос в базе данных
         :param connection_object:
@@ -374,22 +375,28 @@ class MysqlDB:
         :return: возвращает 1 или 0; 1 означает success create poll, 0 означает, что транзакция не была совершена
         """
         try:
-            self.add_new_entry_into_polls_table(poll, connection_object=connection_object)
-            for question in list_of_questions:
-                self.add_new_entry_into_questions_table(question, connection_object=connection_object)
+            id_of_poll = self.add_new_entry_into_polls_table(poll, connection_object=connection_object)
+            poll.id_of_poll = id_of_poll
+            for index, question in enumerate(list_of_questions):
+                id_of_question = self.add_new_entry_into_questions_table(question, id_of_poll, connection_object=connection_object)
+                list_of_questions[index].id_of_question = id_of_question
 
-            for option in list_of_options:
+            list_of_options, list_of_right_answers, list_of_text_right_answers = set_new_real_id(
+                list_of_questions, list_of_options,
+                list_of_right_answers, list_of_text_right_answers)
+
+            for index, option in enumerate(list_of_options):
                 self.add_new_entry_into_options_table(option, connection_object=connection_object)
 
-            for right_answer in list_of_right_answers:
+            for index, right_answer in enumerate(list_of_right_answers):
                 self.add_new_entry_into_right_answers_table(right_answer, connection_object=connection_object)
             for right_text_answer in list_of_text_right_answers:
                 self.add_new_entry_into_text_rights_answers_table(right_text_answer, connection_object=connection_object)
             connection_object.connection.commit()
-            return True
+            return True, poll
         except Exception as ex:
             logger.warning('Транзакция не была успешно выполнена. Опрос не был создан', exc_info=ex)
-            return False
+            return False, None
 
     @get_connection_and_cursor
     def add_new_entry_into_polls_table(self, poll: Poll, connection_object: ConnectionAndCursor = None) -> None:
@@ -399,27 +406,28 @@ class MysqlDB:
         :param poll: объект класса Poll
         :return:
         """
-        try:
-            connection_object.cursor.execute("""INSERT INTO polls(id, tags, name_of_poll, description, id_of_author) VALUES (%s, %s, %s, %s, %s)""",
-                                             (poll.id_of_poll, poll.tags, poll.name_of_poll, poll.description, poll.id_of_author))
-        except mysql.connector.errors.IntegrityError:
-            poll.id_of_poll = get_random_id()
-            self.add_new_entry_into_polls_table(poll)
+        connection_object.cursor.execute("""INSERT INTO polls(tags, name_of_poll, description, id_of_author) VALUES (%s, %s, %s, %s)""",
+                                         (poll.tags, poll.name_of_poll, poll.description, poll.id_of_author))
+        connection_object.cursor.execute("""SELECT LAST_INSERT_ID()""")
+        id_of_poll = connection_object.cursor.fetchone()[0]
+        return id_of_poll
 
     @get_connection_and_cursor
-    def add_new_entry_into_questions_table(self, question: Question, connection_object: ConnectionAndCursor = None) -> None:
+    def add_new_entry_into_questions_table(self, question: Question, id_of_poll: int, connection_object: ConnectionAndCursor = None) -> None:
         """
         Добавляет запись в таблицу questions
+        :param id_of_poll:
         :param connection_object:
         :param question: объект класса Question
         :return:
         """
-        try:
-            connection_object.cursor.execute("""INSERT INTO questions(id_of_question, id_of_poll, text_of_question, type_of_question, serial_number) VALUES (%s, %s, %s, %s, %s)""",
-                                             (question.id_of_question, question.id_of_poll, question.text_of_question, question.type_of_question, question.serial_number))
-        except mysql.connector.errors.IntegrityError:
-            question.id_of_question = get_random_id()
-            self.add_new_entry_into_questions_table(question)
+        question.id_of_poll = id_of_poll
+        connection_object.cursor.execute("""INSERT INTO questions(id_of_poll, text_of_question, type_of_question, serial_number) VALUES (%s, %s, %s, %s)""",
+                                         (question.id_of_poll, question.text_of_question, question.type_of_question, question.serial_number))
+        connection_object.cursor.execute("""SELECT LAST_INSERT_ID()""")
+        id_of_question = connection_object.cursor.fetchone()[0]
+
+        return id_of_question
 
     @get_connection_and_cursor
     def add_new_entry_into_options_table(self, option: Option, connection_object: ConnectionAndCursor = None) -> None:
@@ -429,12 +437,8 @@ class MysqlDB:
         :param option: объект класса Option
         :return:
         """
-        try:
-            connection_object.cursor.execute("""INSERT INTO options(id_of_option, id_of_question, option_name) VALUES (%s, %s, %s)""",
-                                             (option.id_of_option, option.id_of_question, option.option))
-        except mysql.connector.errors.IntegrityError:
-            option.id_of_option = get_random_id()
-            self.add_new_entry_into_options_table(option)
+        connection_object.cursor.execute("""INSERT INTO options(id_of_question, option_name) VALUES (%s, %s)""",
+                                         (option.id_of_question, option.option))
 
     @get_connection_and_cursor
     def add_new_entry_into_right_answers_table(self, right_answer: RightAnswer, connection_object: ConnectionAndCursor = None) -> None:
@@ -894,7 +898,13 @@ class MysqlDB:
             connection_object.cursor.execute(transaction)
             result = connection_object.cursor.fetchall()
             for poll in result:
-                polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), id_of_poll, id_of_user, self.get_user_data_from_table(id_of_user)[0]))
+                polls_list.append(
+                    Poll(
+                        poll[0], poll[1], json.loads(poll[2]),
+                        id_of_poll, id_of_user, self.get_user_data_from_table(id_of_user)[0],
+                        self.get_cover_of_poll_in_base64_format(id_of_poll, connection_object=connection_object)
+                    )
+                )
         return polls_list
 
     @get_connection_and_cursor

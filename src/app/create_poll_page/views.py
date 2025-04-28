@@ -1,5 +1,6 @@
 import base64
 import json
+
 from generate_qr_code import generate_qr_code_of_link
 
 import mysql.connector
@@ -16,7 +17,7 @@ from Configs.Commands_For_RMQ import Commands
 
 from Configs.Hosts import Hosts
 
-from Configs.Poll import SizeOfImage
+from Configs.Poll import SizeOfImage, Poll
 
 
 @authentication()
@@ -47,23 +48,32 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     try:
         poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer = set_poll(json_data, id_of_user)
         if 'cover' in json_data:
-            if (len(json_data['cover']) * 3) // 4 > SizeOfImage.size_of_cover:
+            if (((len(json_data['cover']) * 3) // 4) // 1048576) > SizeOfImage.size_of_cover:
                 return HttpResponseForbidden("слишком большой размер изображения")
-            cover = base64.b64decode(json_data['cover'])
-            client_mysqldb.add_cover_into_cover_of_polls(cover, poll.id_of_poll)
-        result = client_mysqldb.create_pool(
+        result, poll = client_mysqldb.create_pool(
             poll, list_of_questions, list_of_options, list_of_right_answers, list_right_text_answer
         )
         if result:
-            producer.publish(Commands.get_vector_poll % poll.id_of_poll)
-        if json_data['private']:
-            code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
-            base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % (Hosts.domain, code))
-            return JsonResponse({"result": result, "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
-        return JsonResponse({"result": result})
+            return on_success_create_poll(json_data, poll, result)
+        else:
+            return JsonResponse({'result': result})
     except TryToXSS:
         return HttpResponseForbidden("Попытка XSS атаки")
     except AssertionError:
         return HttpResponseForbidden()
     except mysql.connector.errors.DataError:
         return HttpResponseForbidden("Ошибка базы данных")
+
+
+def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
+    if 'cover' in json_data:
+        cover = base64.b64decode(json_data['cover'])
+        client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, cover)
+    producer.publish(Commands.get_vector_poll % poll.id_of_poll)
+    if json_data['private']:
+        code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
+        base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % (Hosts.domain, code))
+        return JsonResponse(
+            {"result": result, "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
+    else:
+        return JsonResponse({'result': result})

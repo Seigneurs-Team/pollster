@@ -86,7 +86,6 @@ def get_statistic(id_of_poll: int, more_statistic: bool = False) -> dict:
         'tags_of_poll': json.loads(metadata_of_poll[2]),
         'author': metadata_of_poll[3],
         'questions': [],
-
     }
 
     for question in list_of_questions:

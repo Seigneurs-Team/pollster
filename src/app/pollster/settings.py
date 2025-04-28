@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'app.create_new_account_page',
     'app.profile_page',
     'app.log_out',
-    'app.statistics_of_poll'
+    'app.statistics_of_poll',
+    'app.get_qr_code_of_poll'
 ]
 
 MIDDLEWARE = [

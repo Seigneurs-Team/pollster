@@ -64,7 +64,7 @@ services:
 
 
   mysql_db:
-    image: mysql:latest
+    image: mysql:9.3.0
     networks:
       back:
         ipv4_address: 172.16.235.2
