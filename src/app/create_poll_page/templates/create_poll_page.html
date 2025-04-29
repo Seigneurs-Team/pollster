@@ -23,7 +23,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
-
+    <script>
+        sessionStorage.userId = {{ user.id }}
+    </script>
 </head>
 
 <body>
@@ -35,8 +37,7 @@
         </header>
 
 
-        <main data-deloption="{% static 'img/delOption.svg' %}">
-
+        <main data-deloption="{% static 'img/cross.svg' %}" data-addoption="{% static 'img/plus.svg' %}">
             <div class="form">
                 <h1>Создание опроса</h1>
                 <label class="input-file addPollImage">
@@ -54,15 +55,18 @@
                     </div>
                     <div class="default-image">
                         <input type="radio" name="default-image" id="image-1" value="1">
-                        <label for="image-1"><img src="{% static 'img\poll default img.jpg' %}" alt="default image"></label>
+                        <label for="image-1"><img src="{% static 'img\poll default img.jpg' %}"
+                                alt="default image"></label>
                     </div>
                     <div class="default-image">
                         <input type="radio" name="default-image" id="image-2" value="2">
-                        <label for="image-2"><img src="{% static 'img\poll default img.png' %}" alt="default image"></label>
+                        <label for="image-2"><img src="{% static 'img\poll default img.png' %}"
+                                alt="default image"></label>
                     </div>
                     <div class="default-image">
                         <input type="radio" name="default-image" id="image-3" value="3">
-                        <label for="image-3"><img src="{% static 'img\poll default img.png' %}" alt="default image"></label>
+                        <label for="image-3"><img src="{% static 'img\poll default img.png' %}"
+                                alt="default image"></label>
                     </div>
                 </div>
 
@@ -79,7 +83,7 @@
                 </div>
 
                 <div class="tags-wrapper">
-                    <label class="form-label">Тэги:</label>
+                    <label class="form-label">Тэги (максимум 4):</label>
                     <div class="tags">
                         <div class="selected-tags"></div>
                         <div class="not-selected-tags">
@@ -95,8 +99,7 @@
                 <div class="input-wrapper add-tag-wrapper">
                     <input type="text" id="newTagInput" maxlength="20">
                     <button class="addTag">
-                        <img src="${% static 'img\plus.svg' %}" alt="добавить тэг">
-                        <img class="user-photo" src="{% static 'img\no-view.svg' %}" alt="profile photo">
+                        <img src="{% static 'img\plus.svg' %}" alt="добавить тэг">
                     </button>
                 </div>
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
@@ -130,12 +133,17 @@
                 </div>
             </div>
             <div class="overlay" id="overlay-share-poll">
-                <div id="overlay-share-poll_content">
-
-                    <div id="qr-code-container">
+                <div id="overlay-share-poll-inner">
+                    <div class="share-poll_content">
+                        <div class="qr-code-container">
+                        </div>
+                        <div>
+                            <div class="poll-link"><input type="text" disabled><button class="copy-link"><img
+                                        src="{% static 'img\Copy.svg' %}" alt="copy link"></button></div>
+                            <span class="copied">Copied!</span>
+                        </div>
+                        <button class="go-home">К опросам</button>
                     </div>
-                    <div id="poll-link"></div>
-                    <button id="go-home">Вернуться на главную</button>
                 </div>
             </div>
         </main>

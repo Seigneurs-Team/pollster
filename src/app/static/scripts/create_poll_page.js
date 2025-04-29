@@ -113,7 +113,11 @@ function answerType(questionType, questionId) {
                 ${renderOption(type, questionId, 1)}
                 ${renderOption(type, questionId, 2)}
             </div>
-            <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}"></button>
+                    
+            <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}">
+            <img src="${$('main').data('addoption')}" alt="добавить вариант ответа">
+            </button>
+            
         `;
     } else if (questionType === "radio img") {
         return '';
@@ -155,13 +159,13 @@ function delOption(target) {
 }
 
 // Обработка выбора тегов
-$('.tag').click(function () {
+$('body').on('click', '.tag', function () {
     if ($(this).parent().hasClass('not-selected-tags') && $('.selected-tags').children().length < 4) {
         $(this).appendTo('.selected-tags');
     } else if ($(this).parent().hasClass('selected-tags')) {
         $(this).appendTo('.not-selected-tags');
     }
-});
+})
 
 // Функция для проверки на HTML-теги
 function hasHTMLTags(input) {
@@ -190,10 +194,9 @@ $(`input[type="text"], textarea`).each(function () {
 // Отправка опроса
 $("#submitPollBtn").on('click', createPoll);
 
-
-// "Вернуться на главную"
-$('.overlay').on('click', '#go-home', function () {
-    window.location.href = '/';
+// "К опросам"
+$('.overlay').on('click', '.go-home', function () {
+    window.location.href = `/profile/${localStorage.userId}`;
 });
 // Очищаем выбранные файлы при загрузке страницы
 $('input[type=file]').val(null);
@@ -260,6 +263,20 @@ $('.imagePreview').on('click', '.imagePreview-remove', function (e) {
 
     return false;
 });
+
+$('.copy-link').on('click', () => {
+    navigator.clipboard.writeText($('poll-link input').val()).then(function () {
+        $('.copied').show()
+    });
+})
+
+$('.addTag').on('click', function () {
+    const newTag = $('#newTagInput').val()
+    if ($('.selected-tags').children().length < 4) {
+        $('.selected-tags').append($(`
+<button class="tag" id="tag-new">  <span>${newTag}</span> </button>`))
+    }
+})
 
 // Экспорт функции для проверки HTML-тегов
 export { hasHTMLTags };

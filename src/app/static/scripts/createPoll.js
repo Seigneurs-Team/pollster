@@ -201,13 +201,9 @@ function showQR(url, qr_code) {
     });
 
     // Вставляем изображение в контейнер
-    $('#qr-code-container').append($qrCodeImage);
+    $('.qr-code-container').append($qrCodeImage);
+$('.poll-link input').val(url)
 
-    const $link = $('<a>', {
-        href: `${url}`,
-        text: url
-    });
-    $('#poll-link').append($link);
 
     $('#overlay-share-poll').show();
 }
