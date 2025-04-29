@@ -99,15 +99,16 @@
                 {% for poll in all_objects %}
                 <li class="poll-item">
                     <a href="passing_poll/{{poll.id_of_poll}}/">
-                        <div class="poll-img"><img src="{% static 'img\poll default img.jpg' %}" alt="poll image"></div>
+                        <!-- <div class="poll-img" data-image="data:image/png;base64,{{ poll.cover }}"></div> -->
+                        <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
                         <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                         <p class="poll-description">{{poll.description}}</p>
+                        <span class="poll-author">Автор: {{poll.nickname_of_author}}</span>
                         <div class="poll-tags">
                             {% for tag in poll.tags %}
                             <div class="tag">{{tag}}</div>
                             {% endfor %}
                         </div>
-                        <span class="poll-author">Автор: {{poll.nickname_of_author}}</span>
                         <!--                    <div class="till-the-end">-->
                         <!--                        <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"-->
                         <!--                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.003 512.003"-->
