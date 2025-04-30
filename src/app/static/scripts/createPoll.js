@@ -17,10 +17,16 @@ export function createPoll() {
         questions: questions,
     };
 
-    const coverImage = $('.addPollImage').data('base64') || null;
-    if (coverImage) {
+    const coverImage = $('.addPollImage').data('base64') || null
+    const defaultImage = $('input[name=default-image]:checked').val()
+
+    if (coverImage) { // если пользователь загрузил картинку
         pollData.cover = coverImage.split(',')[1] // отделяем metadata
-    }
+    } else if (defaultImage == 'no-image') { // если не выбран .default-image отправляем 0 - это значит что будет рандом картинка
+        pollData.coverDefault = 0 
+    }else if (defaultImage != 'no-image') { // если выбран .default-image
+        pollData.coverDefault = defaultImage
+    } 
 
     console.log("pollData:", pollData)
 
@@ -195,13 +201,9 @@ function showQR(url, qr_code) {
     });
 
     // Вставляем изображение в контейнер
-    $('#qr-code-container').append($qrCodeImage);
+    $('.qr-code-container').append($qrCodeImage);
+$('.poll-link input').val(url)
 
-    const $link = $('<a>', {
-        href: `${url}`,
-        text: url
-    });
-    $('#poll-link').append($link);
 
     $('#overlay-share-poll').show();
 }

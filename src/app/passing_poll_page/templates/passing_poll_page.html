@@ -35,7 +35,9 @@
 
 
         <main>
-            <div class="poll-img"><img src="{% static 'img\poll default img.jpg' %}" alt="logo"></div>
+            <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
+            <div class="poll-img" data-image="data:image/png;base64,{{ poll.cover }}"></div>
+
             <h1 class="poll-name">{{poll.name_of_poll}}</h1>
             <p class="poll-description">{{poll.description}}</p>
             <div class="poll-tags">

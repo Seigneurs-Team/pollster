@@ -11,6 +11,9 @@ $(document).ready(function () {
     $(`.error-message`).each(function () {
         $(this).hide();
     });
+
+    // снимается выбор дефолтной картинки
+    $('#no-image').prop('checked', true);
 });
 
 function deleteQuestion(target) {
@@ -110,7 +113,11 @@ function answerType(questionType, questionId) {
                 ${renderOption(type, questionId, 1)}
                 ${renderOption(type, questionId, 2)}
             </div>
-            <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}"></button>
+                    
+            <button class="addOption${questionType === "checkbox" ? "Checkbox" : "Radio"}">
+            <img src="${$('main').data('addoption')}" alt="добавить вариант ответа">
+            </button>
+            
         `;
     } else if (questionType === "radio img") {
         return '';
@@ -152,13 +159,13 @@ function delOption(target) {
 }
 
 // Обработка выбора тегов
-$('.tag').click(function () {
+$('body').on('click', '.tag', function () {
     if ($(this).parent().hasClass('not-selected-tags') && $('.selected-tags').children().length < 4) {
         $(this).appendTo('.selected-tags');
     } else if ($(this).parent().hasClass('selected-tags')) {
         $(this).appendTo('.not-selected-tags');
     }
-});
+})
 
 // Функция для проверки на HTML-теги
 function hasHTMLTags(input) {
@@ -187,31 +194,31 @@ $(`input[type="text"], textarea`).each(function () {
 // Отправка опроса
 $("#submitPollBtn").on('click', createPoll);
 
-
-// "Вернуться на главную"
-$('.overlay').on('click', '#go-home', function () {
-    window.location.href = '/';
+// "К опросам"
+$('.overlay').on('click', '.go-home', function () {
+    window.location.href = `/profile/${localStorage.userId}`;
 });
 // Очищаем выбранные файлы при загрузке страницы
 $('input[type=file]').val(null);
 
 // Обработчик изменения файла
-$('.input-file input[type=file]').on('change', function(e) {
+$('.input-file input[type=file]').on('change', function (e) {
     // Проверяем, что файл выбран
     if (!this.files || !this.files[0]) return;
-    
+
     // Получаем первый выбранный файл
     const file = this.files[0];
     const $files_list = $(this).closest('.input-file').find('.imagePreview');
-    const input = this; 
+    const input = this;
 
     // Очищаем превью перед добавлением нового
     $files_list.empty();
-    
-    // Создаем превью изображения
+
     let reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         $('.addPollImage').data('base64', e.target.result); // для отправки на сервер
+
+        // Создаем превью изображения
         $files_list.append(`
             <div class="imagePreview-item">
                 <img class="imagePreview-img" src="${e.target.result}">
@@ -219,35 +226,57 @@ $('.input-file input[type=file]').on('change', function(e) {
                 <span class="imagePreview-remove">x</span>
             </div>
         `);
-        
+
         // Делаем инпут неактивным после загрузки
         $(input).closest('.input-file').find('input[type=file]').prop('disabled', true);
         $('.addPollImage').addClass('loaded');
+
+        // снимается выбор дефолтной картинки
+        $('#no-image').prop('checked', true);
+        $('input[name="default-image"]').prop('disabled', true) // нельзя выбрать дефолтную картинку
     };
     reader.readAsDataURL(file);
 });
 
 // Обработчик удаления изображения
-$('.imagePreview').on('click', '.imagePreview-remove', function(e) {
+$('.imagePreview').on('click', '.imagePreview-remove', function (e) {
     // Блокируем все возможные всплытия
     e.stopImmediatePropagation();
     e.preventDefault();
     e.stopPropagation();
-    
+
     // Находим родительский контейнер
     const $inputFile = $(this).closest('.input-file');
-    
+
     // Очищаем превью
     $inputFile.find('.imagePreview').empty();
 
     $('.addPollImage').removeData('base64'); // очищаем data атрибут, чтобы старая картинка не отправилась на сервер
 
-    
+
     // Сбрасываем значение инпута и делаем его активным
     $inputFile.find('input[type=file]').val('').prop('disabled', false);
     $('.addPollImage').removeClass('loaded');
 
+    $('input[name="default-image"]').prop('disabled', false) // можно выбрать дефолтную картинку
+
+
     return false;
 });
+
+$('.copy-link').on('click', () => {
+    navigator.clipboard.writeText($('poll-link input').val()).then(function () {
+        $('.copied').show()
+    });
+})
+
+$('.addTag').on('click', function () {
+    const newTag = $('#newTagInput').val()
+    if ($('.selected-tags').children().length < 4) {
+        $('.selected-tags').append($(`
+<button class="tag" id="tag-new">  <span>${newTag}</span> </button>`))
+    }
+})
+
 // Экспорт функции для проверки HTML-тегов
 export { hasHTMLTags };
