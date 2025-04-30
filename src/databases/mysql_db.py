@@ -131,7 +131,7 @@ class MysqlDB:
         PRIMARY KEY (id_of_poll), 
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS cover_of_polls(cover BLOB, id_of_poll INT PRIMARY KEY,
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS cover_of_polls(cover MEDIUMBLOB, id_of_poll INT PRIMARY KEY,
         FOREIGN KEY (id_of_poll) REFERENCES polls (id) ON DELETE CASCADE)""")
 
         #users
