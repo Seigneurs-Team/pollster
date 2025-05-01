@@ -318,7 +318,7 @@ input#private {
 .poll-link input:disabled {
     background: #fff;
     border: none;
-    min-width: 210px;
+    min-width: 250px;
 }
 
 .copy-link, .copy-link:hover {

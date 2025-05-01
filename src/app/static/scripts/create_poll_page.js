@@ -265,7 +265,7 @@ $('.imagePreview').on('click', '.imagePreview-remove', function (e) {
 });
 
 $('.copy-link').on('click', () => {
-    navigator.clipboard.writeText($('poll-link input').val()).then(function () {
+    navigator.clipboard.writeText($('.poll-link input').val()).then(function () {
         $('.copied').show()
     });
 })
