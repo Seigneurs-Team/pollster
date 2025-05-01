@@ -88,7 +88,9 @@
                     {% endif %}
 
                     {% elif question.type_of_question == "short text"%}
+                    {% if question.right_text_answer %}
                     <p class="right_text_answer">Правильный ответ: {{ question.right_text_answer }}</p>
+                    {% endif %}
                     <p>Другие ответы:</p>
                     <ul class="answers-list">
                         {% for wrong_answer in question.wrong_text_answers %}

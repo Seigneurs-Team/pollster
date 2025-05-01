@@ -42,7 +42,7 @@
         max-width: 150px;
     }
 
-    .profile-link {
+    .profile-link, a.sign-up {
         position: absolute;
         top: 15px;
         right: 15px;
@@ -104,7 +104,7 @@
 
     .about-you {
         background-color: #fff;
-        max-width: 100%;
+        width: calc(100% - 30px);
         margin: 30px auto;
         padding: 15px;
     }
