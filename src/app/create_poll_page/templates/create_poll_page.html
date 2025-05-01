@@ -16,16 +16,12 @@
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
 
-    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{% static 'img/circle-logo.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
-    <script>
-        sessionStorage.userId = {{ user.id }}
-    </script>
 </head>
 
 <body>
@@ -45,6 +41,23 @@
                     <input type="file" accept="image/png, image/jpeg" name="file" />
                     <div class="imagePreview"></div>
                 </label>
+
+                <!-- Модальное окно для обрезки -->
+                <div id="cropModal"
+                    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
+                    <div
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 800px; background: white; padding: 20px; border-radius: 8px;">
+                        <div style="width: 100%; height: 400px;">
+                            <img id="cropImage" style="max-width: 100%; max-height: 100%;">
+                        </div>
+                        <div style="margin-top: 20px; text-align: right;">
+                            <button id="cancelCrop"
+                                style="padding: 8px 16px; margin-right: 10px; background: #f0f0f0; border: none; border-radius: 4px;">Отмена</button>
+                            <button id="confirmCrop"
+                                style="padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 4px;">Применить</button>
+                        </div>
+                    </div>
+                </div>
 
                 <label class="form-label">Или выберите картинку по умолчанию:</label>
 
@@ -152,7 +165,17 @@
     <div class="footer-wrapper">
         {% include 'footer.html' %}
     </div>
+
+    <script>
+        sessionStorage.userId = {{ user.id }}
+    </script>
+    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+
     <script src="{% static 'scripts/create_poll_page.js' %}" type="module"></script>
+
+    <!-- Подключаем Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
 </body>
 

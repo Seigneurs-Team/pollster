@@ -200,69 +200,97 @@ $('.overlay').on('click', '.go-home', function () {
 });
 // Очищаем выбранные файлы при загрузке страницы
 $('input[type=file]').val(null);
+let cropper;
+    let currentFile;
 
-// Обработчик изменения файла
-$('.input-file input[type=file]').on('change', function (e) {
-    // Проверяем, что файл выбран
-    if (!this.files || !this.files[0]) return;
+    // Обработчик изменения файла
+    $('.input-file input[type=file]').on('change', function(e) {
+        if (!this.files || !this.files[0]) return;
 
-    // Получаем первый выбранный файл
-    const file = this.files[0];
-    const $files_list = $(this).closest('.input-file').find('.imagePreview');
-    const input = this;
+        currentFile = this.files[0];
+        const $files_list = $(this).closest('.input-file').find('.imagePreview');
+        const input = this;
 
-    // Очищаем превью перед добавлением нового
-    $files_list.empty();
+        // Очищаем превью перед добавлением нового
+        $files_list.empty();
 
-    let reader = new FileReader();
-    reader.onload = function (e) {
-        $('.addPollImage').data('base64', e.target.result); // для отправки на сервер
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Показываем модальное окно с Cropper.js
+            $('#cropImage').attr('src', e.target.result);
+            $('#cropModal').show();
 
-        // Создаем превью изображения
+            // Инициализируем Cropper.js
+            const image = document.getElementById('cropImage');
+            if (cropper) cropper.destroy();
+
+            cropper = new Cropper(image, {
+                aspectRatio: 4 / 3,  // Фиксированное соотношение 4:3
+                viewMode: 1,          // Ограничивает выход за пределы изображения
+                autoCropArea: 1,      // Автоматически выделяет всю область
+            });
+        };
+        reader.readAsDataURL(currentFile);
+    });
+
+    // Отмена обрезки
+    $('#cancelCrop').on('click', function() {
+        $('#cropModal').hide();
+        if (cropper) cropper.destroy();
+        $('.input-file input[type=file]').val(''); // Сбрасываем файл
+    });
+
+    // Подтверждение обрезки
+    $('#confirmCrop').on('click', function() {
+        if (!cropper) return;
+
+        // Получаем обрезанное изображение в формате Base64
+        const croppedCanvas = cropper.getCroppedCanvas();
+        const croppedImageUrl = croppedCanvas.toDataURL('image/jpeg');
+
+        // Скрываем модальное окно
+        $('#cropModal').hide();
+        cropper.destroy();
+
+        // Добавляем обрезанное изображение в превью
+        const $files_list = $('.input-file').find('.imagePreview');
+        $files_list.empty();
+
+        $('.addPollImage').data('base64', croppedImageUrl); // Сохраняем обрезанное изображение
+
         $files_list.append(`
             <div class="imagePreview-item">
-                <img class="imagePreview-img" src="${e.target.result}">
-                <span class="imagePreview-name">${file.name}</span>
+                <img class="imagePreview-img" src="${croppedImageUrl}">
+                <span class="imagePreview-name">${currentFile.name}</span>
                 <span class="imagePreview-remove">x</span>
             </div>
         `);
 
         // Делаем инпут неактивным после загрузки
-        $(input).closest('.input-file').find('input[type=file]').prop('disabled', true);
+        $('.input-file input[type=file]').prop('disabled', true);
         $('.addPollImage').addClass('loaded');
 
-        // снимается выбор дефолтной картинки
+        // Снимаем выбор дефолтной картинки
         $('#no-image').prop('checked', true);
-        $('input[name="default-image"]').prop('disabled', true) // нельзя выбрать дефолтную картинку
-    };
-    reader.readAsDataURL(file);
-});
+        $('input[name="default-image"]').prop('disabled', true);
+    });
 
-// Обработчик удаления изображения
-$('.imagePreview').on('click', '.imagePreview-remove', function (e) {
-    // Блокируем все возможные всплытия
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    e.stopPropagation();
+    // Обработчик удаления изображения (остаётся без изменений)
+    $('.imagePreview').on('click', '.imagePreview-remove', function(e) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
-    // Находим родительский контейнер
-    const $inputFile = $(this).closest('.input-file');
+        const $inputFile = $(this).closest('.input-file');
+        $inputFile.find('.imagePreview').empty();
+        $('.addPollImage').removeData('base64');
 
-    // Очищаем превью
-    $inputFile.find('.imagePreview').empty();
+        $inputFile.find('input[type=file]').val('').prop('disabled', false);
+        $('.addPollImage').removeClass('loaded');
+        $('input[name="default-image"]').prop('disabled', false);
 
-    $('.addPollImage').removeData('base64'); // очищаем data атрибут, чтобы старая картинка не отправилась на сервер
-
-
-    // Сбрасываем значение инпута и делаем его активным
-    $inputFile.find('input[type=file]').val('').prop('disabled', false);
-    $('.addPollImage').removeClass('loaded');
-
-    $('input[name="default-image"]').prop('disabled', false) // можно выбрать дефолтную картинку
-
-
-    return false;
-});
+        return false;
+    });
 
 $('.copy-link').on('click', () => {
     navigator.clipboard.writeText($('.poll-link input').val()).then(function () {

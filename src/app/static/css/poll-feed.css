@@ -30,6 +30,23 @@ li.poll-item:hover {
     display: flex;
     flex-direction: column;
 }
+.poll-img {
+    width: 100%; /* или фиксированная ширина, например 300px */
+    height: 200px; /* задайте нужную высоту */
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.poll-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
 .poll-item .poll-img img {
     width: 100%;
     /* Ширина изображений */
