@@ -16,6 +16,7 @@ MAIN_PAGE_SCHEMA = {
 GET_POLLS_SCHEMA = {
     'summary': 'Получение списка опросов из БД.',
     'description': 'Endpoint нужен для выборки n-го количества опросов из БД MySQL.',
+    'tags': ['main page'],
     'parameters': [
         OpenApiParameter(
             name='num_of_polls',

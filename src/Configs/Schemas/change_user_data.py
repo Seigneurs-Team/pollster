@@ -1,19 +1,27 @@
-from drf_spectacular.utils import OpenApiResponse, OpenApiParameter
-from Configs.Serializers.change_user_data import ChangeNicknameSerializer, SuccessChangeSerializer, UnSuccessChangeSerializer
+from drf_spectacular.utils import OpenApiResponse
+from rest_framework.serializers import Serializer
+from Configs.Serializers.change_user_data import (
+    SuccessChangeSerializer,
+    UnSuccessChangeSerializer,
+)
 
 
-CHANGE_NICKNAME_SCHEMA = {
-    'summary': 'Изменение никнейма пользователя.',
-    'description': 'Endpoint необходим для для изменения никнейма пользователя в БД.',
-    'request': ChangeNicknameSerializer,
-    'responses': {
-        200: OpenApiResponse(
-            description='Данные успешно сохранены',
-            response=SuccessChangeSerializer
-        ),
-        400: OpenApiResponse(
-            description='Некорректные данные в JSON.',
-            response=UnSuccessChangeSerializer
-        )
+def get_change_data_of_user_schema(serializer):
+    change_data_of_user_schema = {
+        'summary': 'Изменение данных пользователя.',
+        'description': 'Endpoint необходим для для изменения данных пользователя в БД.',
+        'request': serializer,
+        'responses': {
+            200: OpenApiResponse(
+                description='Данные успешно сохранены',
+                response=SuccessChangeSerializer
+            ),
+            400: OpenApiResponse(
+                description='Некорректные данные в JSON.',
+                response=UnSuccessChangeSerializer
+            )
+        }
     }
-}
+    return change_data_of_user_schema
+
+
