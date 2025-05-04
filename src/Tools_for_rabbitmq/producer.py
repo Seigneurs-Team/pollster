@@ -85,7 +85,7 @@ class Producer:
                 'message': message,
                 'ip': requests.META["REMOTE_ADDR"] if requests is not None else '',
                 'userid': id_of_user,
-                'endpoint': requests.path
+                'endpoint': requests.path if requests is not None else ''
             }
         )
 

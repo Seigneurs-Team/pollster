@@ -1,5 +1,6 @@
 import base64
 import json
+import random
 
 from generate_qr_code import generate_qr_code_of_link
 
@@ -18,6 +19,8 @@ from Configs.Commands_For_RMQ import Commands
 from Configs.Hosts import Hosts
 
 from Configs.Poll import SizeOfImage, Poll
+
+import pathlib
 
 
 @authentication()
@@ -69,6 +72,14 @@ def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
     if 'cover' in json_data:
         cover = base64.b64decode(json_data['cover'])
         client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, cover)
+    else:
+        dir_img = pathlib.Path('app/static/img/default_img')
+        images = [path for path in dir_img.iterdir()]
+        random_image = random.choice(images)
+
+        with open(random_image, 'rb') as file:
+            client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, file.read())
+
     producer.publish(Commands.get_vector_poll % poll.id_of_poll)
     if json_data['private']:
         code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)

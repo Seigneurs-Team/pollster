@@ -1,4 +1,8 @@
-import json
+import dataclasses
+from Configs.Serializers import ListOfPolls
+
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter
+from rest_framework.decorators import api_view
 
 from django.shortcuts import render
 from django.core.handlers.wsgi import WSGIRequest
@@ -11,10 +15,21 @@ from authentication.check_user_on_auth import authentication_for_main_page
 from Tools_for_rabbitmq.producer import producer
 from Configs.Commands_For_RMQ import Commands
 from Configs.Responses_from_consumer import Responses
+from Configs.Poll import Poll
 
 from log_system.Levels import Levels
 
 
+@extend_schema(
+    summary='получение главной страницы',
+    tags=['main page'],
+    description='Endpoint нужен для получения HTML главной страницы, а также получения рекомендательных опросов, если пользователь авторизован в системе.',
+    methods=['GET'],
+    responses={
+        200: OpenApiResponse(description='Запрос успешно был обработан. Выдан HTML главной страницы.')
+    }
+)
+@api_view(['GET'])
 @authentication_for_main_page
 def request_on_main_page(requests: WSGIRequest, is_authenticated: bool):
     """
@@ -47,6 +62,26 @@ def request_on_main_page(requests: WSGIRequest, is_authenticated: bool):
     return render(requests, 'index.html', context={'all_objects': polls, 'tags': tags, 'user': user})
 
 
+@extend_schema(
+    summary='Получение списка опросов из БД.',
+    description='Endpoint нужен для выборки n-го количества опросов из БД MySQL.',
+    parameters=[
+        OpenApiParameter(
+            name='num_of_polls',
+            location=OpenApiParameter.PATH,
+            description='Параметр обозначает количество опросов, которые необходимо вернуть.',
+            required=False,
+            type=int
+        )
+    ],
+    responses={
+        200: OpenApiResponse(
+            description='Список опросов.',
+            response=ListOfPolls
+        )
+    }
+)
+@api_view(['GET'])
 def requests_on_get_polls(request, num_of_polls=5):
     """
     Функция нужна для получения выбранного количества опросов из БД
@@ -55,7 +90,7 @@ def requests_on_get_polls(request, num_of_polls=5):
 
     :return: список опросов. Каждый элемент массива является экземпляром класса Poll
     """
-    polls = client_mysqldb.get_polls(int(num_of_polls))
+    polls = [dataclasses.asdict(dataclass) for dataclass in client_mysqldb.get_polls(int(num_of_polls))]
     return JsonResponse({"list": polls})
 
 

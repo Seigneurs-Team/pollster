@@ -14,6 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView
+
+
 from django.contrib import admin
 from django.urls import path, include, re_path
 
@@ -38,13 +41,15 @@ from app.statistics_of_poll.views import request_on_statistics_page, request_on_
 from app.get_qr_code_of_poll.views import request_of_get_qr_code
 
 
+handler403 = 'app.custom_handlers_of_status_codes.views.custom_forbidden'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', request_on_main_page, name='home'),
     path('create_poll_page', request_on_create_poll_page, name='create_poll_page'),
     path('passing_poll/<int:poll_id>/', request_on_passing_poll_page, name='passing_poll_page'),
     path('passing_poll/<str:code_of_poll>', request_on_passing_poll_page, name='passing_private_poll_page'),
-    path('get_polls', requests_on_get_polls),
+    path('get_polls/<int:num_of_polls>', requests_on_get_polls),
     path('create_poll', request_on_create_new_poll, name='create_poll_page'),
     path('sign_in', request_on_sign_in_page, name='sign_in_page'),
     path('create_new_account', request_on_create_new_account_page, name='create_new_account_page'),
@@ -60,5 +65,7 @@ urlpatterns = [
     path('change_user_data/', include(url_patterns_of_changes_in_user_profile), name='change_user_settings'),
     path('statistics/<int:id_of_poll>', request_on_statistics_page, name='statistics_page_of_poll'),
     path('get_statistics/<int:id_of_poll>', request_on_get_statistics, name="get_statistics_of_poll"),
-    path('get_qr_code/<int:id_of_poll>', request_of_get_qr_code, name="get_qr_code_of_poll")
+    path('get_qr_code/<int:id_of_poll>', request_of_get_qr_code, name="get_qr_code_of_poll"),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
 ]

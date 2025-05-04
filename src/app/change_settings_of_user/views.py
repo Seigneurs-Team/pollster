@@ -1,3 +1,6 @@
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+from rest_framework.decorators import api_view
+
 import datetime
 import json
 from django.core.handlers.wsgi import WSGIRequest
@@ -10,6 +13,7 @@ from Tools_for_rabbitmq.producer import producer
 from Configs.Commands_For_RMQ import Commands
 
 
+@api_view(['POST'])
 @authentication_for_change_user_data
 def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None):
     """
@@ -26,6 +30,7 @@ def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None)
     return JsonResponse({'response': 200})
 
 
+@api_view(['POST'])
 @authentication_for_change_user_data
 def request_on_change_the_login(request: WSGIRequest, id_of_user: int = None):
     """
@@ -42,6 +47,7 @@ def request_on_change_the_login(request: WSGIRequest, id_of_user: int = None):
     return JsonResponse({'response': 200})
 
 
+@api_view(['POST'])
 @authentication_for_change_user_data
 def request_on_change_the_number_of_phone(request: WSGIRequest, id_of_user: int = None):
     """
@@ -58,6 +64,7 @@ def request_on_change_the_number_of_phone(request: WSGIRequest, id_of_user: int 
     return JsonResponse({'response': 200})
 
 
+@api_view(['POST'])
 @authentication_for_change_user_data
 def request_on_change_the_date_of_birth(request: WSGIRequest, id_of_user: int = None):
     """
@@ -79,6 +86,7 @@ def request_on_change_the_date_of_birth(request: WSGIRequest, id_of_user: int = 
     return JsonResponse({'response': 200})
 
 
+@api_view(['POST'])
 @authentication_for_change_user_data
 def request_on_change_the_tags(request: WSGIRequest, id_of_user: int = None):
     """

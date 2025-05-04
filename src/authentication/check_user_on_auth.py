@@ -7,6 +7,7 @@ from Configs.Exceptions import CookieWasExpired, NotFoundPoll
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
+from django.core.exceptions import PermissionDenied
 
 
 def check_user(request, get_id_of_user: bool = False):
@@ -65,7 +66,7 @@ def authentication_for_profile_page(func):
 
             return func(request, id_of_user, *args, **kwargs)
         except AssertionError:
-            return HttpResponseForbidden()
+            raise PermissionDenied()
     return wrapped_func
 
 
