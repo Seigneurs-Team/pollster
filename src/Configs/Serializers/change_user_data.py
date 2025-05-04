@@ -22,7 +22,7 @@ class ChangeTagsOfUserSerializer(serializers.Serializer):
 
 
 class SuccessChangeSerializer(serializers.Serializer):
-    response = serializers.IntegerField(min_value=200)
+    response = serializers.IntegerField(default=200)
 
 
 class UnSuccessChangeSerializer(serializers.Serializer):

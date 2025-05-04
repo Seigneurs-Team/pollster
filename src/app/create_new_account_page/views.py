@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from drf_spectacular.utils import extend_schema
 
-from Configs.Schemas.create_new_account import CREATE_NEW_ACCOUNT_PAGE_SCHEMA
+from Configs.Schemas.create_new_account import CREATE_NEW_ACCOUNT_PAGE_SCHEMA, CREATE_NEW_ACCOUNT_SCHEMA
 
 
 @extend_schema(**CREATE_NEW_ACCOUNT_PAGE_SCHEMA)
@@ -27,7 +27,7 @@ def request_on_create_new_account_page(requests):
     return response
 
 
-@extend_schema()
+@extend_schema(**CREATE_NEW_ACCOUNT_SCHEMA)
 @api_view(['POST'])
 def request_on_create_new_account(request):
     """
@@ -60,8 +60,8 @@ def request_on_create_new_account(request):
 
         return JsonResponse({'response': 200})
     except AssertionError:
-        return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'})
+        return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'}, status=400)
     except ErrorSameLogins:
-        return JsonResponse({'response': 2, 'message': 'Данный логин уже занят.'})
+        return JsonResponse({'response': 2, 'message': 'Данный логин уже занят.'}, status=409)
     except NotFoundCookieIntoPowTable:
-        return JsonResponse({'response': 3, 'message': 'Повторите попытку'})
+        return JsonResponse({'response': 3, 'message': 'Недействительный куки'}, status=401)
