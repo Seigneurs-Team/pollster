@@ -5,7 +5,14 @@ from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import ErrorSameLogins, NotFoundCookieIntoPowTable
 from django.http import JsonResponse
 
+from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 
+from Configs.Schemas.create_new_account import CREATE_NEW_ACCOUNT_PAGE_SCHEMA
+
+
+@extend_schema(**CREATE_NEW_ACCOUNT_PAGE_SCHEMA)
+@api_view(['GET'])
 def request_on_create_new_account_page(requests):
     """
     Функция возвращает страницу создания нового аккаунта
@@ -20,6 +27,8 @@ def request_on_create_new_account_page(requests):
     return response
 
 
+@extend_schema()
+@api_view(['POST'])
 def request_on_create_new_account(request):
     """
     Функция нужна для успешного создания нового аккаунта на основе тех данных, которые передаются в JSON запроса
