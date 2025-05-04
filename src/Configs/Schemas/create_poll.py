@@ -59,6 +59,9 @@ CREATE_POLL_SCHEMA = {
         403: OpenApiResponse(
             description='Была предпринята попытка XSS атаки на систему.',
             response=UnSuccessCreatePoll403
-        )
+        ),
+        302: OpenApiResponse(
+            description='Куки auth_sessionid оказался невалидным. Необходимо пройти авторизацию. Происходит перенаправление пользователя на страницы /sign_in')
+
     },
 }

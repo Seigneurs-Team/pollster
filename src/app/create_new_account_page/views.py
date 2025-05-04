@@ -58,10 +58,10 @@ def request_on_create_new_account(request):
         _, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         client_mysqldb.create_entry_into_sessions_table(cookie, 'auth_sessionid', id_of_user)
 
-        return JsonResponse({'response': 200})
+        return JsonResponse({'response': 'Пользователь был успешно создан.'})
     except AssertionError:
-        return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'}, status=400)
+        return JsonResponse({'error_code': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'}, status=400)
     except ErrorSameLogins:
-        return JsonResponse({'response': 2, 'message': 'Данный логин уже занят.'}, status=409)
+        return JsonResponse({'error_code': 2, 'message': 'Данный логин уже занят.'}, status=409)
     except NotFoundCookieIntoPowTable:
-        return JsonResponse({'response': 3, 'message': 'Недействительный куки'}, status=401)
+        return JsonResponse({'error_code': 3, 'message': 'Недействительный куки'}, status=401)

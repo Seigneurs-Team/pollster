@@ -26,7 +26,7 @@ CREATE_NEW_ACCOUNT_SCHEMA = {
     'methods': ['POST'],
     'request': NewAccountData,
     'responses': {
-        200: OpenApiResponse(description='Пользователь успешно создался в БД и пользователь имеет авторизованные куки, с которыми он может дальше работать в системе'),
+        200: OpenApiResponse(description='Пользователь успешно создался в БД и пользователь имеет авторизованные куки, с которыми он может дальше работать в системе.'),
         400: OpenApiResponse(description='Не найдено значение pow в запросе либо не найден куки файл.', response=ResponseOf400FromCreateNewAccount),
         409: OpenApiResponse(description='Данный логин уже занят.', response=ResponseOf409FromCreateNewAccount),
         401: OpenApiResponse(description='Недействительный куки', response=ResponseOf401FromCreateNewAccount)

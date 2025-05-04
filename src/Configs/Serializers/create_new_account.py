@@ -9,17 +9,17 @@ class NewAccountData(serializers.Serializer):
 
 
 class ResponseOf400FromCreateNewAccount(serializers.Serializer):
-    response = serializers.IntegerField(default=1)
+    error_code = serializers.IntegerField(default=1)
     message = serializers.CharField(default='Не найдено значение pow в запросе либо не найден куки файл.')
 
 
 class ResponseOf409FromCreateNewAccount(serializers.Serializer):
-    response = serializers.IntegerField(default=2)
+    error_code = serializers.IntegerField(default=2)
     message = serializers.CharField(default='Данный логин уже занят.')
 
 
 class ResponseOf401FromCreateNewAccount(serializers.Serializer):
-    response = serializers.IntegerField(default=3)
+    error_code = serializers.IntegerField(default=3)
     message = serializers.CharField(default='Недействительный куки.')
 
 
