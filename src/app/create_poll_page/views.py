@@ -22,7 +22,14 @@ from Configs.Poll import SizeOfImage, Poll
 
 import pathlib
 
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import api_view
 
+from Configs.Schemas.create_poll import CREATE_POLL_PAGE_SCHEMA, CREATE_POLL_SCHEMA
+
+
+@extend_schema(**CREATE_POLL_PAGE_SCHEMA)
+@api_view(['GET'])
 @authentication()
 def request_on_create_poll_page(requests, id_of_user: int = None):
     """
@@ -38,6 +45,8 @@ def request_on_create_poll_page(requests, id_of_user: int = None):
     return render(requests, 'create_poll_page.html', context={'user': user, 'tags': tags.items()})
 
 
+@extend_schema(**CREATE_POLL_SCHEMA)
+@api_view(['POST'])
 @authentication()
 def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     """
@@ -59,13 +68,13 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
         if result:
             return on_success_create_poll(json_data, poll, result)
         else:
-            return JsonResponse({'result': result})
+            return JsonResponse({'response': 'Опрос не был создан.'}, status=500)
     except TryToXSS:
-        return HttpResponseForbidden("Попытка XSS атаки")
+        return JsonResponse({"response": "Попытка XSS атаки"}, status=403)
     except AssertionError:
-        return HttpResponseForbidden()
+        return JsonResponse({'response': 'Неправильные входные данные.'}, status=400)
     except mysql.connector.errors.DataError:
-        return HttpResponseForbidden("Ошибка базы данных")
+        return JsonResponse({'response': 'Опрос не был создан.'}, status=500)
 
 
 def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
@@ -85,6 +94,6 @@ def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
         code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
         base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % (Hosts.domain, code))
         return JsonResponse(
-            {"result": result, "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
+            {"response": 'Опрос был успешно создан.', "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
     else:
-        return JsonResponse({'result': result})
+        return JsonResponse({'response': 'Опрос был успешно создан.'})

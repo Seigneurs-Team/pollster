@@ -1,4 +1,3 @@
-import json
 
 import mysql.connector.errors
 
