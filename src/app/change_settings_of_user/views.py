@@ -1,5 +1,5 @@
-from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 
 import datetime
 import json
@@ -11,8 +11,10 @@ from databases.mysql_db import client_mysqldb
 
 from Tools_for_rabbitmq.producer import producer
 from Configs.Commands_For_RMQ import Commands
+from Configs.Schemas.change_user_data import CHANGE_NICKNAME_SCHEMA
 
 
+@extend_schema(**CHANGE_NICKNAME_SCHEMA)
 @api_view(['POST'])
 @authentication_for_change_user_data
 def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None):
@@ -24,7 +26,7 @@ def request_on_change_the_nickname(request: WSGIRequest, id_of_user: int = None)
     """
     json_data = json.loads(request.body)
     if 'nickname' not in json_data:
-        return HttpResponseForbidden("Некорректные данные")
+        return JsonResponse({'response': 'нет поля nickname в JSON теле запроса'}, status=400)
 
     client_mysqldb.update_the_filed_into_user(id_of_user, 'nickname', json_data['nickname'])
     return JsonResponse({'response': 200})
