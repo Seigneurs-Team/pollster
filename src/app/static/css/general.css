@@ -119,14 +119,37 @@ header .logo {
 footer {
     background: black;
     color: #fff;
-    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
 }
 
-.contact {
+.footer-logo {
+    width: 100px;
+}
+
+.contacts {
+    display: flex;
+    flex-direction: row;
+}
+
+.footer-line {
+    height: 1px; /* или нужная вам толщина линии */
+    background: linear-gradient(
+        to right,
+        black 0%,
+        rgba(255, 255, 255, 0.5) 50%, /* или используйте #808080 для серого */
+        black 100%
+    );
+}
+
+/* .contact {
     align-items: center;
     display: flex;
     justify-content: space-evenly;
-}
+} */
 
 .contacts svg {
     width: 30px;
