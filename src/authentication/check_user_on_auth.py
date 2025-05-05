@@ -5,7 +5,7 @@ from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import CookieWasExpired, NotFoundPoll
 
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
 
 
@@ -106,9 +106,9 @@ def authentication_for_delete_polls(func):
             return func(request, id_of_poll, *args, **kwargs)
 
         except AssertionError:
-            return HttpResponseForbidden()
+            raise PermissionDenied()
         except NotFoundPoll:
-            return HttpResponseNotFound()
+            return JsonResponse({'response': 'Данный опрос не найден.'}, status=404)
     return wrapped_func
 
 

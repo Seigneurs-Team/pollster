@@ -3,7 +3,7 @@ from Configs.Serializers.main_page import ListOfPolls
 
 
 MAIN_PAGE_SCHEMA = {
-    'summary': 'получение главной страницы',
+    'summary': 'Получение главной страницы',
     'tags': ['main page'],
     'description': 'Endpoint нужен для получения HTML главной страницы, а также получения рекомендательных опросов, если пользователь авторизован в системе.',
     'methods': ['GET'],

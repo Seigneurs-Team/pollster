@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 
 class Question(serializers.Serializer):
-    test = serializers.CharField()
+    text = serializers.CharField()
     type = serializers.CharField()
     id = serializers.IntegerField()
     rightAnswer = serializers.CharField()
