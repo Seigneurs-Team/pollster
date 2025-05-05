@@ -7,7 +7,7 @@ async function sendChangeDataRequest(data, url) {
 
 
 async function sendDeletePollRequest( id) {
-    return sendRequest(`/delete_poll/${id}`, 'GET');
+    return sendRequest(`/delete_poll/${id}`, 'DELETE');
 }
 
 
@@ -42,7 +42,7 @@ $(".log-out").on('click', async function () {
 $(".delete-account").on('click', async function () {
     console.log('sending delete account request...');
     const response = await fetch('/delete_account', {
-        method: 'POST',
+        method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include', // Отправляем куки
     });

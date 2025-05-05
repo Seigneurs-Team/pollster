@@ -27,7 +27,7 @@ def request_on_sign_in_account(request):
     Функция производит механизм аутентификации и авторизации пользователя в системе
 
     :param request:
-    :return: 403, ok, Неправильный пароль или почта
+    :return: 403, ok, Неверный пароль или почта
     """
     try:
         json_data = json.loads(request.body)
@@ -59,4 +59,4 @@ def request_on_sign_in_account(request):
 
         return JsonResponse({'response': 'ok'})
     except AssertionError:
-        return JsonResponse({'response': 'Неправильный пароль или почта'})
+        return JsonResponse({'response': 'Неверный пароль или почта'})

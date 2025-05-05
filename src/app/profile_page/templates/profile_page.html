@@ -40,7 +40,7 @@
             <div class="about-you">
                 <label for="email">Электроная почта</label>
                 <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled"
-                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required>
+                pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required>
                 <label for="phone">Номер телефона</label>
                 <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}"
                     disabled="disabled">
