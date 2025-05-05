@@ -38,7 +38,7 @@ from app.change_settings_of_user import url_patterns_of_changes_in_user_profile
 
 from app.statistics_of_poll.views import request_on_statistics_page, request_on_get_statistics
 
-from app.get_qr_code_of_poll.views import request_of_get_qr_code
+from app.get_qr_code_of_poll.views import request_on_get_qr_code
 
 
 handler403 = 'app.custom_handlers_of_status_codes.views.custom_forbidden'
@@ -65,7 +65,7 @@ urlpatterns = [
     path('change_user_data/', include(url_patterns_of_changes_in_user_profile), name='change_user_settings'),
     path('statistics/<int:id_of_poll>', request_on_statistics_page, name='statistics_page_of_poll'),
     path('get_statistics/<int:id_of_poll>', request_on_get_statistics, name="get_statistics_of_poll"),
-    path('get_qr_code/<int:id_of_poll>', request_of_get_qr_code, name="get_qr_code_of_poll"),
+    path('get_qr_code/<int:id_of_poll>', request_on_get_qr_code, name="get_qr_code_of_poll"),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
 ]
