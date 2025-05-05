@@ -150,17 +150,17 @@
     }
 
     /* Футер */
-    .footer-content {
+    .why-pollster__content {
         width: fit-content;
     }
 
-    .footer-content>div {
+    .why-pollster__content>div {
         position: initial;
         margin: 30px auto;
         float: none;
     }
 
-    .footer-content .contacts {
+    .why-pollster__content .contacts {
         margin: 0;
     }
 
@@ -231,11 +231,11 @@
         display: none;
     }
 
-    .footer-content .cloud-1 {
+    .why-pollster__content .cloud-1 {
         font-size: 24px;
     }
 
-    .footer-content {
+    .why-pollster__content {
         padding: 0 15px;
     }
 
@@ -253,4 +253,13 @@
         background-size: auto;
         background-repeat: no-repeat;
     }
+
+    .about-you input {
+        width: calc(100% - 15px);
+    }
+
+    .hero {
+        font-size: 0.7em;
+    }
 }
+

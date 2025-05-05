@@ -3,6 +3,27 @@
 }
 
 
+/* Убираем синий цвет на iOS для всех интерактивных элементов */
+button, .tag, .addQuestion, #submitPollBtn, .answerType, .addTag, .copy-link, .go-home {
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Явно задаем цвет для всех состояний ссылок */
+a, a:visited, a:active, a:hover {
+    color: #000;
+}
+
+/* Для тэгов, если они все еще синие */
+.tag {
+    color: #000; /* Или любой другой нужный цвет */
+}
+
+/* Для кнопки добавления вопроса и отправки опроса */
+.addQuestion, #submitPollBtn {
+    color: #000;
+}
+
 /* reset default styles */
 * {
     padding: 0px;
@@ -11,7 +32,7 @@
 
 a {
     text-decoration: none;
-    color: unset;
+    color: #000;
 }
 
 button {
@@ -29,6 +50,7 @@ body, button, textarea {
     font-style: normal;
     font-variation-settings: "wdth" 100;
     font-size: 14px;
+    color: #000;
 
 }
 
@@ -95,68 +117,9 @@ header .logo {
 }
 
 footer {
-    margin-top: 30px;
-    padding: 30px 0;
-    background-color: #5863BF;
-}
-
-.footer-content {
-    position: relative;
-    max-width: 768px;
-    margin: 0 auto;
-    min-height: 350px;
-}
-
-.footer-content .lamp {
-    width: 200px;
-    height: 200px;
-}
-
-.footer-content > div {
-    position: absolute;
-    /* background-color: white; */
-    border-radius: 12px;
-    padding: 10px;
-    /* margin временный */
-    margin: 20px;
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-
-.footer-content .cloud-1 {
-    padding: 6px 43px 6px 8px;
-    border-radius: 12px 12px 0 12px;
-    right: 0;
-    top: 0;
-    max-width: 384px;
-    min-height: 40px;
-    background-image: url( "../img/cloud 1.svg");
-    font-size: 31px;
-}
-
-.footer-content .cloud-2 {
-    padding: 6px 13px 6px 48px;
-    top: 100px;
-    border-radius: 12px 12px 12px 0;
-    right: 37px;
-    font-size: 16px;
-    max-width: 384px;
-    background-image: url( "../img/cloud 2.svg");
-    min-height: 180px;
-}
-
-.footer-content div:nth-of-type(3) {
-    left: 0;
-    top: 250px;
-    background: white;
-    border-radius: 12px;
-}
-
-footer .contacts {
-    width: 150px;
-    display: flex;
-    flex-direction: column;
-    margin: 0 0;
+    background: black;
+    color: #fff;
+    
 }
 
 .contact {
