@@ -1,4 +1,7 @@
-import json
+import dataclasses
+
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import api_view
 
 from django.shortcuts import render
 from django.core.handlers.wsgi import WSGIRequest
@@ -14,7 +17,11 @@ from Configs.Responses_from_consumer import Responses
 
 from log_system.Levels import Levels
 
+from Configs.Schemas.main_page import MAIN_PAGE_SCHEMA, GET_POLLS_SCHEMA
 
+
+@extend_schema(**MAIN_PAGE_SCHEMA)
+@api_view(['GET'])
 @authentication_for_main_page
 def request_on_main_page(requests: WSGIRequest, is_authenticated: bool):
     """
@@ -47,6 +54,8 @@ def request_on_main_page(requests: WSGIRequest, is_authenticated: bool):
     return render(requests, 'index.html', context={'all_objects': polls, 'tags': tags, 'user': user})
 
 
+@extend_schema(**GET_POLLS_SCHEMA)
+@api_view(['GET'])
 def requests_on_get_polls(request, num_of_polls=5):
     """
     Функция нужна для получения выбранного количества опросов из БД
@@ -55,7 +64,7 @@ def requests_on_get_polls(request, num_of_polls=5):
 
     :return: список опросов. Каждый элемент массива является экземпляром класса Poll
     """
-    polls = client_mysqldb.get_polls(int(num_of_polls))
+    polls = [dataclasses.asdict(dataclass) for dataclass in client_mysqldb.get_polls(int(num_of_polls))]
     return JsonResponse({"list": polls})
 
 

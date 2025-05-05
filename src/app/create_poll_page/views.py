@@ -1,5 +1,6 @@
 import base64
 import json
+import random
 
 from generate_qr_code import generate_qr_code_of_link
 
@@ -19,7 +20,16 @@ from Configs.Hosts import Hosts
 
 from Configs.Poll import SizeOfImage, Poll
 
+import pathlib
 
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import api_view
+
+from Configs.Schemas.create_poll import CREATE_POLL_PAGE_SCHEMA, CREATE_POLL_SCHEMA
+
+
+@extend_schema(**CREATE_POLL_PAGE_SCHEMA)
+@api_view(['GET'])
 @authentication()
 def request_on_create_poll_page(requests, id_of_user: int = None):
     """
@@ -35,6 +45,8 @@ def request_on_create_poll_page(requests, id_of_user: int = None):
     return render(requests, 'create_poll_page.html', context={'user': user, 'tags': tags.items()})
 
 
+@extend_schema(**CREATE_POLL_SCHEMA)
+@api_view(['POST'])
 @authentication()
 def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
     """
@@ -56,24 +68,32 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
         if result:
             return on_success_create_poll(json_data, poll, result)
         else:
-            return JsonResponse({'result': result})
+            return JsonResponse({'response': 'Опрос не был создан.'}, status=500)
     except TryToXSS:
-        return HttpResponseForbidden("Попытка XSS атаки")
+        return JsonResponse({"response": "Попытка XSS атаки"}, status=403)
     except AssertionError:
-        return HttpResponseForbidden()
+        return JsonResponse({'response': 'Неправильные входные данные.'}, status=400)
     except mysql.connector.errors.DataError:
-        return HttpResponseForbidden("Ошибка базы данных")
+        return JsonResponse({'response': 'Опрос не был создан.'}, status=500)
 
 
 def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
     if 'cover' in json_data:
         cover = base64.b64decode(json_data['cover'])
         client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, cover)
+    else:
+        dir_img = pathlib.Path('app/static/img/default_img')
+        images = [path for path in dir_img.iterdir()]
+        random_image = random.choice(images)
+
+        with open(random_image, 'rb') as file:
+            client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, file.read())
+
     producer.publish(Commands.get_vector_poll % poll.id_of_poll)
     if json_data['private']:
         code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
         base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % (Hosts.domain, code))
         return JsonResponse(
-            {"result": result, "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
+            {"response": 'Опрос был успешно создан.', "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
     else:
-        return JsonResponse({'result': result})
+        return JsonResponse({'response': 'Опрос был успешно создан.'})

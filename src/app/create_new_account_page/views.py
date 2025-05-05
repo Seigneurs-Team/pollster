@@ -5,7 +5,14 @@ from databases.mysql_db import client_mysqldb
 from Configs.Exceptions import ErrorSameLogins, NotFoundCookieIntoPowTable
 from django.http import JsonResponse
 
+from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 
+from Configs.Schemas.create_new_account import CREATE_NEW_ACCOUNT_PAGE_SCHEMA, CREATE_NEW_ACCOUNT_SCHEMA
+
+
+@extend_schema(**CREATE_NEW_ACCOUNT_PAGE_SCHEMA)
+@api_view(['GET'])
 def request_on_create_new_account_page(requests):
     """
     Функция возвращает страницу создания нового аккаунта
@@ -20,6 +27,8 @@ def request_on_create_new_account_page(requests):
     return response
 
 
+@extend_schema(**CREATE_NEW_ACCOUNT_SCHEMA)
+@api_view(['POST'])
 def request_on_create_new_account(request):
     """
     Функция нужна для успешного создания нового аккаунта на основе тех данных, которые передаются в JSON запроса
@@ -49,10 +58,10 @@ def request_on_create_new_account(request):
         _, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         client_mysqldb.create_entry_into_sessions_table(cookie, 'auth_sessionid', id_of_user)
 
-        return JsonResponse({'response': 200})
+        return JsonResponse({'response': 'Пользователь был успешно создан.'})
     except AssertionError:
-        return JsonResponse({'response': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'})
+        return JsonResponse({'error_code': 1, 'message': 'Не найдено значение pow в запросе либо не найден куки файл.'}, status=400)
     except ErrorSameLogins:
-        return JsonResponse({'response': 2, 'message': 'Данный логин уже занят.'})
+        return JsonResponse({'error_code': 2, 'message': 'Данный логин уже занят.'}, status=409)
     except NotFoundCookieIntoPowTable:
-        return JsonResponse({'response': 3, 'message': 'Повторите попытку'})
+        return JsonResponse({'error_code': 3, 'message': 'Недействительный куки'}, status=401)
