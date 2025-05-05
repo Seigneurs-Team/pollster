@@ -16,6 +16,7 @@ class DataOfPoll(serializers.Serializer):
     tags = serializers.ListField()
     description = serializers.CharField()
     questions = serializers.ListField(child=Question())
+    cover = serializers.CharField()
 
 
 class SuccessCreatePoll(serializers.Serializer):
