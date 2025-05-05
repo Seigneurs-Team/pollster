@@ -44,7 +44,7 @@ function getQuestions() {
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
         if (type === 'radio' || type === 'checkbox') {
-            return makeQuestionWithOptions(type)
+            return makeQuestionWithOptions(type, this)
 
         } else if (type === 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
             return makeShortTextQuestion(type, this)
@@ -59,22 +59,22 @@ function getQuestions() {
 
 }
 
-function makeQuestionWithOptions(type) {
+function makeQuestionWithOptions(type, question) {
     let options = []
 
     let rightAnswersId = []
 
     // id ответов начинаются с 0
     let counter = -1
-    $(this).find('.option').each(function () {
+    $(question).find('.option').each(function () {
         // Извлекаем значение из input.value, убираем пробелы в начале и в конце
-        let value = $(this).find('.value').val().trim();
+        let value = $(question).find('.value').val().trim();
         // Если значение не пустое, добавляем его в массив options
         if (value) {
             options.push(value);
             counter++
         }
-        if ($(this).find('.check').is(':checked')) {
+        if ($(question).find('.check').is(':checked')) {
             rightAnswersId.push(counter);
             // записывать буду порядковый номер правильных ответов, который возьму в качестве id. лучше использовать id, чем сравнение строк
         }

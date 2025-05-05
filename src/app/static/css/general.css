@@ -121,6 +121,7 @@ footer {
     color: #fff;
     display: flex;
     flex-direction: column;
+    row-gap: 9px;
     justify-content: center;
     align-items: center;
     padding: 10px 0;
@@ -136,7 +137,8 @@ footer {
 }
 
 .footer-line {
-    height: 1px; /* или нужная вам толщина линии */
+    height: 1.5px;
+    width: 100%;
     background: linear-gradient(
         to right,
         black 0%,
@@ -145,14 +147,15 @@ footer {
     );
 }
 
-/* .contact {
+.contact {
     align-items: center;
     display: flex;
     justify-content: space-evenly;
-} */
+    color: white;
+}
 
-.contacts svg {
-    width: 30px;
+.contacts img {
+    width: 25px;
 }
 
 .error-message, #error-message {
