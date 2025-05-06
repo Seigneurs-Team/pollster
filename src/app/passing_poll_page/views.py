@@ -13,7 +13,14 @@ from django.http import JsonResponse, HttpResponseForbidden
 from Tools_for_rabbitmq.producer import producer
 from log_system.Levels import Levels
 
+from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 
+from Configs.Schemas.passing_poll import PASSING_POLL_PAGE_SCHEMA
+
+
+@extend_schema(**PASSING_POLL_PAGE_SCHEMA)
+@api_view(['GET'])
 @authentication_for_passing_poll_page
 def request_on_passing_poll_page(requests, poll_id: typing.Union[int, str], id_of_user: int = None):
     """
