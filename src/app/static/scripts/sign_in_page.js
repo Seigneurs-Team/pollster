@@ -1,5 +1,5 @@
 // вход в аккаунт
-import { getChallenge, findProof } from './POW.js';
+import { getChallenge, findProof } from './/utils/POW.js';
 import { sendRequest } from './api.js';
 
 

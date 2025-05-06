@@ -9,9 +9,7 @@ $(document).ready(function() {
     setupEventListeners();
 });
 
-/**
- * Отрисовка всех вопросов
- */
+// Отрисовка всех вопросов
 function renderAllQuestions() {
     questionsList.forEach(question => {
         const questionEl = $(`<div id="${question.id}" class="question"></div>`);
@@ -23,9 +21,7 @@ function renderAllQuestions() {
     });
 }
 
-/**
- * Настройка обработчиков событий
- */
+// Настройка обработчиков событий
 function setupEventListeners() {
     $(".start").on('click', handleStartButtonClick);
     $(".submit").on('click', (e) => {e.preventDefault();
@@ -33,17 +29,13 @@ function setupEventListeners() {
 });
 }
 
-/**
- * Обработка клика на кнопку "Прохождение опроса"
- */
+// Обработка клика на кнопку "Прохождение опроса"
 function handleStartButtonClick() {
     $('form').show();
     $(this).hide();
 }
 
-/**
- * Генерация содержимого вопроса по типу
- */
+// Генерация содержимого вопроса по типу
 function answerType(questionType, questionId, question) {
     switch(questionType) {
         case "short text":
@@ -66,9 +58,7 @@ function answerType(questionType, questionId, question) {
     }
 }
 
-/**
- * Отрисовка вариантов ответов
- */
+// Отрисовка вариантов ответов
 function renderOptions(type, questionId, question) {
     const options = $(`<div class="options"></div>`);
     let counter = 0;
@@ -81,9 +71,7 @@ function renderOptions(type, questionId, question) {
     return options;
 }
 
-/**
- * Генерация HTML для варианта ответа
- */
+// Генерация HTML для варианта ответа
 function addOption(type, questionId, option, counter) {
     const inputType = type === "radio" ? "radio" : "checkbox";
     const id = `${questionId}_${counter}`;
@@ -96,9 +84,7 @@ function addOption(type, questionId, option, counter) {
     `);
 }
 
-/**
- * Обработка отправки результатов
- */
+// Обработка отправки результатов
 async function handleSubmitButtonClick(event) {
     console.log('hi from handleSubmitButtonClick')
     const poll_id = $(event.currentTarget).attr('data-poll-id');
@@ -115,9 +101,7 @@ async function handleSubmitButtonClick(event) {
     }
 }
 
-/**
- * Сбор ответов со всех вопросов
- */
+// Сбор ответов со всех вопросов
 function collectAnswers() {
     return questionsList.map(question => ({
         question_id: question.id,
@@ -126,9 +110,7 @@ function collectAnswers() {
     }));
 }
 
-/**
- * Получение значения ответа для конкретного вопроса
- */
+// Получение значения ответа для конкретного вопроса
 function getAnswerValue(question) {
     const questionEl = $(`#${question.id}`);
 
@@ -151,9 +133,7 @@ function getAnswerValue(question) {
     }
 }
 
-/**
- * Отправка данных на сервер
- */
+// Отправка данных на сервер
 async function sendPassedPoll(data) {
     console.log('Отправка результатов...');
     const response = await sendRequest('/post_pass_poll', 'POST', data);
