@@ -177,6 +177,10 @@ button.deleteQuestion:hover {
     margin: auto;
 }
 
+#submitPollBtn:hover {
+    color: #fff;
+}
+
 .option * {
     min-height: auto;
     vertical-align: middle;
