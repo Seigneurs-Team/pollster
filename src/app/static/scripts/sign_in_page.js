@@ -21,8 +21,6 @@ async function sendSignInRequest(data) {
     }
 }
 
-const host = 'http://127.0.0.1:8000';
-
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
 
