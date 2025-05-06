@@ -29,11 +29,11 @@
         <header>
             <a href="/" class="logo-stub"></a>
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                    src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
 
-        <main data-deloption="{% static 'img/cross.svg' %}" data-addoption="{% static 'img/plus.svg' %}">
+        <main data-deloption="{% static 'img/icons/cross.svg' %}" data-addoption="{% static 'img/icons/plus.svg' %}">
             <div class="form">
                 <h1>Создание опроса</h1>
                 <label class="input-file addPollImage">
@@ -64,7 +64,7 @@
                 <div class="default-images">
                     <div class="default-image">
                         <input type="radio" name="default-image" id="no-image" value="no-image">
-                        <label for="no-image"><img src="{% static 'img\no image.svg' %}" alt="default image"></label>
+                        <label for="no-image"><img src="{% static 'img\default_img\no image.svg' %}" alt="default image"></label>
                     </div>
                     <div class="default-image">
                         <input type="radio" name="default-image" id="image-1" value="1">
@@ -112,7 +112,7 @@
                 <div class="input-wrapper add-tag-wrapper">
                     <input type="text" id="newTagInput" maxlength="20">
                     <button class="addTag">
-                        <img src="{% static 'img\plus.svg' %}" alt="добавить тэг">
+                        <img src="{% static 'img/icons/plus.svg' %}" alt="добавить тэг">
                     </button>
                 </div>
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
@@ -152,7 +152,7 @@
                         </div>
                         <div>
                             <div class="poll-link"><input type="text" disabled><button class="copy-link"><img
-                                        src="{% static 'img\Copy.svg' %}" alt="copy link"></button></div>
+                                        src="{% static 'img/icons/Copy.svg' %}" alt="copy link"></button></div>
                             <span class="copied">Copied!</span>
                         </div>
                         <button class="go-home">К опросам</button>

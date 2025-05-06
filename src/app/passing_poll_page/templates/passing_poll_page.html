@@ -30,13 +30,12 @@
         <header>
             <a href="/" class="logo-stub"></a>
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                    src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
 
         <main>
             <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
-            <div class="poll-img" data-image="data:image/png;base64,{{ poll.cover }}"></div>
 
             <h1 class="poll-name">{{poll.name_of_poll}}</h1>
             <p class="poll-description">{{poll.description}}</p>

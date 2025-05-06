@@ -32,7 +32,7 @@
 
                 {% if user.is_authenticated %}
                 <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                        src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+                        src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
                 {% else %}
                 <a href="/sign_in" class="sign-up">Войти</a>
                 {% endif %}
@@ -40,7 +40,7 @@
                     <span>Создавай</span><span>-</span><span>Узнавай</span><span>-</span><span>Анализируй</span>
                 </div>
                 <div class="search">
-                    <img src="{% static 'img\Filter.svg' %}" class="opn-popup">
+                    <img src="{% static 'img/icons/Filter.svg' %}" class="opn-popup">
                     <div class="popup" id="popup">
                         <div class="popup-content">
                             <h2>Фильтры (в разработке)</h2>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <input type="text" name="search" id="search" placeholder="Search for polls" maxlength="100">
-                    <img src="{% static 'img\Search.svg' %}">
+                    <img src="{% static 'img/icons/Search.svg' %}">
                 </div>
 
             </div>
