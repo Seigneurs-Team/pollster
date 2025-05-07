@@ -16,7 +16,7 @@ from log_system.Levels import Levels
 from rest_framework.decorators import api_view
 from drf_spectacular.utils import extend_schema
 
-from Configs.Schemas.passing_poll import PASSING_POLL_PAGE_SCHEMA
+from Configs.Schemas.passing_poll import PASSING_POLL_PAGE_SCHEMA, PASSING_POLL_SCHEMA
 
 
 @extend_schema(**PASSING_POLL_PAGE_SCHEMA)
@@ -47,6 +47,8 @@ def request_on_passing_poll_page(requests, poll_id: typing.Union[int, str], id_o
         return render(requests, 'NotFound.html')
 
 
+@extend_schema(**PASSING_POLL_SCHEMA)
+@api_view(['POST'])
 @authentication()
 def request_on_passing_poll(request, id_of_user: int = None):
     """
@@ -61,25 +63,29 @@ def request_on_passing_poll(request, id_of_user: int = None):
     data_of_passing_poll = json.loads(request.body)
     auth_sessionid = request.COOKIES['auth_sessionid']
     id_of_poll = data_of_passing_poll['poll_id']
+
     producer.publish_log(
         'Получил POST запрос с данными, который пользователь ввел в опросе',
         Levels.Info, id_of_user, request, other_data={'id_of_poll': id_of_poll})
+
     try:
         client_mysqldb.add_users_into_table_for_users_who_pass_the_poll(id_of_user, id_of_poll)
+
         producer.publish_log(
             'Начало сохранения ответов пользователя', Levels.Info,
             id_of_user, requests=request, other_data={'id_of_poll': id_of_poll, 'count_of_answers': len(data_of_passing_poll['answers'])}
         )
+
         client_mysqldb.save_answers_users_into_table_of_passing_poll_from_user(data_of_passing_poll['answers'], id_of_user, id_of_poll)
         producer.publish_log("Данные были успешно сохранены", Levels.Info, id_of_user, requests=request, other_data={'id_of_poll': id_of_poll})
     except RepeatPollError:
-        return HttpResponseForbidden()
+        return JsonResponse({'response': 'Вы уже прошли данный опрос.'}, status=403)
     except TryToXSS:
         producer.publish_log(
             'Была пресечена попытка XSS атаки', Levels.Warning,
             id_of_user, requests=request, other_data={'id_of_poll': id_of_poll}
         )
         client_mysqldb.delete_cookie_from_session_table(auth_sessionid, 'auth_sessionid', id_of_user)
-        return HttpResponseForbidden()
+        return JsonResponse({'response': 'Неправильные типы вопросов были отправлены на сервер.'}, status=400)
     else:
-        return JsonResponse({'response': 200})
+        return JsonResponse({'response': 'Данные были успешно сохранены в БД.'})
