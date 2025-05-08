@@ -5,7 +5,7 @@ from Configs.Serializers.delete_account import ResponseDeleteAccount
 
 DELETE_ACCOUNT_SCHEMA = {
     'summary': 'удаление пользователя.',
-    'tags': ['delete account'],
+    'tags': ['delete account', 'profile page'],
     'description': 'Endpoint нужен для удаления пользователя из системы. Это значит также удаление всех зависимых записей от этого пользователя в БД.',
     'methods': ['DELETE'],
     'responses': {

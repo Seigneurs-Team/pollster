@@ -5,7 +5,14 @@ from databases.mysql_db import client_mysqldb
 
 from authentication.check_user_on_auth import authentication_for_profile_page
 
+from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 
+from Configs.Schemas.profile_page import PROFILE_PAGE_SCHEMA
+
+
+@extend_schema(**PROFILE_PAGE_SCHEMA)
+@api_view(['GET'])
 @authentication_for_profile_page
 def request_on_profile_page(requests, id_of_user):
     """

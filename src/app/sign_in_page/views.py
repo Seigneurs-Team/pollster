@@ -2,10 +2,17 @@ from django.shortcuts import render
 import json
 from databases.mysql_db import client_mysqldb
 from PoW.generate_random_string import generate_random_string
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse
 import datetime
 
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import api_view
 
+from Configs.Schemas.sign_in import SIGN_IN_PAGE_SCHEMA, SIGN_IN_SCHEMA
+
+
+@extend_schema(**SIGN_IN_PAGE_SCHEMA)
+@api_view(['GET'])
 def request_on_sign_in_page(requests):
     """
     Функция нужна для отправки страницы входа в систему
@@ -22,6 +29,8 @@ def request_on_sign_in_page(requests):
     return response
 
 
+@extend_schema(**SIGN_IN_SCHEMA)
+@api_view(['POST'])
 def request_on_sign_in_account(request):
     """
     Функция производит механизм аутентификации и авторизации пользователя в системе
@@ -43,7 +52,7 @@ def request_on_sign_in_account(request):
         pow_from_db = client_mysqldb.get_pow(cookie)
 
         if pow == '' or pow != pow_from_db:
-            return HttpResponseForbidden()
+            return JsonResponse({'response': 'Неправильный pow в теле запроса. Challenge POW не был пройден правильно.'}, status=400)
 
         password_from_db, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         assert password == password_from_db
@@ -57,6 +66,6 @@ def request_on_sign_in_account(request):
         else:
             client_mysqldb.create_entry_into_sessions_table(cookie, 'auth_sessionid', id_of_user)
 
-        return JsonResponse({'response': 'ok'})
+        return JsonResponse({'response': 'Пользователь успешно авторизован в системе.'})
     except AssertionError:
-        return JsonResponse({'response': 'Неверный пароль или почта'})
+        return JsonResponse({'response': 'Неверный пароль или почта.'}, status=301)
