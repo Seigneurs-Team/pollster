@@ -1,5 +1,5 @@
 // api.js
-export async function sendRequest(url, method, data, timeout = 0) {
+export async function sendRequest(url, method, data = {}, timeout = 0) {
     const controller = new AbortController();
     let timeoutId;
 
@@ -28,8 +28,7 @@ export async function sendRequest(url, method, data, timeout = 0) {
             throw new Error(errorMessage)
         }
 
-
-        return promise;
+        return responseJSON;
     } catch (error) {
         clearTimeout(timeoutId);
         throw error;

@@ -36,7 +36,6 @@
                 <input type="text" name="edit_name_input" id="edit_name_input" value="{{user.username}}" maxlength="100"
                     required>
             </div>
-            <span>О вас</span>
             <div class="about-you">
                 <label for="email">Электроная почта</label>
                 <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled"
@@ -102,10 +101,22 @@
                                 <div class="answers-left-poll">Осталось {{10}} человек</div>
                             </div>
                             <div class="btns">
-                                <a href="/statistics/{{poll.id_of_poll}}"><button class="view-statistics"> Посмотреть
-                                        статистику </button></a>
-                                <button class="delete-poll" data-poll="{{poll.id_of_poll}}"> Удалить </button>
+                                <button class="complete-poll" data-poll="{{poll.id_of_poll}}">
+                                    Завершить опрос
+                                </button>
+
+                                <div class="actions">
+                                <a href="/statistics/{{poll.id_of_poll}}">
+                                    <img src="{% static 'img/icons/statistics.svg' %}">
+                                </a>
+                                <button class="share-poll" data-poll="{{poll.id_of_poll}}">
+                                    <img src="{% static 'img/icons/share.svg' %}">
+                                </button>
+                                <button class="delete-poll" data-poll="{{poll.id_of_poll}}">
+                                    <img src="{% static 'img/icons/basket.svg' %}">
+                                </button>
                             </div>
+                        </div>
                         </div>
 
                     </li>

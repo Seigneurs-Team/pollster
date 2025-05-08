@@ -2,15 +2,18 @@ import { sendRequest } from './api.js';
 
 
 const questionsDiv = $("#questions");
-
+let questionsList = []
 // Инициализация при загрузке документа
-$(document).ready(function() {
+$(document).ready(function () {
     renderAllQuestions();
     setupEventListeners();
 });
 
 // Отрисовка всех вопросов
 function renderAllQuestions() {
+
+    questionsList = JSON.parse(localStorage.getItem('questionsList'));
+
     questionsList.forEach(question => {
         const questionEl = $(`<div id="${question.id}" class="question"></div>`);
         const questionText = $(`<p class="question-text">${question.text}</p>`);
@@ -24,9 +27,10 @@ function renderAllQuestions() {
 // Настройка обработчиков событий
 function setupEventListeners() {
     $(".start").on('click', handleStartButtonClick);
-    $(".submit").on('click', (e) => {e.preventDefault();
-     handleSubmitButtonClick(e)
-});
+    $(".submit").on('click', (e) => {
+        e.preventDefault();
+        handleSubmitButtonClick(e)
+    });
 }
 
 // Обработка клика на кнопку "Прохождение опроса"
@@ -37,7 +41,7 @@ function handleStartButtonClick() {
 
 // Генерация содержимого вопроса по типу
 function answerType(questionType, questionId, question) {
-    switch(questionType) {
+    switch (questionType) {
         case "short text":
             return '<input class="answerShort" type="text" maxlength="60" placeholder="Короткий ответ">';
 
@@ -93,12 +97,7 @@ async function handleSubmitButtonClick(event) {
         answers: collectAnswers()
     };
 
-    try {
-        const response = await sendPassedPoll(results);
-        console.log('Ответ сервера:', response);
-    } catch (error) {
-        console.error('Ошибка при отправке данных:', error);
-    }
+    sendPassedPoll(results)
 }
 
 // Сбор ответов со всех вопросов
@@ -114,7 +113,7 @@ function collectAnswers() {
 function getAnswerValue(question) {
     const questionEl = $(`#${question.id}`);
 
-    switch(question.type) {
+    switch (question.type) {
         case 'short text':
             return questionEl.find('.answerShort').val();
 
@@ -135,18 +134,19 @@ function getAnswerValue(question) {
 
 // Отправка данных на сервер
 async function sendPassedPoll(data) {
-    console.log('Отправка результатов...');
-    const response = await sendRequest('/post_pass_poll', 'POST', data);
-    console.log('response:', response)
-    console.log('response.status === 200', response.status === 200)
-
-    // Обработка ответа от сервера
-    if (response.status !== 200) {
-        throw new Error('Ошибка при отправке данных');
-    } else {
-        alert('Результаты прохождения сохранены')
-        window.location.href = '/'; // Перенаправление на домашнюю страницу
-    }
-
-    return await response.json();
+    sendRequest('/post_pass_poll', 'POST', data)
+        .then(() => {
+            showSuccessOverlay()
+        })
+        .catch((error) => {
+            showFailOverlay(error)
+        })
 }
+
+function showSuccessOverlay() {
+    $('#overlay-success').show();
+}
+
+$('.overlay').on('click', '.go-home', function () {
+    window.location.href = `/profile/${localStorage.userId}`;
+});

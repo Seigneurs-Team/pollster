@@ -159,6 +159,15 @@
                     </div>
                 </div>
             </div>
+
+            <div class="overlay" id="overlay-success">
+                <div id="overlay-success-inner">
+                    <div class="success_content">
+                        <span>Опрос успешно создан!</span>
+                        <button class="go-home">К опросам</button>
+                    </div>
+                </div>
+            </div>
         </main>
 
     </div>
@@ -167,7 +176,7 @@
     </div>
 
     <script>
-        sessionStorage.userId = {{ user.id }}
+        localStorage.userId = {{ user.id }}
     </script>
     <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
 

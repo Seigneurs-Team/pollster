@@ -104,10 +104,7 @@
     }
 
     .about-you {
-        background-color: #fff;
-        width: calc(100% - 30px);
         align-items: center;
-        margin: 30px auto;
         padding: 15px;
     }
 
@@ -249,12 +246,12 @@
 
     }
 
-    main.profile {
+    /* main.profile {
         background-image: url(../img/backgrounds/profile-background-mobile.svg);
         background-position: center top;
         background-size: auto;
         background-repeat: no-repeat;
-    }
+    } */
 
     .about-you input {
         width: calc(100% - 15px);
