@@ -2,44 +2,26 @@
 
 @media (max-width: 768px) {
 
-    /* Общие стили */
+    /* Общие стили для контента и шапки */
     .content {
         width: calc(100% - 20px);
     }
 
-    .content>* {
-        max-width: 100%;
-    }
-
+    .content>*,
     .main>* {
         max-width: 100%;
     }
 
+    /* Шапка */
     header {
         height: auto;
-        min-height: 73px;
         background-size: contain;
         background-repeat: no-repeat;
-    }
-
-    .logo-stub {
-        height: 131px;
-        width: 40%;
-    }
-
-    .search {
-        width: 90%;
-        margin: auto;
     }
 
     .right-block {
         float: none;
         height: auto;
-    }
-
-    .logo {
-        margin-bottom: 15px;
-        max-width: 150px;
     }
 
     .profile-link,
@@ -53,16 +35,10 @@
         margin: 5px 0;
     }
 
-
-
-
     /* Страница опросов */
     li.poll-item {
         max-width: calc(100% - 30px);
         margin: 0 auto;
-    }
-
-    li.poll-item {
         display: flex;
         flex-direction: column;
     }
@@ -109,13 +85,15 @@
     }
 
     #createPollBtn {
+        margin: 8px 0;
         max-width: calc(100% - 12px);
+        border-width: 4px;
+        height: 100px;
     }
 
     /* Создание опроса */
     .addPollImage {
         min-height: 100px;
-        /* line-height: 100px; */
         font-size: 16px;
     }
 
@@ -139,6 +117,7 @@
     ul.polls {
         flex-direction: column;
         row-gap: 20px;
+        margin-top: 0;
     }
 
     /* Формы */
@@ -171,13 +150,13 @@
         display: none;
     }
 
+    /* Страницы входа/регистрации */
     main.sign-in,
     main.create-new-account {
         padding: 0;
         min-height: 100vh;
         margin-top: 0;
         padding-top: 30px;
-
     }
 
     .circles-wrapper {
@@ -192,19 +171,20 @@
 
     .circle {
         position: initial;
-
     }
 
     #loginForm {
         margin: auto;
-
     }
 
+    .hero {
+        font-size: 0.7em;
+    }
 }
 
 @media (max-width: 480px) {
 
-    /* Дополнительные правки для маленьких экранов */
+    /* Мелкие экраны - дополнительные правки */
     h1 {
         font-size: 24px;
     }
@@ -238,26 +218,23 @@
         padding: 0 15px;
     }
 
-    main.sign-in,
-    main.create-new-account {
-        background-image: url(../img/backgrounds/sign-in-background-mobile.svg);
-        background-position: center bottom;
-        background-size: auto;
-
-    }
-
-    /* main.profile {
-        background-image: url(../img/backgrounds/profile-background-mobile.svg);
-        background-position: center top;
-        background-size: auto;
-        background-repeat: no-repeat;
-    } */
-
     .about-you input {
         width: calc(100% - 15px);
     }
 
-    .hero {
-        font-size: 0.7em;
+    .specially-for-you-header {
+        flex-direction: column;
+        align-items: center;
+        row-gap: 10px;
     }
+
+    main.sign-in,
+    main.create-new-account {
+        background-image: none;
+    }
+    
+    header .logo {
+        min-width: 100px;
+    }
+
 }

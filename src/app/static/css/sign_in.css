@@ -19,8 +19,14 @@ main.sign-in {
 }
 
 header {
-    display:none;
+    justify-content: center
 }
+
+header a {
+    display: inline-block;
+    width: min-content;
+}
+
 h1 {
     font-size: 30px;
 }

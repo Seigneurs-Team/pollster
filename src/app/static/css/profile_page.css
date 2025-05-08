@@ -108,13 +108,13 @@
 
 .save-changes, .delete-account, .log-out {
     max-width: 200px;
-    padding: 5px;
+    padding: 5px 14px;
 }
 
 .delete-account, .log-out {
     background-color: white;
     border: solid 1.5px red;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     color: red;
 }
 
@@ -253,6 +253,11 @@ label {
 }
 
 .actions button:hover {
-    background-color: none;
+    background: none;
     cursor:pointer;
+}
+
+header a {
+    display: inline-block;
+    width: min-content;
 }

@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
     <title>Pollster</title>
-    <!-- css, общий для всех страниц (header, footer, fonts...)  -->
+    
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
@@ -21,24 +21,40 @@
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
     <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
 
+    <meta property="og:title" content="Pollster: платформа для анкетирования" />
+    <meta property="og:description" content="Современная платформа для создания и прохождения опросов на Django" />
+    <meta property="og:image" content="{% static 'img\logo.png' %}" />
+    <meta property="og:url" content="https://example.com/open-graph-guide" />
 </head>
 
 <body>
     <div class="content">
         <header>
-            <a href="/" class="logo-stub"></a>
-            <!--        <img src="{% static 'img\header2.png' %}" alt="logo" class="logo">-->
-            <div class="right-block">
+            <a href="/">
+                <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+            </a>
 
-                {% if user.is_authenticated %}
-                <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                        src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
-                {% else %}
-                <a href="/sign_in" class="sign-up">Войти</a>
-                {% endif %}
+            {% if user.is_authenticated %}
+            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
+                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
+            {% else %}
+            <a href="/sign_in" class="sign-up">Войти</a>
+            {% endif %}
+        </header>
+        <main>
+            <section class="hero">
+                <img class="slogan-img" src="{% static 'img\hero-img.png' %}" alt="">
                 <div class="slogan">
-                    <span>Создавай</span><span>-</span><span>Узнавай</span><span>-</span><span>Анализируй</span>
+                    <span class="slogan-1">Собирайте данные легко!</span>
+                    <span class="slogan-2">Анализируйте результаты в реальном времени</span>
                 </div>
+            </section>
+            <a href="/create_poll_page" id="createPollBtn">+ Создать опрос</a>
+            <!-- Кнопка для создания опроса -->
+            <img src="{% static 'img\circles.png' %}" alt="logo" class="circles">
+
+            <div class="specially-for-you-header">
+                <h1>Специально для Вас</h1>
                 <div class="search">
                     <img src="{% static 'img/icons/Filter.svg' %}" class="opn-popup">
                     <div class="popup" id="popup">
@@ -82,25 +98,10 @@
                             <button id="applyFilters">Применить фильтры</button>
                         </div>
                     </div>
-                    <input type="text" name="search" id="search" placeholder="Search for polls" maxlength="100">
+                    <input type="text" name="search" id="search" placeholder="Поиск опросов" maxlength="100">
                     <img src="{% static 'img/icons/Search.svg' %}">
                 </div>
-
             </div>
-        </header>
-        <main>
-            <section class="hero">
-                <img class="slogan-img" src="{% static 'img\hero-img.png' %}" alt="">
-                <div class="slogan">
-                    <span class="slogan-1">Собирайте данные легко!</span>
-                    <span class="slogan-2">Анализируйте результаты в реальном времени</span>
-                </div>
-            </section>
-            <a href="/create_poll_page" id="createPollBtn">+ Создать опрос</a>
-            <!-- Кнопка для создания опроса -->
-            <img src="{% static 'img\circles.png' %}" alt="logo" class="circles">
-
-            <h1>Рекомендуем</h1>
 
             <ul class="polls">
                 {% for poll in all_objects %}
@@ -183,17 +184,24 @@
     <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}"
         data-cloud-2="{% static 'img/cloud 2.svg' %}">
         <div style="position: fixed; left: -50px; top: 0; height: 100vh; z-index: 1000;">
-            <div style="transform: rotate(-90deg) translateX(-100%); transform-origin: left top; position: absolute; left: 0; animation: moveDown 4s linear infinite;">
-              <img src="http://open-krasnodar.ru/subdomain_files/ajax_images/913/1361354500.gif" style="width: 200px; height: 200px; display: block; transform: scaleY(-1);">
+            <div
+                style="transform: rotate(-90deg) translateX(-100%); transform-origin: left top; position: absolute; left: 0; animation: moveDown 4s linear infinite;">
+                <img src="http://open-krasnodar.ru/subdomain_files/ajax_images/913/1361354500.gif"
+                    style="width: 200px; height: 200px; display: block; transform: scaleY(-1);">
             </div>
-            
+
             <style>
-              @keyframes moveDown {
-                0% { top: -200px; }
-                100% { top: 100vh; }
-              }
+                @keyframes moveDown {
+                    0% {
+                        top: -200px;
+                    }
+
+                    100% {
+                        top: 100vh;
+                    }
+                }
             </style>
-          </div>
+        </div>
         {% include 'footer.html' %}
     </div>
     <script src="{% static 'scripts/index.js' %}" type="module"></script>

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pollster</title>
     {% load static %}
-    <!-- css, общий для всех страниц (header, footer, fonts...)  -->
+    
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
@@ -27,15 +27,18 @@
 <body>
     <div class="content">
         <header>
-            <a href="/" class="logo-stub"></a>
+            <a href="/">
+                <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+            </a>
+
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
+                src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
 
         <main data-deloption="{% static 'img/icons/cross.svg' %}" data-addoption="{% static 'img/icons/plus.svg' %}">
             <div class="form">
-                <h1>Создание опроса</h1>
+                <h1>Создать опрос</h1>
                 <label class="input-file addPollImage">
                     <span class="load-img">Загрузить картинку</span>
                     <input type="file" accept="image/png, image/jpeg" name="file" />
