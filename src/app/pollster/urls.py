@@ -40,6 +40,8 @@ from app.statistics_of_poll.views import request_on_statistics_page, request_on_
 
 from app.get_qr_code_of_poll.views import request_on_get_qr_code
 
+from app.admin_panel.views import request_on_admin_panel
+
 
 handler403 = 'app.custom_handlers_of_status_codes.views.custom_forbidden'
 
@@ -67,4 +69,6 @@ urlpatterns = [
     path('get_qr_code/<int:id_of_poll>', request_on_get_qr_code, name="get_qr_code_of_poll"),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
+    path('admin_panel', request_on_admin_panel, name='admin_panel'),
+
 ]
