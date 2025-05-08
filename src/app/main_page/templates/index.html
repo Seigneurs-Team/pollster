@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/poll-feed.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
-    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
 
 </head>
 
@@ -32,7 +32,7 @@
 
                 {% if user.is_authenticated %}
                 <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                        src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+                        src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
                 {% else %}
                 <a href="/sign_in" class="sign-up">Войти</a>
                 {% endif %}
@@ -40,7 +40,7 @@
                     <span>Создавай</span><span>-</span><span>Узнавай</span><span>-</span><span>Анализируй</span>
                 </div>
                 <div class="search">
-                    <img src="{% static 'img\Filter.svg' %}" class="opn-popup">
+                    <img src="{% static 'img/icons/Filter.svg' %}" class="opn-popup">
                     <div class="popup" id="popup">
                         <div class="popup-content">
                             <h2>Фильтры (в разработке)</h2>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <input type="text" name="search" id="search" placeholder="Search for polls" maxlength="100">
-                    <img src="{% static 'img\Search.svg' %}">
+                    <img src="{% static 'img/icons/Search.svg' %}">
                 </div>
 
             </div>
@@ -182,6 +182,11 @@
     </section>
     <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}"
         data-cloud-2="{% static 'img/cloud 2.svg' %}">
+        <a href="#" style="position: fixed; left: 1%;">
+            <marquee behavior="scroll" direction="up" scrollamount="10" scrolldelay="10" style="height: 100vh; transform: rotate(90deg); transform-origin: left top;">
+              <img src="http://open-krasnodar.ru/subdomain_files/ajax_images/913/1361354500.gif" style="width: 200px; height: 200px;">
+            </marquee>
+          </a>
         {% include 'footer.html' %}
     </div>
     <script src="{% static 'scripts/index.js' %}" type="module"></script>

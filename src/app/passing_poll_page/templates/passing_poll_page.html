@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% static 'css/passing_poll_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
-    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{% static 'img/circle-logo.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,13 +30,12 @@
         <header>
             <a href="/" class="logo-stub"></a>
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                    src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
 
         <main>
             <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
-            <div class="poll-img" data-image="data:image/png;base64,{{ poll.cover }}"></div>
 
             <h1 class="poll-name">{{poll.name_of_poll}}</h1>
             <p class="poll-description">{{poll.description}}</p>

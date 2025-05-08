@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
 
-    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
 
 </head>
 
@@ -27,11 +27,11 @@
     <div class="content">
         <header>
             <a href="/" class="logo-stub"></a>
-            <button class="log-out"><span>Выйти из аккаунта</span><img src="{% static 'img\Log out.svg' %}"></button>
+            <button class="log-out"><span>Выйти из аккаунта</span><img src="{% static 'img/icons/Log out.svg' %}"></button>
 
         </header>
         <main class="profile">
-            <img class="profile-photo" src="{% static 'img\profile img.png' %}" alt="profile photo">
+            <img class="profile-photo" src="{% static 'img\default_img\profile img.png' %}" alt="profile photo">
             <div class="name">
                 <input type="text" name="edit_name_input" id="edit_name_input" value="{{user.username}}" maxlength="100"
                     required>

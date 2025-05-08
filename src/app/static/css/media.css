@@ -42,7 +42,8 @@
         max-width: 150px;
     }
 
-    .profile-link, a.sign-up {
+    .profile-link,
+    a.sign-up {
         position: absolute;
         top: 15px;
         right: 15px;
@@ -105,6 +106,7 @@
     .about-you {
         background-color: #fff;
         width: calc(100% - 30px);
+        align-items: center;
         margin: 30px auto;
         padding: 15px;
     }
@@ -241,14 +243,14 @@
 
     main.sign-in,
     main.create-new-account {
-        background-image: url(../img/sign-in-background-mobile.svg);
+        background-image: url(../img/backgrounds/sign-in-background-mobile.svg);
         background-position: center bottom;
         background-size: auto;
 
     }
 
     main.profile {
-        background-image: url(../img/profile-background-mobile.svg);
+        background-image: url(../img/backgrounds/profile-background-mobile.svg);
         background-position: center top;
         background-size: auto;
         background-repeat: no-repeat;
@@ -262,4 +264,3 @@
         font-size: 0.7em;
     }
 }
-

@@ -1,5 +1,3 @@
-// общий код для sign_in и create_new_account
-
 // переключение видимости пароля
 $('body').on('click', '.password-control', function () {
     console.log('.password-control clicked')

@@ -14,7 +14,7 @@
 
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
-    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{% static 'img/circle-logo.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,14 +26,15 @@
 
 <body>
     <div class="content">
-        <header data-background="{% static 'img\header.png' %}">
+        <header data-background="{% static 'img\backgrounds\header.png' %}">
             <a href="/" class="logo-stub"></a>
             <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                    src="{% static 'img\profile img.png' %}" alt="profile photo"></a>
+                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
         
         <main data-poll-id="{{id_of_poll}}">
-            <div class="poll-img"><img src="{% static 'img\defaut_img\poll default img.jpg' %}" alt="logo"></div>
+            <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
+            
             <h1 class="poll-name">{{questions.name_of_poll}}</h1>
             <p class="poll-tags">
             <p class="poll-description">{{questions.description_of_poll}}</p>
@@ -77,10 +78,10 @@
                                     <span class="modal-h1">Настройки диаграммы</span>
                                     <span class="modal-h2">Выберите тип диаграммы</span>
 
-                                    <button class="pie"><img src="{% static 'img/diagram-type-pie.png' %}">Pie</button>
+                                    <button class="pie"><img src="{% static 'img/charts/diagram-type-pie.png' %}">Pie</button>
                                     <button class="line"><img
-                                            src="{% static 'img/diagram-type-line.png' %}">Line</button>
-                                    <button class="bar"><img src="{% static 'img/diagram-type-bar.png' %}">Bar</button>
+                                            src="{% static 'img/charts/diagram-type-line.png' %}">Line</button>
+                                    <button class="bar"><img src="{% static 'img/charts/diagram-type-bar.png' %}">Bar</button>
                                 </div>
                             </div>
                         </div>
@@ -111,11 +112,11 @@
                                     <span class="modal-h2">Выберите тип диаграммы</span>
 
                                     <button class="pie"><img
-                                            src="{% static 'img/diagram-type-pie.png' %}">Круговая</button>
+                                            src="{% static 'img/charts/diagram-type-pie.png' %}">Круговая</button>
                                     <button class="line"><img
-                                            src="{% static 'img/diagram-type-line.png' %}">График</button>
+                                            src="{% static 'img/charts/diagram-type-line.png' %}">График</button>
                                     <button class="bar"><img
-                                            src="{% static 'img/diagram-type-bar.png' %}">Кольцевая</button>
+                                            src="{% static 'img/charts/diagram-type-bar.png' %}">Кольцевая</button>
                                 </div>
                             </div>
                         </div>

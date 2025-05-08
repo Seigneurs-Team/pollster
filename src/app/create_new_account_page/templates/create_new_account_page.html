@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% static 'css/create_new_account_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
-    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/src/sha256.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{% static 'img/circle-logo.png' %}">
@@ -49,8 +49,8 @@
                     <div class="password-wrapper">
                         <input type="password" name="password" class="password" id="password"
                             autocomplete="new-password" placeholder="Введите пароль" required>
-                        <a href="#" class="password-control" data-view="{% static 'img/view.svg' %}"
-                            data-no-view="{% static 'img/no-view.svg' %}"></a>
+                        <a href="#" class="password-control" data-view="{% static 'img/icons/view.svg' %}"
+                            data-no-view="{% static 'img/icons/no-view.svg' %}"></a>
 
                     </div>
                 </div>
@@ -59,8 +59,8 @@
                     <div class="password-wrapper">
                         <input type="password" name="password-repeat" class="password" autocomplete="new-password"
                             id="password-repeat" placeholder="Повторите пароль" required>
-                        <a href="#" class="password-control" data-view="{% static 'img/view.svg' %}"
-                            data-no-view="{% static 'img/no-view.svg' %}"></a>
+                        <a href="#" class="password-control" data-view="{% static 'img/icons/view.svg' %}"
+                            data-no-view="{% static 'img/icons/no-view.svg' %}"></a>
                     </div>
                 </div>
                 <div>
@@ -92,7 +92,7 @@
         {% include 'footer.html' %}
     </div>
 
-    <script src="{% static 'scripts/form.js' %}" type="module"></script>
+    <script src="{% static 'scripts/utils/password visibility.js' %}" type="module"></script>
     <script src="{% static 'scripts/create_new_account_page.js' %}" type="module"></script>
 </body>
 

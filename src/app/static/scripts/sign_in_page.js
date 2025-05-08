@@ -1,5 +1,5 @@
 // вход в аккаунт
-import { getChallenge, findProof } from './POW.js';
+import { getChallenge, findProof } from './/utils/POW.js';
 import { sendRequest } from './api.js';
 
 
@@ -20,8 +20,6 @@ async function sendSignInRequest(data) {
         $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
     }
 }
-
-const host = 'http://127.0.0.1:8000';
 
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
