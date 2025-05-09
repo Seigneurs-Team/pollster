@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+
+    <link rel="icon" href="{% static 'img/circle-logo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <title>Pollster</title>
+    
+    <link rel="stylesheet" href="{% static 'css/general.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/poll-feed.css' %}">
+    <link rel="stylesheet" href="{% static 'css/media.css' %}">
+
+</head>
+
+<body>
+    <div class="content">
+        <header>
+            <a href="/" class="logo-stub"></a>
+            <!--        <img src="{% static 'img\header2.png' %}" alt="logo" class="logo">-->
+            <div class="right-block">
+                <div class="search">
+                    <input type="text" name="search" id="search" placeholder="Поиск опросов" maxlength="100">
+                    <img src="{% static 'img/icons/Search.svg' %}">
+                </div>
+
+            </div>
+        </header>
+        <main>
+            <h1>Админ панель</h1>
+            <h1>Все опросы</h1>
+
+            <ul class="polls">
+                {% for poll in all_objects %}
+                <li class="poll-item">
+                    <a href="passing_poll/{{poll.id_of_poll}}/">
+                        <!-- <div class="poll-img" data-image="data:image/png;base64,{{ poll.cover }}"></div> -->
+                        <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
+                        <h2 class="poll-name">{{poll.name_of_poll}}</h2>
+                        <p class="poll-description">{{poll.description}}</p>
+                        <span class="poll-author">Автор: {{poll.nickname_of_author}}</span>
+                        <div class="poll-tags">
+                            {% for tag in poll.tags %}
+                            <div class="tag">{{tag}}</div>
+                            {% endfor %}
+                        </div>
+
+
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+
+        </main>
+
+    </div>
+   
+    <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}"
+        data-cloud-2="{% static 'img/cloud 2.svg' %}">
+        <div style="position: fixed; left: -50px; top: 0; height: 100vh; z-index: 1000;">
+            <div style="transform: rotate(-90deg) translateX(-100%); transform-origin: left top; position: absolute; left: 0; animation: moveDown 4s linear infinite;">
+              <img src="http://open-krasnodar.ru/subdomain_files/ajax_images/913/1361354500.gif" style="width: 200px; height: 200px; display: block; transform: scaleY(-1);">
+            </div>
+            
+            <style>
+              @keyframes moveDown {
+                0% { top: -200px; }
+                100% { top: 100vh; }
+              }
+            </style>
+          </div>
+        {% include 'footer.html' %}
+    </div>
+    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <script src="{% static 'scripts/index.js' %}" type="module"></script>
+
+</body>
+
+</html>

@@ -8,6 +8,10 @@
     border-radius: 50%;
 }
 
+.log-out {
+    cursor: pointer
+}
+
 .log-out img {
     display: none;
 }
@@ -35,17 +39,15 @@
 
 }
 
-.about-you input {
-    /*border: solid 2px #8D8D8D;*/
-    border-radius: 3px;
-    width: 294px;
+.about-you input, #edit_name_input {
+    border-radius: var(--border-radius);
     height: 30px;
     margin: 7px 0 20px 0;
-    padding: 0 5px;
+    padding: 0 10px;
 
 }
 
-.tags-wrapper, .save-changes {
+.tags-wrapper {
     margin: 0px 0 20px 0;
 
 }
@@ -95,23 +97,24 @@
 .about-you-btns {
     display: flex;
     column-gap: 16px;
+    justify-content: space-around
 }
 
 .save-changes {
     background-color: white;
-    border: solid 1px var(--violet);
+    border: solid 1.5px var(--violet);
     border-radius: 10px;
 }
 
 .save-changes, .delete-account, .log-out {
-    width: 200px;
-    height: 28px;
+    max-width: 200px;
+    padding: 5px 14px;
 }
 
 .delete-account, .log-out {
     background-color: white;
-    border: solid 1px red;
-    border-radius: 10px;
+    border: solid 1.5px red;
+    border-radius: var(--border-radius);
     color: red;
 }
 
@@ -131,16 +134,17 @@ header {
 #edit_name_input {
     padding: 0 5px;
     text-align: center;
-    border-radius: 3px;
+    border-radius: var(--border-radius);
     height: 30px;
     width: 200px;
 }
 
 .about-you .tag {
     font-size: 14px;
-    padding: 5px;
+    padding: 5px 8px;
     margin: 2px;
     border: var(--violet) solid 1.5px;
+    border-radius: var(--border-radius);
 }
 
 .selected-tags > .tag {
@@ -225,29 +229,35 @@ label {
 .btns {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     margin-top: 10px;
 }
 
-.btns button {
-    border-radius: 10px;
-    color: #fff;
+.btns .complete-poll {
     font-weight: 400;
     padding: 10px;
+    background-color: white;
+    color:black;
+    border: solid 1.5px var(--violet);
+    border-radius: var(--border-radius);
 }
 
-.poll-item .delete-poll {
-    background: red;
+.complete-poll:hover {
+    background: var(--violet);
+    color:white;
 }
 
-.poll-item .delete-poll:hover {
-    background: #d00000;
+.actions {
+    display:flex;
+    column-gap: 10px;
 }
 
-.poll-item .view-statistics {
-    background: green;
+.actions button:hover {
+    background: none;
+    cursor:pointer;
 }
 
-.poll-item .view-statistics:hover {
-    background: #006400;
+header a {
+    display: inline-block;
+    width: min-content;
 }

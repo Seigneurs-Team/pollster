@@ -16,11 +16,6 @@ $(document).ready(function () {
     $('#no-image').prop('checked', true);
 });
 
-function deleteQuestion(target) {
-    console.log('deleteQuestion activated');
-    $(target).parent('.question').remove();
-}
-
 
 // назначение обработчиков событий на вопрос
 // Удаление вопроса
@@ -56,21 +51,20 @@ function setupQuestionHandlers(questionType, questionId) {
         showHasHTMLTagsMessage(event);
     });
 }
+
 // Открытие модального окна для выбора типа вопроса
-$(".addQuestion").on('click', function () {
-    modalType.show();
-});
+$(".addQuestion").on('click', () => { modalType.show(); });
 
 // Закрытие модального окна
-$('.modal-close').on('click', function () {
-    modalType.hide();
-});
+$('.modal-close').on('click', () => { modalType.hide(); });
 
 // Обработка выбора типа вопроса
-$(".answerType").on('click', function () {
+$(".answerType").on('click', renderQuestion)
+
+function renderQuestion() {
     questionsId++;
     let questionType = $(this).attr('name');
-    content = answerType(questionType, questionsId);
+    content = generateContent(questionType, questionsId);
 
     // Создание нового вопроса
     let newQuestion = $(`
@@ -86,7 +80,6 @@ $(".answerType").on('click', function () {
         </div>
     `);
 
-    // Добавление вопроса в DOM
     $(".questions").append(newQuestion);
     $(`.questionText`).focus();
 
@@ -94,10 +87,15 @@ $(".answerType").on('click', function () {
     setupQuestionHandlers(questionType, questionsId);
     modalType.hide();
     content = null;
-});
+}
 
-// Функция для определения контента вопроса
-function answerType(questionType, questionId) {
+function deleteQuestion(target) {
+    console.log('deleteQuestion activated');
+    $(target).parent('.question').remove();
+}
+
+// Генерация HTML вопроса в зависимости от типа
+function generateContent(questionType, questionId) {
     if (questionType === "short text") {
         return `
             <div class="input-wrapper">
@@ -126,6 +124,15 @@ function answerType(questionType, questionId) {
     }
 }
 
+// Добавление варианта ответа
+function addOption(target, type, questionsId) {
+    let options = $(target).closest('.question').find('.options');
+    let optionsCount = options.find('.option').length + 1;
+
+    options.append($(renderOption(type, questionsId, optionsCount)));
+    $(`#${questionsId}_${optionsCount}-input`).focus();
+}
+
 // Генерация HTML для варианта ответа
 function renderOption(type, questionId, optionId) {
     return `
@@ -143,15 +150,6 @@ function renderOption(type, questionId, optionId) {
     `;
 }
 
-// Добавление варианта ответа
-function addOption(target, type, questionsId) {
-    let options = $(target).closest('.question').find('.options');
-    let optionsCount = options.find('.option').length + 1;
-
-    options.append($(renderOption(type, questionsId, optionsCount)));
-    $(`#${questionsId}_${optionsCount}-input`).focus();
-}
-
 // Удаление варианта ответа
 function delOption(target) {
     console.log('deleteOption activated');
@@ -167,13 +165,15 @@ $('body').on('click', '.tag', function () {
     }
 })
 
-// Функция для проверки на HTML-теги
-function hasHTMLTags(input) {
-    const htmlPattern = /<[^>]*>/; // Ищет любые HTML-теги
-    return htmlPattern.test(input);
-}
 
-// Отображение сообщения об ошибке
+// Проверка всех текстовых полей на HTML-теги
+$(`input[type="text"], textarea`).each(function () {
+    $(this).on("input", function (e) {
+        showHasHTMLTagsMessage(e);
+    });
+});
+
+// Отображение сообщения о наличии HTML-тегов
 function showHasHTMLTagsMessage(e) {
     const target = e.target;
     const value = $(target).val();
@@ -184,12 +184,12 @@ function showHasHTMLTagsMessage(e) {
     }
 }
 
-// Проверка всех текстовых полей на HTML-теги
-$(`input[type="text"], textarea`).each(function () {
-    $(this).on("input", function (e) {
-        showHasHTMLTagsMessage(e);
-    });
-});
+// Функция для проверки на HTML-теги
+function hasHTMLTags(input) {
+    const htmlPattern = /<[^>]*>/; // Ищет любые HTML-теги
+    return htmlPattern.test(input);
+}
+
 
 // Отправка опроса
 $("#submitPollBtn").on('click', createPoll);
@@ -201,64 +201,64 @@ $('.overlay').on('click', '.go-home', function () {
 // Очищаем выбранные файлы при загрузке страницы
 $('input[type=file]').val(null);
 let cropper;
-    let currentFile;
+let currentFile;
 
-    // Обработчик изменения файла
-    $('.input-file input[type=file]').on('change', function(e) {
-        if (!this.files || !this.files[0]) return;
+// Обработчик изменения файла
+$('.input-file input[type=file]').on('change', function (e) {
+    if (!this.files || !this.files[0]) return;
 
-        currentFile = this.files[0];
-        const $files_list = $(this).closest('.input-file').find('.imagePreview');
-        const input = this;
+    currentFile = this.files[0];
+    const $files_list = $(this).closest('.input-file').find('.imagePreview');
+    const input = this;
 
-        // Очищаем превью перед добавлением нового
-        $files_list.empty();
+    // Очищаем превью перед добавлением нового
+    $files_list.empty();
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            // Показываем модальное окно с Cropper.js
-            $('#cropImage').attr('src', e.target.result);
-            $('#cropModal').show();
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        // Показываем модальное окно с Cropper.js
+        $('#cropImage').attr('src', e.target.result);
+        $('#cropModal').show();
 
-            // Инициализируем Cropper.js
-            const image = document.getElementById('cropImage');
-            if (cropper) cropper.destroy();
-
-            cropper = new Cropper(image, {
-                aspectRatio: 4 / 3,  // Фиксированное соотношение 4:3
-                viewMode: 1,          // Ограничивает выход за пределы изображения
-                autoCropArea: 1,      // Автоматически выделяет всю область
-            });
-        };
-        reader.readAsDataURL(currentFile);
-    });
-
-    // Отмена обрезки
-    $('#cancelCrop').on('click', function() {
-        $('#cropModal').hide();
+        // Инициализируем Cropper.js
+        const image = document.getElementById('cropImage');
         if (cropper) cropper.destroy();
-        $('.input-file input[type=file]').val(''); // Сбрасываем файл
-    });
 
-    // Подтверждение обрезки
-    $('#confirmCrop').on('click', function() {
-        if (!cropper) return;
+        cropper = new Cropper(image, {
+            aspectRatio: 4 / 3,  // Фиксированное соотношение 4:3
+            viewMode: 1,          // Ограничивает выход за пределы изображения
+            autoCropArea: 1,      // Автоматически выделяет всю область
+        });
+    };
+    reader.readAsDataURL(currentFile);
+});
 
-        // Получаем обрезанное изображение в формате Base64
-        const croppedCanvas = cropper.getCroppedCanvas();
-        const croppedImageUrl = croppedCanvas.toDataURL('image/jpeg');
+// Отмена обрезки
+$('#cancelCrop').on('click', function () {
+    $('#cropModal').hide();
+    if (cropper) cropper.destroy();
+    $('.input-file input[type=file]').val(''); // Сбрасываем файл
+});
 
-        // Скрываем модальное окно
-        $('#cropModal').hide();
-        cropper.destroy();
+// Подтверждение обрезки
+$('#confirmCrop').on('click', function () {
+    if (!cropper) return;
 
-        // Добавляем обрезанное изображение в превью
-        const $files_list = $('.input-file').find('.imagePreview');
-        $files_list.empty();
+    // Получаем обрезанное изображение в формате Base64
+    const croppedCanvas = cropper.getCroppedCanvas();
+    const croppedImageUrl = croppedCanvas.toDataURL('image/jpeg');
 
-        $('.addPollImage').data('base64', croppedImageUrl); // Сохраняем обрезанное изображение
+    // Скрываем модальное окно
+    $('#cropModal').hide();
+    cropper.destroy();
 
-        $files_list.append(`
+    // Добавляем обрезанное изображение в превью
+    const $files_list = $('.input-file').find('.imagePreview');
+    $files_list.empty();
+
+    $('.addPollImage').data('base64', croppedImageUrl); // Сохраняем обрезанное изображение
+
+    $files_list.append(`
             <div class="imagePreview-item">
                 <img class="imagePreview-img" src="${croppedImageUrl}">
                 <span class="imagePreview-name">${currentFile.name}</span>
@@ -266,31 +266,31 @@ let cropper;
             </div>
         `);
 
-        // Делаем инпут неактивным после загрузки
-        $('.input-file input[type=file]').prop('disabled', true);
-        $('.addPollImage').addClass('loaded');
+    // Делаем инпут неактивным после загрузки
+    $('.input-file input[type=file]').prop('disabled', true);
+    $('.addPollImage').addClass('loaded');
 
-        // Снимаем выбор дефолтной картинки
-        $('#no-image').prop('checked', true);
-        $('input[name="default-image"]').prop('disabled', true);
-    });
+    // Снимаем выбор дефолтной картинки
+    $('#no-image').prop('checked', true);
+    $('input[name="default-image"]').prop('disabled', true);
+});
 
-    // Обработчик удаления изображения (остаётся без изменений)
-    $('.imagePreview').on('click', '.imagePreview-remove', function(e) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-        e.stopPropagation();
+// Обработчик удаления изображения (остаётся без изменений)
+$('.imagePreview').on('click', '.imagePreview-remove', function (e) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
-        const $inputFile = $(this).closest('.input-file');
-        $inputFile.find('.imagePreview').empty();
-        $('.addPollImage').removeData('base64');
+    const $inputFile = $(this).closest('.input-file');
+    $inputFile.find('.imagePreview').empty();
+    $('.addPollImage').removeData('base64');
 
-        $inputFile.find('input[type=file]').val('').prop('disabled', false);
-        $('.addPollImage').removeClass('loaded');
-        $('input[name="default-image"]').prop('disabled', false);
+    $inputFile.find('input[type=file]').val('').prop('disabled', false);
+    $('.addPollImage').removeClass('loaded');
+    $('input[name="default-image"]').prop('disabled', false);
 
-        return false;
-    });
+    return false;
+});
 
 $('.copy-link').on('click', () => {
     navigator.clipboard.writeText($('.poll-link input').val()).then(function () {

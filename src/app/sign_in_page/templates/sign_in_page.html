@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Pollster</title>
     {% load static %}
-    <!-- css, общий для всех страниц (header, footer, fonts...)  -->
+    
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/sign_in.css' %}">
@@ -25,13 +25,9 @@
 <body>
     <div class="content">
         <header>
-            <a href="/" class="go-back">
-                <span>вернуться назад</span>
-                <img src="{% static 'img\Arrow back.svg' %}" alt="logo">
+            <a href="/">
+                <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
             </a>
-            <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
-
-
         </header>
 
 
@@ -77,7 +73,7 @@
     <div class="footer-wrapper">
         {% include 'footer.html' %}
     </div>
-    <script src="{% static 'scripts/utils/password visibility.js' %}" type="module"></script>
+    <script src="{% static 'scripts/utils/authHelpers.js' %}" type="module"></script>
     <script src="{% static 'scripts/sign_in_page.js' %}" type="module"></script>
 </body>
 

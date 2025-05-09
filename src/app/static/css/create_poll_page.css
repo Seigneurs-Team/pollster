@@ -294,7 +294,7 @@ input#private {
     z-index: 1000;
 }
 
-#overlay-share-poll-inner {
+#overlay-share-poll-inner, #overlay-success-inner {
     background: white;
     padding: 20px;
     border-radius: var(--border-radius);
@@ -306,7 +306,7 @@ input#private {
     transform: translate(-50%, -50%);
 }
 
-.share-poll_content {
+.share-poll_content, .success_content {
     display: flex;
     flex-direction: column;
     row-gap: 30px;

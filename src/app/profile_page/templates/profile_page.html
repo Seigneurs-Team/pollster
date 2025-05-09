@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
     <title>Pollster</title>
-    <!-- css, общий для всех страниц (header, footer, fonts...)  -->
+
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/poll-feed.css' %}">
@@ -25,22 +25,26 @@
 
 <body>
     <div class="content">
-        <header>
-            <a href="/" class="logo-stub"></a>
-            <button class="log-out"><span>Выйти из аккаунта</span><img src="{% static 'img/icons/Log out.svg' %}"></button>
 
+        <header>
+            <a href="/">
+                <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+            </a>
+            <button class="log-out">
+                <span>Выйти из аккаунта</span><img src="{% static 'img/icons/Log out.svg' %}">
+            </button>
         </header>
+
         <main class="profile">
             <img class="profile-photo" src="{% static 'img\default_img\profile img.png' %}" alt="profile photo">
             <div class="name">
                 <input type="text" name="edit_name_input" id="edit_name_input" value="{{user.username}}" maxlength="100"
                     required>
             </div>
-            <span>О вас</span>
             <div class="about-you">
                 <label for="email">Электроная почта</label>
                 <input type="text" name="" id="email" value="{{user.email}}" disabled="disabled"
-                pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required>
+                    pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required>
                 <label for="phone">Номер телефона</label>
                 <input type="text" name="" id="phone" value="{% if user.phone %}{{user.phone}}{% else %}{% endif %}"
                     disabled="disabled">
@@ -102,9 +106,21 @@
                                 <div class="answers-left-poll">Осталось {{10}} человек</div>
                             </div>
                             <div class="btns">
-                                <a href="/statistics/{{poll.id_of_poll}}"><button class="view-statistics"> Посмотреть
-                                        статистику </button></a>
-                                <button class="delete-poll" data-poll="{{poll.id_of_poll}}"> Удалить </button>
+                                <button class="complete-poll" data-poll="{{poll.id_of_poll}}">
+                                    Завершить опрос
+                                </button>
+
+                                <div class="actions">
+                                    <a href="/statistics/{{poll.id_of_poll}}">
+                                        <img src="{% static 'img/icons/statistics.svg' %}">
+                                    </a>
+                                    <button class="share-poll" data-poll="{{poll.id_of_poll}}">
+                                        <img src="{% static 'img/icons/share.svg' %}">
+                                    </button>
+                                    <button class="delete-poll" data-poll="{{poll.id_of_poll}}">
+                                        <img src="{% static 'img/icons/basket.svg' %}">
+                                    </button>
+                                </div>
                             </div>
                         </div>
 

@@ -1,8 +1,9 @@
 import { sendRequest } from './api.js';
+
 const COLORS = [
     '#F678A7',
-'#4dc9f6',
-'#A155B9',
+    '#4dc9f6',
+    '#A155B9',
 
     '#62AEC5',
     '#ADD2E4',
@@ -26,13 +27,9 @@ const chartsTypes = []
 
 async function sendStatisticslRequest(id) {
     console.log('getting statistics...');
-    try {
-        const response = await sendRequest(`/get_statistics/${id}`, 'GET');
-        return await response.json(); // Парсим JSON и возвращаем результат
-    } catch (error) {
-        console.error('Ошибка:', error);
-        throw error; // Пробрасываем ошибку
-    }
+
+    return sendRequest(`/get_statistics/${id}`, 'POST')
+        .then((statistics) => statistics)
 }
 
 $(document).ready(async function () {

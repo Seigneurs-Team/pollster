@@ -2,6 +2,7 @@
 const host = 'http://127.0.0.1:8000';
 import { hasHTMLTags } from './create_poll_page.js';
 import { sendRequest } from './api.js';
+import { showFailOverlay } from './utils/authHelpers.js';
 
 
 export function createPoll() {
@@ -23,10 +24,10 @@ export function createPoll() {
     if (coverImage) { // если пользователь загрузил картинку
         pollData.cover = coverImage.split(',')[1] // отделяем metadata
     } else if (defaultImage == 'no-image') { // если не выбран .default-image отправляем 0 - это значит что будет рандом картинка
-        pollData.coverDefault = 0 
-    }else if (defaultImage != 'no-image') { // если выбран .default-image
+        pollData.coverDefault = 0
+    } else if (defaultImage != 'no-image') { // если выбран .default-image
         pollData.coverDefault = defaultImage
-    } 
+    }
 
     console.log("pollData:", pollData)
 
@@ -169,23 +170,19 @@ function checkCorrectData(pollData) { // проверка на корректн�
 }
 
 async function sendCreatePollRequest(data) {
-    const response = await sendRequest('/create_poll', 'POST', data);
+    sendRequest('/create_poll', 'POST', data)
+        .then((responseJSON) => {
+            if ($('#private').is(':checked')) {
+                showQR(responseJSON.url, responseJSON.qr_code)
 
-    const responseJson = await response.json()
-    console.log('responseJson:', responseJson)
-
-
-    // Обработка ответа от сервера
-    if (response.status === 200) {
-        // Успешное создание опроса
-        if ($('#private').is(':checked')) {
-            showQR(responseJson.url, responseJson.qr_code)
-
-        } else {
-            alert('Опрос успешно создан')
-            window.location.href = '/'; // Перенаправление на домашнюю страницу
-        }
-    }
+            } else {
+                showSuccessOverlay()
+            }
+        })
+        .catch((error) => {
+            console.log('outer error')
+            showFailOverlay(error)
+        })
 }
 
 function showQR(url, qr_code) {
@@ -202,8 +199,12 @@ function showQR(url, qr_code) {
 
     // Вставляем изображение в контейнер
     $('.qr-code-container').append($qrCodeImage);
-$('.poll-link input').val(url)
+    $('.poll-link input').val(url)
 
 
     $('#overlay-share-poll').show();
+}
+
+function showSuccessOverlay() {
+    $('#overlay-success').show();
 }

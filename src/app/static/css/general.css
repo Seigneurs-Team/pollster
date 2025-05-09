@@ -80,21 +80,21 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 131px;
-    margin: 8px 0;
-    background-image: url("../img/backgrounds/header.png");
-    background-size: cover;
+    align-items: flex-start;
+
+    margin-top: 8px;
 }
 
 header .logo {
-    width: 100%;
+    width: 30%;
+    min-width: 170px;
 }
 
-.logo-stub {
+/* .logo-stub {
     height: 121px;
     width: 300px;
     display: inline-block;
-}
+} */
 
 .profile-link {
     display: flex;
