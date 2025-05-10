@@ -17,30 +17,17 @@ class Question(serializers.Serializer):
     serial_number = serializers.IntegerField()
     options = serializers.ListField(child=Option())
     text_answers = serializers.ListField(child=TextAnswer())
-    right_text_answer = serializers.CharField()
-    wrong_text_answers = serializers.ListField(child=TextAnswer())
+
+    num_of_right_answers = serializers.IntegerField()
+    num_of_wrong_answers = serializers.IntegerField()
+
+    count_of_writes = serializers.IntegerField()
 
 
-class Statistics(serializers.Serializer):
+class SuccessResponseOnGetStatistics(serializers.Serializer):
     count_of_user = serializers.IntegerField()
     name_of_poll = serializers.CharField()
     description_of_poll = serializers.CharField()
     tags_of_poll = serializers.ListField()
     author = serializers.CharField()
     questions = serializers.ListField(child=Question())
-
-
-class User(serializers.Serializer):
-    id = serializers.IntegerField()
-    username = serializers.CharField()
-
-
-class SuccessResponseOnStatisticsPage(serializers.Serializer):
-    id_of_poll = serializers.IntegerField()
-    user = User()
-    questions = Statistics()
-
-
-class SuccessResponseOnStatisticsPagePrivatePoll(SuccessResponseOnStatisticsPage):
-    qr_code = serializers.CharField()
-    url_on_poll = serializers.CharField()
