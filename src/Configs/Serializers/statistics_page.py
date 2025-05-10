@@ -1,24 +1,24 @@
 from rest_framework import serializers
 
 
-class TextAnswer(serializers.Serializer):
+class StatisticsTextAnswer(serializers.Serializer):
     text = serializers.CharField()
 
 
-class Option(serializers.Serializer):
+class SttisticsOption(serializers.Serializer):
     count_of_selected = serializers.IntegerField()
     is_right_answer = serializers.BooleanField()
 
 
-class Question(serializers.Serializer):
+class StatisticsQuestion(serializers.Serializer):
     id = serializers.IntegerField()
     type_of_question = serializers.CharField()
     text_of_question = serializers.CharField()
     serial_number = serializers.IntegerField()
-    options = serializers.ListField(child=Option())
-    text_answers = serializers.ListField(child=TextAnswer())
+    options = serializers.ListField(child=SttisticsOption())
+    text_answers = serializers.ListField(child=StatisticsTextAnswer())
     right_text_answer = serializers.CharField()
-    wrong_text_answers = serializers.ListField(child=TextAnswer())
+    wrong_text_answers = serializers.ListField(child=StatisticsTextAnswer())
 
 
 class Statistics(serializers.Serializer):
@@ -27,17 +27,17 @@ class Statistics(serializers.Serializer):
     description_of_poll = serializers.CharField()
     tags_of_poll = serializers.ListField()
     author = serializers.CharField()
-    questions = serializers.ListField(child=Question())
+    questions = serializers.ListField(child=StatisticsQuestion())
 
 
-class User(serializers.Serializer):
+class UserInStatistics(serializers.Serializer):
     id = serializers.IntegerField()
     username = serializers.CharField()
 
 
 class SuccessResponseOnStatisticsPage(serializers.Serializer):
     id_of_poll = serializers.IntegerField()
-    user = User()
+    user = UserInStatistics()
     questions = Statistics()
 
 

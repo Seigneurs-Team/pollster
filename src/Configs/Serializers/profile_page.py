@@ -2,7 +2,7 @@ from rest_framework import serializers
 from Configs.Serializers.main_page import Poll
 
 
-class User(serializers.Serializer):
+class UserPorfilePage(serializers.Serializer):
     id = serializers.IntegerField()
     username = serializers.CharField()
     email = serializers.CharField()
@@ -14,7 +14,7 @@ class User(serializers.Serializer):
 
 
 class SuccessResponseOnGetProfilePage(serializers.Serializer):
-    user = User()
+    user = UserPorfilePage()
     tags = serializers.ListField()
 
 

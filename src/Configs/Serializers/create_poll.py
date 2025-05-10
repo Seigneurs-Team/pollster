@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from Configs.Serializers.statistics_page import UserInStatistics
 
 
 class Question(serializers.Serializer):
@@ -33,3 +34,8 @@ class UnSuccessCreatePoll400(serializers.Serializer):
 
 class UnSuccessCreatePoll403(serializers.Serializer):
     response = serializers.CharField(default='Попытка XSS атаки на систему.')
+
+
+class ResponseOnGetCreatePollPage(serializers.Serializer):
+    user = UserInStatistics()
+    tags = serializers.ListField()
