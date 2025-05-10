@@ -85,7 +85,7 @@
     }
 
     #createPollBtn {
-        margin: 8px 0;
+        margin: 8px auto;
         max-width: calc(100% - 12px);
         border-width: 4px;
         height: 100px;

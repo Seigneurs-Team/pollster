@@ -103,18 +103,17 @@
 .save-changes {
     background-color: white;
     border: solid 1.5px var(--violet);
-    border-radius: 10px;
 }
 
 .save-changes, .delete-account, .log-out {
     max-width: 200px;
     padding: 5px 14px;
+    border-radius: var(--border-radius);
 }
 
 .delete-account, .log-out {
     background-color: white;
     border: solid 1.5px red;
-    border-radius: var(--border-radius);
     color: red;
 }
 

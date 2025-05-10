@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
 
-    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+    <!-- <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}"></script> -->
 
 </head>
 
@@ -154,14 +154,19 @@
                     {% endif %}
                 </ul>
             </div>
-
-
+        </main>
     </div>
-    </main>
     <div class="footer-wrapper">
         {% include 'footer.html' %}
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/external/toastr.css' %}">
+
+
     <script src="{% static 'scripts/profile_page.js' %}" type="module"></script>
+
 
 </body>
 
