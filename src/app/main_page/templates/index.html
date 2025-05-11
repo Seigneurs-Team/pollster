@@ -183,25 +183,6 @@
     </section>
     <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}"
         data-cloud-2="{% static 'img/cloud 2.svg' %}">
-        <div style="position: fixed; left: -50px; top: 0; height: 100vh; z-index: 1000;">
-            <div
-                style="transform: rotate(-90deg) translateX(-100%); transform-origin: left top; position: absolute; left: 0; animation: moveDown 4s linear infinite;">
-                <img src="http://open-krasnodar.ru/subdomain_files/ajax_images/913/1361354500.gif"
-                    style="width: 200px; height: 200px; display: block; transform: scaleY(-1);">
-            </div>
-
-            <style>
-                @keyframes moveDown {
-                    0% {
-                        top: -200px;
-                    }
-
-                    100% {
-                        top: 100vh;
-                    }
-                }
-            </style>
-        </div>
         {% include 'footer.html' %}
     </div>
     <script src="{% static 'scripts/index.js' %}" type="module"></script>
