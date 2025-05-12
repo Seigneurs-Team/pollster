@@ -169,6 +169,8 @@ function checkCorrectData(pollData) { // проверка на корректн�
 }
 
 async function sendCreatePollRequest(data) {
+
+    showLoadingOverlay()
     sendRequest('/create_poll', 'POST', data)
         .then((responseJSON) => {
             if ($('#private').is(':checked')) {
@@ -179,9 +181,19 @@ async function sendCreatePollRequest(data) {
             }
         })
         .catch((error) => {
-            console.log('outer error')
             showFailOverlay(error)
         })
+        .finally(() => {
+            hideLoadingOverlay()
+        })
+}
+
+function showLoadingOverlay() {
+    $('#overlay-loading').show()
+}
+
+function hideLoadingOverlay() {
+    $('#overlay-loading').hide()
 }
 
 function showQR(url, qr_code) {

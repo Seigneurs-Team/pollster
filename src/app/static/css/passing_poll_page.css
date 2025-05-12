@@ -119,7 +119,7 @@ form {
     z-index: 1000;
 }
 
-#overlay-success-inner {
+.overlay-inner {
     background: white;
     padding: 20px;
     border-radius: var(--border-radius);
@@ -131,7 +131,7 @@ form {
     transform: translate(-50%, -50%);
 }
 
-.share-poll_content, .success_content {
+.overlay-content {
     display: flex;
     flex-direction: column;
     row-gap: 30px;

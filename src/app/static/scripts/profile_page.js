@@ -170,9 +170,13 @@ $(".delete-poll").on('click', async function () {
 
     const id = $(this).attr('data-poll');
     const pollItem = $(this).closest('.poll-item')
+
+    // скрываем опрос
+    pollItem.hide()
+
     delayedDeleting(() => {
         deletePoll(id, pollItem)
-    }, 'Опрос будет удален', 3);
+    }, 'Опрос будет удален', 3, pollItem);
 
 })
 
@@ -181,8 +185,7 @@ function deletePoll(id, pollItem) {
 
     sendRequest(`/delete_poll/${id}`, 'DELETE')
         .then(() => {
-            // если опрос успешно удален - скрываем его
-            pollItem.hide()
+
         })
         .catch((error) => {
             showFailOverlay(error)
@@ -203,7 +206,7 @@ function deleteAccount() {
 }
 
 // показать всплывающее окно "... будет удалено через ...с"
-function delayedDeleting(fn, message, secondsLeft) {
+function delayedDeleting(fn, message, secondsLeft, pollItem = null) {
 
     // Генерируем уникальный ID для каждого toast
     const toastId = 'toast-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
@@ -211,7 +214,7 @@ function delayedDeleting(fn, message, secondsLeft) {
     // Создаем сообщение "Ваш аккаунт/опрос будет удален через ...с"
     const toastInner = genToastHtml(toastId, message, secondsLeft)
 
-    showToast(toastId, toastInner, secondsLeft, fn)
+    showToast(toastId, toastInner, secondsLeft, fn, pollItem)
 }
 
 function genToastHtml(toastId, msg, secondsLeft) {
@@ -226,7 +229,7 @@ function genToastHtml(toastId, msg, secondsLeft) {
     `
 }
 
-function showToast(toastId, toastInner, secondsLeft, fn) {
+function showToast(toastId, toastInner, secondsLeft, fn, pollItem) {
 
     toastr.warning(toastInner, '', {
         timeOut: secondsLeft * 1000,
@@ -250,6 +253,9 @@ function showToast(toastId, toastInner, secondsLeft, fn) {
                 // Получаем элемент toast через toastr API
                 toastr.remove($(`#${toastId}`).closest('.toast')[0]);
                 console.log('Удаление отменено');
+
+                // если удалялся опрос, то снова показываем его
+                if (pollItem) pollItem.show()
             });
         }
     });
