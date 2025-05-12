@@ -57,7 +57,6 @@ function debounced(fn, t) {
     let timer
     return function (...args) {
         clearTimeout(timer)
-        console.log('timer', timer)
         timer = setTimeout(() => {
             fn(...args)
         }, t)

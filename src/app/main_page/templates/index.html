@@ -57,8 +57,13 @@
                 <h1>Специально для Вас</h1>
                 <div class="search">
                     <img src="{% static 'img/icons/Filter.svg' %}" class="opn-popup">
-                    <div class="popup" id="popup">
-                        <div class="popup-content">
+                    <div class="popup feature-unavalable" id="popup">
+                            <img src="{% static 'img/icons/Smile.svg' %}" alt="smile">
+                            <div class="feature-unavalable__message">
+                            <p>Данная функция пока в разработке</p>
+                            <p>Мы заботимся о Вашем комфорте и работаем над деталями</p>
+                            </div>
+                        <!-- <div class="popup-content">
                             <h2>Фильтры (в разработке)</h2>
                             <div class="filters">
 
@@ -96,7 +101,7 @@
 
                             </div>
                             <button id="applyFilters">Применить фильтры</button>
-                        </div>
+                        </div> -->
                     </div>
                     <input type="text" name="search" id="search" placeholder="Поиск опросов" maxlength="100">
                     <img src="{% static 'img/icons/Search.svg' %}">

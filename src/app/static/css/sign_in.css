@@ -158,10 +158,15 @@ form > * {
     transform: translate(-50%, -50%);
 }
 
+#overlay-content img {
+    width: 100px;
+}
+
 #try-again, #go-home {
     border: var(--violet) solid 1.5px;
     border-radius: var(--border-radius);
     padding: 3px 16px;
+    margin-top: 10px;
 }
 
 #login:valid, input[type="password"]:valid {

@@ -209,7 +209,8 @@ button.toast-close-button {
 }
 
 .toast-warning {
-    background-color: #F89406
+    /* background-color: #F89406 */
+    background-color: rgb(87, 99, 191, 0.75);
 }
 
 .toast-progress {

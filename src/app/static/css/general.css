@@ -4,23 +4,35 @@
 
 
 /* Убираем синий цвет на iOS для всех интерактивных элементов */
-button, .tag, .addQuestion, #submitPollBtn, .answerType, .addTag, .copy-link, .go-home {
+button,
+.tag,
+.addQuestion,
+#submitPollBtn,
+.answerType,
+.addTag,
+.copy-link,
+.go-home {
     color: inherit;
     -webkit-tap-highlight-color: transparent;
 }
 
 /* Явно задаем цвет для всех состояний ссылок */
-a, a:visited, a:active, a:hover {
+a,
+a:visited,
+a:active,
+a:hover {
     color: #000;
 }
 
 /* Для тэгов, если они все еще синие */
 .tag {
-    color: #000; /* Или любой другой нужный цвет */
+    color: #000;
+    /* Или любой другой нужный цвет */
 }
 
 /* Для кнопки добавления вопроса и отправки опроса */
-.addQuestion, #submitPollBtn {
+.addQuestion,
+#submitPollBtn {
     color: #000;
 }
 
@@ -40,7 +52,9 @@ button {
     border: none;
 }
 
-body, button, textarea {
+body,
+button,
+textarea {
     margin: 0;
     padding: 0;
     /*font*/
@@ -71,7 +85,8 @@ h1 {
     font-size: 28px;
 }
 
-button:hover, #createPollBtn:hover {
+button:hover,
+#createPollBtn:hover {
     color: #fff;
     background-color: var(--violet);
 }
@@ -113,7 +128,8 @@ header .logo {
 .content {
     width: 768px;
     margin: auto;
-    min-height: calc(100vh - 100px); /* высота экрана минус отступ от футера */
+    min-height: calc(100vh - 100px);
+    /* высота экрана минус отступ от футера */
     padding-bottom: 100px;
 }
 
@@ -141,12 +157,11 @@ footer {
 .footer-line {
     height: 1.5px;
     width: 100%;
-    background: linear-gradient(
-        to right,
-        black 0%,
-        rgba(255, 255, 255, 0.5) 50%, /* или используйте #808080 для серого */
-        black 100%
-    );
+    background: linear-gradient(to right,
+            black 0%,
+            rgba(255, 255, 255, 0.5) 50%,
+            /* или используйте #808080 для серого */
+            black 100%);
 }
 
 .contact {
@@ -160,7 +175,8 @@ footer {
     width: 25px;
 }
 
-.error-message, #error-message {
+.error-message,
+#error-message {
     font-size: 12px;
     color: red;
 }
