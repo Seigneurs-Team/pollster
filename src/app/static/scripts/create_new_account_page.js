@@ -47,10 +47,24 @@ function getRegistrationFormData() {
     return [login, password, nickname]
 }
 
-// при вводе в поля "пароль" и "введите пароль" сразу проверяется, совпадают ли они, или выводится ошибка.
-$('#password, #password-repeat').on('input', checkPasswords);
+const debouncedCheckPasswords = debounced(checkPasswords, 100)
 
-// Функция для проверки совпадения паролей TODO сделать debounce, чтобы раз в полсекунды где-то проверялось
+// при вводе в поля "пароль" и "введите пароль" сразу проверяется, совпадают ли они, или выводится ошибка.
+$('#password, #password-repeat').on('input', debouncedCheckPasswords);
+
+
+function debounced(fn, t) {
+    let timer
+    return function (...args) {
+        clearTimeout(timer)
+        console.log('timer', timer)
+        timer = setTimeout(() => {
+            fn(...args)
+        }, t)
+    }
+}
+
+// Функция для проверки совпадения паролей
 function checkPasswords() {
     let password = $('input[name="password"]').val();
     let passwordRepeat = $('input[name="password-repeat"]').val();
