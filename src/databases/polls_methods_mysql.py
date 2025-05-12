@@ -79,16 +79,12 @@ class PollsMethodsMySQL:
                 AND private_polls.id_of_poll IS NULL"""
         connection_object.cursor.execute(transaction)
         result = connection_object.cursor.fetchmany(num_of_polls)
-        producer.publish_log(
-            'Получил следующие опросы с базы данных. %s' % result,
-            Levels.Info,
-            id_of_user
-        )
         polls_list: list[Poll] = []
         for poll in result:
             cover = self.get_cover_of_poll_in_base64_format(poll[3], connection_object=connection_object)
+            data_of_user = self.get_user_data_from_table(poll[4])
             polls_list.append(Poll(poll[0], poll[1], json.loads(poll[2]), poll[3], id_of_user,
-                                   self.get_user_data_from_table(poll[4])[0], cover))
+                                   data_of_user[0], cover))
         return polls_list
 
     @get_connection_and_cursor

@@ -148,7 +148,8 @@ class UserMethodsMySQL:
         """
         connection_object.cursor.execute(
             f"""SELECT nickname, login, number_of_phone, date_of_birth, tags FROM user WHERE id_of_user={id_of_user}""")
-        return connection_object.cursor.fetchone()
+        response_of_query = connection_object.cursor.fetchone()
+        return response_of_query if response_of_query is not None else ["Deleted User"]
 
     @get_connection_and_cursor
     def create_cookie_into_pow_table(self, cookie: str, connection_object: ConnectionAndCursor = None):
