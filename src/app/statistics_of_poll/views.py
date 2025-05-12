@@ -10,7 +10,14 @@ from authentication.check_user_on_auth import authentication_for_statistics
 
 from Configs.Hosts import Hosts
 
+from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 
+from Configs.Schemas.statistics_page import STATISTICS_PAGE_SCHEMA, GET_STATISTICS_SCHEMA
+
+
+@extend_schema(**STATISTICS_PAGE_SCHEMA)
+@api_view(['GET'])
 @authentication_for_statistics()
 def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_user: int = None):
     """
@@ -35,6 +42,8 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
     return render(requests, 'statistics_page.html', context=context)
 
 
+@extend_schema(**GET_STATISTICS_SCHEMA)
+@api_view(['GET'])
 @authentication_for_statistics(False)
 def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
     """

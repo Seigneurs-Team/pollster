@@ -68,4 +68,4 @@ def request_on_sign_in_account(request):
 
         return JsonResponse({'response': 'Пользователь успешно авторизован в системе.'})
     except AssertionError:
-        return JsonResponse({'response': 'Неверный пароль или почта.'}, status=301)
+        return JsonResponse({'response': 'Неверный пароль или почта.'}, status=401)

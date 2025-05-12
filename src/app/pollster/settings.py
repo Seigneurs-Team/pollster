@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'app.get_qr_code_of_poll',
     'app.custom_handlers_of_status_codes',
     'drf_spectacular',
-    'app.admin_panel'
+    'app.admin_panel',
+    'app.search_system'
 ]
 
 MIDDLEWARE = [

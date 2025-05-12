@@ -1,5 +1,5 @@
 from drf_spectacular.utils import OpenApiResponse, OpenApiParameter
-from Configs.Serializers.main_page import ListOfPolls
+from Configs.Serializers.main_page import ListOfPolls, ResponseOnMainPage
 
 
 MAIN_PAGE_SCHEMA = {
@@ -8,7 +8,7 @@ MAIN_PAGE_SCHEMA = {
     'description': 'Endpoint нужен для получения HTML главной страницы, а также получения рекомендательных опросов, если пользователь авторизован в системе.',
     'methods': ['GET'],
     'responses': {
-        200: OpenApiResponse(description='Запрос успешно был обработан. Выдан HTML главной страницы.')
+        200: OpenApiResponse(description='Запрос успешно был обработан. Выдан HTML главной страницы.', response=ResponseOnMainPage)
     }
 }
 

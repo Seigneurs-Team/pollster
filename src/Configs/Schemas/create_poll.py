@@ -5,7 +5,8 @@ from Configs.Serializers.create_poll import (
     SuccessCreatePoll,
     UnSuccessCreatePoll500,
     UnSuccessCreatePoll400,
-    UnSuccessCreatePoll403
+    UnSuccessCreatePoll403,
+    ResponseOnGetCreatePollPage
 )
 
 
@@ -15,7 +16,10 @@ CREATE_POLL_PAGE_SCHEMA = {
     'description': 'Endpoint нужен для получения страницы создания опроса, которая впоследствии будет необходима пользователю для создания сущности опроса',
     'methods': ['GET'],
     'responses': {
-        200: OpenApiResponse(description='Запрос был успешно обработан. Выдан HTML страницы создания опроса.'),
+        200: OpenApiResponse(
+            description='Запрос был успешно обработан. Выдан HTML страницы создания опроса.',
+            response=ResponseOnGetCreatePollPage
+        ),
         302: OpenApiResponse(description='Куки auth_sessionid оказался невалидным. Необходимо пройти авторизацию. Происходит перенаправление пользователя на страницы /sign_in')
     }
 }

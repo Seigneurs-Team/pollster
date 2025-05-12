@@ -13,3 +13,15 @@ class Poll(serializers.Serializer):
 
 class ListOfPolls(serializers.Serializer):
     list = serializers.ListField(child=Poll())
+
+
+class User(serializers.Serializer):
+    is_authenticated = serializers.BooleanField()
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+
+
+class ResponseOnMainPage(serializers.Serializer):
+    all_objects = serializers.ListField(child=Poll())
+    tags = serializers.ListField()
+    user = User()

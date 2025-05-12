@@ -160,7 +160,7 @@ def authentication_for_statistics(return_id_of_user: bool = True):
                     if id_of_user == client_mysqldb.get_metadata_of_poll(kwargs['id_of_poll'])[3]:
                         return func(request, *args, **kwargs)
                     else:
-                        return HttpResponseForbidden()
+                        raise PermissionDenied()
                 else:
                     return func(request, *args, **kwargs)
             except (AssertionError, CookieWasExpired) as _ex:
