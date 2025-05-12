@@ -11,7 +11,19 @@ import mysql.connector
 from logging import getLogger
 import base64
 
+from Tools_for_rabbitmq.producer import producer
+from log_system.Levels import Levels
+
 logger = getLogger()
+
+
+def check_tags_on_similarity(input_tags: list[str], poll_tags: list[str]):
+    for poll_tag in poll_tags:
+        if poll_tag not in input_tags:
+            break
+    else:
+        return True
+    return False
 
 
 class PollsMethodsMySQL:
@@ -67,6 +79,11 @@ class PollsMethodsMySQL:
                 AND private_polls.id_of_poll IS NULL"""
         connection_object.cursor.execute(transaction)
         result = connection_object.cursor.fetchmany(num_of_polls)
+        producer.publish_log(
+            'Получил следующие опросы с базы данных. %s' % result,
+            Levels.Info,
+            id_of_user
+        )
         polls_list: list[Poll] = []
         for poll in result:
             cover = self.get_cover_of_poll_in_base64_format(poll[3], connection_object=connection_object)
@@ -500,3 +517,22 @@ class PollsMethodsMySQL:
             return cover
         else:
             return None
+
+    @get_connection_and_cursor
+    def search_polls_by_name_and_tags(self, name_for_search: str, tags: list[str], watched_polls: list[int], limit: int = 10, connection_object: ConnectionAndCursor = None):
+        watched_polls = [str(id_of_poll) for id_of_poll in watched_polls]
+        if len(watched_polls) == 0:
+            watched_polls = "(NULL)"
+        else:
+            watched_polls = "(" + ",".join(watched_polls) + ")"
+        connection_object.cursor.execute(f"""SELECT id, name_of_poll, description, tags, id_of_author FROM polls WHERE name_of_poll REGEXP "^{name_for_search}" AND id NOT IN {watched_polls}""")
+        response_of_query = connection_object.cursor.fetchmany(limit)
+        returned_polls = [
+            Poll(poll[1], poll[2], json.loads(poll[3]), poll[0], poll[4], self.get_user_data_from_table(poll[4])[0], self.get_cover_of_poll_in_base64_format(poll[0], connection_object=connection_object))
+            for poll in response_of_query if check_tags_on_similarity(tags, json.loads(poll[3]))
+        ]
+
+        return returned_polls
+
+
+

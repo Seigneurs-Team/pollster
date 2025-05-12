@@ -19,11 +19,12 @@ def request_on_get_search_polls(request: WSGIRequest):
     try:
         json_data = json.loads(request.body)
 
-        count_of_polls = json_data['count_of_poll']
+        count_of_polls = json_data['count_of_polls']
         tags = json_data['tags']
         name_of_poll_for_search = json_data['name_of_poll_for_search']
+        watched_polls = json_data['watched_polls']
 
-        list_of_polls = None
+        list_of_polls = client_mysqldb.search_polls_by_name_and_tags(name_of_poll_for_search, tags, watched_polls)
 
         return JsonResponse({'list_of_polls': list_of_polls})
     except IndexError:
