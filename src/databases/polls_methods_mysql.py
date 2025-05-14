@@ -1,3 +1,5 @@
+import dataclasses
+
 from databases.connection_shaker import get_connection_and_cursor, ConnectionAndCursor
 
 from Configs.Poll import Poll, Question, Option, RightAnswer, RightTextAnswer
@@ -17,11 +19,16 @@ from log_system.Levels import Levels
 logger = getLogger()
 
 
-def check_tags_on_similarity(input_tags: list[str], poll_tags: list[str]):
+def check_tags_on_similarity(input_tags: list[str], poll_tags: list[str]) -> bool:
+    input_tags = list(map(lambda x: x.lower(), input_tags))
+    poll_tags = list(map(lambda x: x.lower(), poll_tags))
+
+    count: int = 0
     for poll_tag in poll_tags:
-        if poll_tag not in input_tags:
-            break
-    else:
+        if poll_tag in input_tags:
+            count += 1
+
+    if count == len(input_tags):
         return True
     return False
 
@@ -526,7 +533,7 @@ class PollsMethodsMySQL:
         AND id NOT IN {watched_polls}""")
         response_of_query = connection_object.cursor.fetchmany(limit)
         returned_polls = [
-            Poll(poll[1], poll[2], json.loads(poll[3]), poll[0], poll[4], self.get_user_data_from_table(poll[4])[0], self.get_cover_of_poll_in_base64_format(poll[0], connection_object=connection_object))
+            dataclasses.asdict(Poll(poll[1], poll[2], json.loads(poll[3]), poll[0], poll[4], self.get_user_data_from_table(poll[4])[0], self.get_cover_of_poll_in_base64_format(poll[0], connection_object=connection_object)))
             for poll in response_of_query if check_tags_on_similarity(tags, json.loads(poll[3]))
         ]
 
