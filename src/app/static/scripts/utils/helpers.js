@@ -8,6 +8,15 @@ export function blockForm() {
 
 export function unblockForm() {
     $('#loginForm').find('input, button').prop('disabled', false);
+    $('#loading-overlay').hide();
+}
+
+export function showLoadingOverlay() {
+    $('#overlay-loading').show()
+}
+
+export function hideLoadingOverlay() {
+    $('#overlay-loading').hide()
 }
 
 export function showSuccessOverlay() {
@@ -18,6 +27,24 @@ export function showSuccessOverlay() {
 export function showFailOverlay(error) {
     $('#overlay-message').text(`Ошибка: ${error.message}`);
     $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
+}
+
+
+export function showQR(url, qr_code) {
+
+    // Создаем элемент <img> с jQuery и устанавливаем src
+    const $qrCodeImage = $('<img>', {
+        src: `data:image/png;base64,${qr_code}`,
+        alt: 'QR-код опроса',
+        class: 'qr-code'
+    });
+
+    // Вставляем изображение в контейнер
+    $('.qr-code-container').append($qrCodeImage);
+    $('.poll-link input').val(url)
+
+
+    $('#overlay-share-poll').show();
 }
 
 

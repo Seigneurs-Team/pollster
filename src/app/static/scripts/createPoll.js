@@ -2,8 +2,7 @@
 const host = 'http://127.0.0.1:8000';
 import { hasHTMLTags } from './create_poll_page.js';
 import { sendRequest } from './api.js';
-import { showFailOverlay } from './utils/authHelpers.js';
-
+import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showQR } from './utils/helpers.js';
 
 export function createPoll() {
     let questions = getQuestions()
@@ -186,34 +185,6 @@ async function sendCreatePollRequest(data) {
         .finally(() => {
             hideLoadingOverlay()
         })
-}
-
-function showLoadingOverlay() {
-    $('#overlay-loading').show()
-}
-
-function hideLoadingOverlay() {
-    $('#overlay-loading').hide()
-}
-
-function showQR(url, qr_code) {
-
-    // Создаем элемент <img> с jQuery и устанавливаем src
-    const $qrCodeImage = $('<img>', {
-        src: `data:image/png;base64,${qr_code}`,
-        alt: 'QR-код опроса',
-        css: {
-            maxWidth: '100%',
-            height: 'auto'
-        }
-    });
-
-    // Вставляем изображение в контейнер
-    $('.qr-code-container').append($qrCodeImage);
-    $('.poll-link input').val(url)
-
-
-    $('#overlay-share-poll').show();
 }
 
 function showSuccessOverlay() {

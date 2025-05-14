@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
     <title>Pollster</title>
-    
+
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
@@ -35,8 +35,10 @@
             </a>
 
             {% if user.is_authenticated %}
-            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
+            <a href="/profile/{{user.id}}" class="profile-link">
+                <span>{{ user.username }}</span>
+                <img class="user-photo" src="{% static 'img\default_img\profile img.png' %}" alt="profile photo">
+            </a>
             {% else %}
             <a href="/sign_in" class="sign-up">Войти</a>
             {% endif %}
@@ -58,11 +60,11 @@
                 <div class="search">
                     <img src="{% static 'img/icons/Filter.svg' %}" class="opn-popup">
                     <div class="popup feature-unavalable" id="popup">
-                            <img src="{% static 'img/icons/Smile.svg' %}" alt="smile">
-                            <div class="feature-unavalable__message">
+                        <img src="{% static 'img/icons/Smile.svg' %}" alt="smile">
+                        <div class="feature-unavalable__message">
                             <p>Данная функция пока в разработке</p>
                             <p>Мы заботимся о Вашем комфорте и работаем над деталями</p>
-                            </div>
+                        </div>
                         <!-- <div class="popup-content">
                             <h2>Фильтры (в разработке)</h2>
                             <div class="filters">

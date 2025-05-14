@@ -1,7 +1,7 @@
 // вход в аккаунт
 import { getChallenge, findProof } from './/utils/POW.js';
 import { sendRequest } from './api.js';
-import { blockForm, unblockForm, showSuccessOverlay, showFailOverlay } from './utils/authHelpers.js';
+import { blockForm, unblockForm, showSuccessOverlay, showFailOverlay } from './utils/helpers.js';
 
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы

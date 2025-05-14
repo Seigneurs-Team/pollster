@@ -1,5 +1,5 @@
 import { sendRequest } from './api.js';
-import { showFailOverlay } from './utils/authHelpers.js';
+import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showQR } from './utils/helpers.js';
 
 
 let tagsErrorMessage = $('#tags-error-message');
@@ -163,6 +163,30 @@ function openTab(event, tabName) {
     $(event.currentTarget).addClass("active");
 }
 
+$(".share-poll").on('click', function () {
+    const id = $(this).attr('data-poll');
+
+    showLoadingOverlay()
+    sendRequest(`/get_qr_code/${id}`, 'GET')
+        .then((responseJSON) => {
+            if ($('#private').is(':checked')) {
+                console.log('qr code', response)
+
+                showQR(responseJSON.url, responseJSON.qr_code)
+
+            } else {
+                showSuccessOverlay()
+            }
+        })
+        .catch((error) => {
+            showFailOverlay(error)
+        })
+        .finally(() => {
+            hideLoadingOverlay()
+        })
+
+})
+
 $(".delete-poll").on('click', async function () {
     // Останавливаем всплытие события, чтобы предотвратить переход по ссылке
     event.stopPropagation();
@@ -184,9 +208,6 @@ function deletePoll(id, pollItem) {
     console.log('deleting poll...');
 
     sendRequest(`/delete_poll/${id}`, 'DELETE')
-        .then(() => {
-
-        })
         .catch((error) => {
             showFailOverlay(error)
         })

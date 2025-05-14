@@ -31,7 +31,7 @@
                 <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
             </a>
 
-            <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
+            <a href="/profile/{{user.id}}" class="profile-link"><span>{{ user.username }}</span> <img class="user-photo"
                 src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
@@ -149,8 +149,8 @@
                 </div>
             </div>
             <div class="overlay" id="overlay-share-poll">
-                <div id="overlay-share-poll-inner">
-                    <div class="share-poll_content">
+                <div class="overlay-inner" id="overlay-share-poll-inner">
+                    <div class="overlay-content" class="share-poll_content">
                         <div class="qr-code-container">
                         </div>
                         <div>

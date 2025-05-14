@@ -119,6 +119,10 @@ header .logo {
     align-items: center;
 }
 
+.profile-link span {
+    width: max-content;
+}
+
 .user-photo {
     border-radius: 50%;
     width: 32px;
@@ -203,4 +207,48 @@ input:invalid {
 
 .poll-item .tag::before {
     content: "#";
+}
+
+.overlay,
+#loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.overlay-inner,
+#overlay-content {
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    color: black;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.overlay-content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    align-items: center;
+}
+
+#loading-overlay img {
+    width: 100px;
+}
+
+.qr-code {
+    max-width: '100%';
+    height: 'auto'
 }
