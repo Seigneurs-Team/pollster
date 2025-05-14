@@ -6,5 +6,5 @@ class QrCode(serializers.Serializer):
     url_on_poll = serializers.CharField()
 
 
-class SuccessResponseOfGetQRCode(serializers.Serializer):
-    qr_code = QrCode()
+class SuccessResponseOfGetQRCode(QrCode):
+    pass
