@@ -249,12 +249,13 @@ button.deleteQuestion:hover {
 
 }
 
-.addTag, .addTag:hover {
+.addTag,
+.addTag:hover {
     background: none;
 }
 
 .addTag img {
-    width:20px;
+    width: 20px;
 }
 
 .addOptionCheckbox:hover,
@@ -294,7 +295,7 @@ input#private {
     z-index: 1000;
 }
 
-#overlay-share-poll-inner, #overlay-success-inner {
+.overlay-inner {
     background: white;
     padding: 20px;
     border-radius: var(--border-radius);
@@ -306,15 +307,23 @@ input#private {
     transform: translate(-50%, -50%);
 }
 
-.share-poll_content, .success_content {
+.overlay-content {
     display: flex;
     flex-direction: column;
     row-gap: 30px;
     align-items: center;
 }
 
+#overlay-loading img {
+    width: 100px;
+}
+
+#overlay-loading .overlay-inner {
+    background: transparent;
+}
+
 .poll-link {
-    display:flex;
+    display: flex;
     justify-content: center;
     column-gap: 10px;
 }
@@ -325,7 +334,8 @@ input#private {
     min-width: 250px;
 }
 
-.copy-link, .copy-link:hover {
+.copy-link,
+.copy-link:hover {
     background: none;
     border: none;
 }
@@ -335,7 +345,7 @@ input#private {
 }
 
 .copied {
-    display:none;
+    display: none;
 }
 
 .go-home {
@@ -387,11 +397,11 @@ input#private {
     opacity: 0;
 }
 
-.default-image input[type="radio"]:checked + label {
+.default-image input[type="radio"]:checked+label {
     position: relative;
 }
 
-.default-image input[type="radio"]:checked + label::after {
+.default-image input[type="radio"]:checked+label::after {
     content: "";
     position: absolute;
     top: 0;

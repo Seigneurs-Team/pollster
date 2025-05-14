@@ -1,5 +1,5 @@
 // api.js
-export async function sendRequest(url, method, data = {}, timeout = 0) {
+export async function sendRequest(url, method, data = undefined, timeout = 0) {
     const controller = new AbortController();
     let timeoutId;
 
@@ -7,14 +7,18 @@ export async function sendRequest(url, method, data = {}, timeout = 0) {
         timeoutId = setTimeout(() => controller.abort(), timeout);
     }
 
+    const sendData = {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        signal: controller.signal
+    }
+    if (data) {
+        sendData.body = JSON.stringify(data)
+    }
+
     try {
-        const promise = await fetch(url, {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(data),
-            signal: controller.signal
-        });
+        const promise = await fetch(url, sendData);
 
         clearTimeout(timeoutId);
         console.log('promise:', promise)

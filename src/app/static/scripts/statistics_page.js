@@ -28,7 +28,7 @@ const chartsTypes = []
 async function sendStatisticslRequest(id) {
     console.log('getting statistics...');
 
-    return sendRequest(`/get_statistics/${id}`, 'POST')
+    return sendRequest(`/get_statistics/${id}`, 'GET')
         .then((statistics) => statistics)
 }
 

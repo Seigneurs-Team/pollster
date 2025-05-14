@@ -2,8 +2,7 @@
 const host = 'http://127.0.0.1:8000';
 import { hasHTMLTags } from './create_poll_page.js';
 import { sendRequest } from './api.js';
-import { showFailOverlay } from './utils/authHelpers.js';
-
+import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showQR } from './utils/helpers.js';
 
 export function createPoll() {
     let questions = getQuestions()
@@ -40,18 +39,18 @@ export function createPoll() {
 function getQuestions() {
 
     // Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
-    let questions = $('.question').map(function () {
-        let type = $(this).attr('data-type')
+    const questions = $('.question').map((idx, question) =>  {
+        const type = $(question).attr('data-type')
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
         if (type === 'radio' || type === 'checkbox') {
-            return makeQuestionWithOptions(type, this)
+            return makeQuestionWithOptions(type, question)
 
         } else if (type === 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
-            return makeShortTextQuestion(type, this)
+            return makeShortTextQuestion(type, question)
 
-        } else if (type === 'long text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
-            return makeLongTextQuestion(type, this)
+        } else if (type === 'long text') { 
+            return makeLongTextQuestion(type, question)
         }
 
     }).get() // Преобразуем результат в массив
@@ -67,24 +66,23 @@ function makeQuestionWithOptions(type, question) {
 
     // id ответов начинаются с 0
     let counter = -1
-    $(question).find('.option').each(function () {
+    $(question).find('.option').each((idx, option) => {
         // Извлекаем значение из input.value, убираем пробелы в начале и в конце
-        let value = $(question).find('.value').val().trim();
+        let value = $(option).find('.value').val().trim();
         // Если значение не пустое, добавляем его в массив options
         if (value) {
             options.push(value);
             counter++
         }
-        if ($(question).find('.check').is(':checked')) {
+        if ($(option).find('.check').is(':checked')) {
             rightAnswersId.push(counter);
-            // записывать буду порядковый номер правильных ответов, который возьму в качестве id. лучше использовать id, чем сравнение строк
         }
     });
 
     return {
-        id: $(this).attr('id'),
+        id: $(question).attr('id'),
         type: type,
-        text: $(this).find('.questionText').val(),
+        text: $(question).find('.questionText').val(),
         options: options,
         rightAnswersId: rightAnswersId,
     }
@@ -113,8 +111,8 @@ function getTags() {
     let tags = [];
 
     // Перебираем все элементы, у которых id начинается с "tag-"
-    $('.selected-tags [id^="tag-"]').each(function () {
-        tags.push($(this).text().trim()); // получаем текст тэга
+    $('.selected-tags [id^="tag-"]').each((idx, tag) => {
+        tags.push($(tag).text().trim()); // получаем текст тэга
     });
 
     console.log('tags: ', tags);
@@ -139,17 +137,17 @@ function checkCorrectData(pollData) { // проверка на корректн�
         isInvalid = true;
     } else {
         // Проверяем все текстовые поля на 1) не пустоту 2) наличие html тэгов
-        $(`.questions input[type="text"], .questions textarea`).each(function () {
-            const value = $(this).val();
-            if (!value.trim() && $(this).attr('class') !== 'right-answer') {
+        $(`.questions input[type="text"], .questions textarea`).each((idx, input) => {
+            const value = $(input).val();
+            if (!value.trim() && $(input).attr('class') !== 'right-answer') {
                 isInvalid = true;
                 msg = 'Некорректно заполнена форма: Пустые поля!'
                 return false;
             }
         })
 
-        $(`input[type="text"], textarea`).each(function () {
-            const value = $(this).val();
+        $(`input[type="text"], textarea`).each((idx, input) => {
+            const value = $(input).val();
             if (hasHTMLTags(value)) {
                 isInvalid = true;
                 msg = 'Некорректно заполнена форма: Недопустимые символы (например, < или >)!'
@@ -170,6 +168,8 @@ function checkCorrectData(pollData) { // проверка на корректн�
 }
 
 async function sendCreatePollRequest(data) {
+
+    showLoadingOverlay()
     sendRequest('/create_poll', 'POST', data)
         .then((responseJSON) => {
             if ($('#private').is(':checked')) {
@@ -180,29 +180,11 @@ async function sendCreatePollRequest(data) {
             }
         })
         .catch((error) => {
-            console.log('outer error')
             showFailOverlay(error)
         })
-}
-
-function showQR(url, qr_code) {
-
-    // Создаем элемент <img> с jQuery и устанавливаем src
-    const $qrCodeImage = $('<img>', {
-        src: `data:image/png;base64,${qr_code}`,
-        alt: 'QR-код опроса',
-        css: {
-            maxWidth: '100%',
-            height: 'auto'
-        }
-    });
-
-    // Вставляем изображение в контейнер
-    $('.qr-code-container').append($qrCodeImage);
-    $('.poll-link input').val(url)
-
-
-    $('#overlay-share-poll').show();
+        .finally(() => {
+            hideLoadingOverlay()
+        })
 }
 
 function showSuccessOverlay() {
