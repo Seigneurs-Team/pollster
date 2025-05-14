@@ -1,6 +1,10 @@
 from rest_framework import serializers
 
 
-class SuccessResponseOfGetQRCode(serializers.Serializer):
+class QrCode(serializers.Serializer):
     qr_code = serializers.CharField()
     url_on_poll = serializers.CharField()
+
+
+class SuccessResponseOfGetQRCode(serializers.Serializer):
+    qr_code = QrCode()

@@ -521,7 +521,9 @@ class PollsMethodsMySQL:
             watched_polls = "(NULL)"
         else:
             watched_polls = "(" + ",".join(watched_polls) + ")"
-        connection_object.cursor.execute(f"""SELECT id, name_of_poll, description, tags, id_of_author FROM polls WHERE name_of_poll REGEXP "^{name_for_search}" AND id NOT IN {watched_polls}""")
+        connection_object.cursor.execute(f"""SELECT id, name_of_poll, description, tags, id_of_author FROM polls 
+        WHERE name_of_poll REGEXP "^{name_for_search}" 
+        AND id NOT IN {watched_polls}""")
         response_of_query = connection_object.cursor.fetchmany(limit)
         returned_polls = [
             Poll(poll[1], poll[2], json.loads(poll[3]), poll[0], poll[4], self.get_user_data_from_table(poll[4])[0], self.get_cover_of_poll_in_base64_format(poll[0], connection_object=connection_object))
