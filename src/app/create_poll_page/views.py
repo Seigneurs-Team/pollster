@@ -90,10 +90,14 @@ def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
             client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, file.read())
 
     producer.publish(Commands.get_vector_poll % poll.id_of_poll)
+    response_data = {"response": 'Опрос был успешно создан.', 'id_of_poll': poll.id_of_poll}
     if json_data['private']:
         code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
         base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % (Hosts.domain, code))
-        return JsonResponse(
-            {"response": 'Опрос был успешно создан.', "qr_code": base_64_qr_code, "url": "http://%s/%s" % (Hosts.domain, code)})
+
+        response_data['qr_code'] = base_64_qr_code
+        response_data['url'] = "http://%s/%s" % (Hosts.domain, code)
+
+        return JsonResponse(response_data)
     else:
-        return JsonResponse({'response': 'Опрос был успешно создан.'})
+        return JsonResponse(response_data)
