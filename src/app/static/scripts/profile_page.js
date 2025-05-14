@@ -169,19 +169,14 @@ $(".share-poll").on('click', function () {
     showLoadingOverlay()
     sendRequest(`/get_qr_code/${id}`, 'GET')
         .then((responseJSON) => {
-            if ($('#private').is(':checked')) {
-                console.log('qr code', response)
-
-                showQR(responseJSON.url, responseJSON.qr_code)
-
-            } else {
-                showSuccessOverlay()
-            }
+            showQR(responseJSON.url_on_poll, responseJSON.qr_code)
         })
         .catch((error) => {
+            console.log(error)
             showFailOverlay(error)
         })
         .finally(() => {
+            console.log('finally')
             hideLoadingOverlay()
         })
 
@@ -281,3 +276,18 @@ function showToast(toastId, toastInner, secondsLeft, fn, pollItem) {
         }
     });
 }
+
+// закрытие всплывающего окна по клику на overlay
+$('#overlay-share-poll').click(function (e) {
+    // Проверяем, был ли клик именно на overlay (а не на его дочерние элементы)
+    if (e.target === this) {
+        $(this).hide();
+    }
+});
+
+// Дополнительно: закрытие по ESC
+$(document).keyup(function (e) {
+    if (e.key === "Escape") {
+        $('#overlay-share-poll').hide();
+    }
+});

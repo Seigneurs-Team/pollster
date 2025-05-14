@@ -12,11 +12,11 @@ export function unblockForm() {
 }
 
 export function showLoadingOverlay() {
-    $('#overlay-loading').show()
+    $('#loading-overlay').show()
 }
 
 export function hideLoadingOverlay() {
-    $('#overlay-loading').hide()
+    $('#loading-overlay').hide()
 }
 
 export function showSuccessOverlay() {
@@ -31,7 +31,6 @@ export function showFailOverlay(error) {
 
 
 export function showQR(url, qr_code) {
-
     // Создаем элемент <img> с jQuery и устанавливаем src
     const $qrCodeImage = $('<img>', {
         src: `data:image/png;base64,${qr_code}`,
