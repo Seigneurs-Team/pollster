@@ -29,9 +29,9 @@ def request_on_get_qr_code(request: WSGIRequest, id_of_poll: int):
         qr_code_of_poll['qr_code'] = generate_qr_code_of_link("http://%s/%s" % (Hosts.domain, code))
         qr_code_of_poll['url_on_poll'] = "http://%s/%s" % (Hosts.domain, code)
 
-        return JsonResponse({qr_code_of_poll})
+        return JsonResponse(qr_code_of_poll)
     else:
         qr_code_of_poll['qr_code'] = generate_qr_code_of_link("http://%s/%s" % (Hosts.domain, id_of_poll))
         qr_code_of_poll['url_on_poll'] = "http://%s/%s" % (Hosts.domain, id_of_poll)
 
-        return JsonResponse({"qr_code": qr_code_of_poll})
+        return JsonResponse(qr_code_of_poll)
