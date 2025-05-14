@@ -30,17 +30,22 @@ export function showFailOverlay(error) {
 }
 
 
-export function showQR(url, qr_code) {
-    // Создаем элемент <img> с jQuery и устанавливаем src
-    const $qrCodeImage = $('<img>', {
-        src: `data:image/png;base64,${qr_code}`,
-        alt: 'QR-код опроса',
-        class: 'qr-code'
-    });
+export function showCreatedQR(url, qr_code) {
+    console.log('showing created qr')
 
-    // Вставляем изображение в контейнер
-    $('.qr-code-container').append($qrCodeImage);
-    $('.poll-link input').val(url)
+    if (!$('.qr-code-container').children().length) {
+
+        // Создаем элемент <img> с jQuery и устанавливаем src
+        const $qrCodeImage = $('<img>', {
+            src: `data:image/png;base64,${qr_code}`,
+            alt: 'QR-код опроса',
+            class: 'qr-code'
+        });
+
+        // Вставляем изображение в контейнер
+        $('.qr-code-container').append($qrCodeImage);
+        $('.poll-link input').val(url)
+    }
 
 
     $('#overlay-share-poll').show();

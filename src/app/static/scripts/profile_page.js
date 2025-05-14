@@ -1,5 +1,5 @@
 import { sendRequest } from './api.js';
-import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showQR } from './utils/helpers.js';
+import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showCreatedQR } from './utils/helpers.js';
 
 
 let tagsErrorMessage = $('#tags-error-message');
@@ -165,22 +165,65 @@ function openTab(event, tabName) {
 
 $(".share-poll").on('click', function () {
     const id = $(this).attr('data-poll');
+    console.log('id', id)
 
-    showLoadingOverlay()
-    sendRequest(`/get_qr_code/${id}`, 'GET')
-        .then((responseJSON) => {
-            showQR(responseJSON.url_on_poll, responseJSON.qr_code)
-        })
-        .catch((error) => {
-            console.log(error)
-            showFailOverlay(error)
-        })
-        .finally(() => {
-            console.log('finally')
-            hideLoadingOverlay()
-        })
+    // Инициализируем хранилище, если его нет
+    if (!localStorage.urlsQRs) {
+        localStorage.urlsQRs = "{}";
+    }
+    const urlsQRs = JSON.parse(localStorage.urlsQRs);
+
+    if (!urlsQRs[id]) {
+        console.log('dont have', id, 'in cache')
+        // Получаем данные и обрабатываем их асинхронно
+        getUrlAndQR(id).then(res => {
+            if (res) { // Проверяем, что res не undefined (если был catch)
+                urlsQRs[id] = res;
+                localStorage.urlsQRs = JSON.stringify(urlsQRs);
+                showExistingQR(urlsQRs[id]);
+
+            }
+        });
+    } else showExistingQR(urlsQRs[id]);
 
 })
+
+function showExistingQR(args) {
+    const [url, qr_code] = args
+    console.log('showing existing qr')
+    // Создаем элемент <img> с jQuery и устанавливаем src
+    const $qrCodeImage = $('<img>', {
+        src: `data:image/png;base64,${qr_code}`,
+        alt: 'QR-код опроса',
+        class: 'qr-code'
+    });
+
+ // очищаем контейнер
+    $('.qr-code-container').empty()
+
+    // Вставляем изображение в контейнер
+    $('.qr-code-container').append($qrCodeImage);
+    $('.poll-link input').val(url)
+
+    $('#overlay-share-poll').show();
+}
+
+
+function getUrlAndQR(id) {
+    showLoadingOverlay();
+    return sendRequest(`/get_qr_code/${id}`, 'GET')
+        .then((responseJSON) => {
+            return [responseJSON.url_on_poll, responseJSON.qr_code];
+        })
+        .catch((error) => {
+            console.log(error);
+            showFailOverlay(error);
+            return null; // Возвращаем null при ошибке
+        })
+        .finally(() => {
+            hideLoadingOverlay();
+        });
+}
 
 $(".delete-poll").on('click', async function () {
     // Останавливаем всплытие события, чтобы предотвратить переход по ссылке
