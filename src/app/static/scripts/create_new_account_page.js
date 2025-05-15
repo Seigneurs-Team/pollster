@@ -26,7 +26,6 @@ $('#loginForm').on('submit', async function (event) {
     console.log('data', data);
 
     showLoadingOverlay()
-    // Отправляем данные на сервер
     sendRequest('/register', 'POST', data)
         .then(() => {
             showSuccessOverlay()

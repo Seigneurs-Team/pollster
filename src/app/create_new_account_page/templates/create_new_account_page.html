@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Pollster</title>
     {% load static %}
-    
+
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/sign_in.css' %}">
@@ -38,7 +38,7 @@
                 <div>
                     <label for="login">Логин (почта):</label>
                     <input type="text" name="login" id="login" autocomplete="email" maxlength="100"
-                    pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required>
+                        pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required>
                 </div>
                 <div>
                     <label for="password">Пароль:</label>
@@ -71,17 +71,24 @@
                 </div>
             </form>
 
-            <!-- Индикатор загрузки и сообщения -->
-            <div id="loading-overlay">
-                <div class="overlay-content">
-                    <p id="overlay-message">Выполняется проверка...</p>
-                    <img src="{% static 'img/loader.gif' %}" alt="loading">
-                    <div id="overlay-buttons">
-                        <button id="go-home">Вернуться на главную</button>
-                        <button id="try-again">Попробовать позже</button>
+            
+            <div class="overlay" id="overlay-loading">
+                <div class="overlay-inner">
+                    <div class="overlay-content">
+                        <img src="{% static 'img/loader.gif' %}" alt="loading">
                     </div>
                 </div>
             </div>
+
+            <div class="overlay" id="overlay-result">
+                <div class="overlay-inner">
+                    <div class="overlay-content">
+                        <div id="overlay-message"></div>
+                        <div id="overlay-buttons"></div>
+                    </div>
+                </div>
+            </div>
+
         </main>
 
     </div>
@@ -89,7 +96,7 @@
         {% include 'footer.html' %}
     </div>
 
-    <script src="{% static 'scripts/utils/authHelpers.js' %}" type="module"></script>
+    <script src="{% static 'scripts/utils/helpers.js' %}" type="module"></script>
     <script src="{% static 'scripts/create_new_account_page.js' %}" type="module"></script>
 </body>
 

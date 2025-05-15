@@ -1,7 +1,7 @@
 // вход в аккаунт
 import { getChallenge, findProof } from './/utils/POW.js';
 import { sendRequest } from './api.js';
-import { blockForm, unblockForm, showSuccessOverlay, showFailOverlay } from './utils/helpers.js';
+import { blockForm, unblockForm, showSuccessOverlay, showFailOverlay, showLoadingOverlay, hideLoadingOverlay } from './utils/helpers.js';
 
 $('#loginForm').on('submit', async function (event) {
     event.preventDefault(); // предотвращает стандартное поведение формы
@@ -19,7 +19,9 @@ $('#loginForm').on('submit', async function (event) {
         pow: nonce,
         password: password,
     }
+    console.log('data', data);
 
+    showLoadingOverlay()
     sendRequest('/log_in', 'POST', data)
         .then(() => {
             showSuccessOverlay()
@@ -29,6 +31,7 @@ $('#loginForm').on('submit', async function (event) {
         })
         .finally(() => {
             unblockForm()
+            hideLoadingOverlay()
         })
 });
 
