@@ -173,16 +173,22 @@ async function sendCreatePollRequest(data) {
     sendRequest('/create_poll', 'POST', data)
         .then((responseJSON) => {
             if ($('#private').is(':checked')) {
-                showCreatedQR(responseJSON.url, responseJSON.qr_code)
+                // showCreatedQR(responseJSON.url, responseJSON.qr_code)
 
                 // кэширование qr кода. пока закомментировано, т.к. responseJSON.id не существует
-                /*
+                // Инициализируем хранилище, если его нет
+                if (!localStorage.urlsQRs) {
+                    localStorage.urlsQRs = "{}";
+                }
                 const urlsQRs = JSON.parse(localStorage.urlsQRs);
+                const id = responseJSON.id_of_poll
 
                 urlsQRs[id] = [responseJSON.url, responseJSON.qr_code];
                 localStorage.urlsQRs = JSON.stringify(urlsQRs);
-                showExistingQR(urlsQRs[responseJSON.id]);
-                */
+
+                showCreatedQR(urlsQRs[id]);
+                console.log('id', id)
+
             } else {
                 showSuccessOverlay()
             }

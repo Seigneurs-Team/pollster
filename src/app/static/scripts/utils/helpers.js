@@ -29,7 +29,8 @@ export function showFailOverlay(error) {
 }
 
 
-export function showCreatedQR(url, qr_code) {
+export function showCreatedQR(args) {
+    const [url, qr_code] = args
     console.log('showing created qr')
 
     if (!$('.qr-code-container').children().length) {

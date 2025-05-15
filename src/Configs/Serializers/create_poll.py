@@ -18,6 +18,7 @@ class DataOfPoll(serializers.Serializer):
     description = serializers.CharField()
     questions = serializers.ListField(child=Question())
     cover = serializers.CharField()
+    id_of_poll = serializers.IntegerField()
 
 
 class SuccessCreatePoll(serializers.Serializer):

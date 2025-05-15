@@ -308,3 +308,12 @@ $('.addTag').on('click', function () {
 
 // Экспорт функции для проверки HTML-тегов
 export { hasHTMLTags };
+
+
+// закрытие всплывающего окна по клику на overlay
+$('#overlay-share-poll').click(function (e) {
+    // Проверяем, был ли клик именно на overlay (а не на его дочерние элементы)
+    if (e.target === this) {
+        $(this).hide();
+    }
+});
