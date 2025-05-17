@@ -319,3 +319,23 @@ ul#polls {
     background-color: #fff;
     border: var(--violet) solid 2px;
 }
+
+.poll-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.poll-description,
+.poll-name,
+.poll-bottom {
+    padding: 0 var(--border-radius);
+
+}
+
+.poll-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: var(--border-radius);
+}

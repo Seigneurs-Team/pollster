@@ -12,7 +12,7 @@ $(document).ready(function () {
 // Отрисовка всех вопросов
 function renderAllQuestions() {
 
-    questionsList = JSON.parse(localStorage.getItem('questionsList'));
+    questionsList = JSON.parse(sessionStorage.getItem('questionsList'));
 
     questionsList.forEach(question => {
         const questionEl = $(`<div id="${question.id}" class="question"></div>`);
@@ -148,5 +148,5 @@ function showSuccessOverlay() {
 }
 
 $('.overlay').on('click', '.go-home', function () {
-    window.location.href = `/profile/${localStorage.userId}`;
+    window.location.href = `/profile/${sessionStorage.userId}`;
 });

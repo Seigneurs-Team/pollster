@@ -1,9 +1,3 @@
-:root {
-    --border-radius: 12px;
-    --violet: #5863BF;
-
-}
-
 .profile-photo {
     border-radius: 50%;
 }
@@ -194,7 +188,7 @@ label {
 }
 
 .poll-item {
-    width: 100%;
+        width: calc(100% - 30px);
     display: flex;
     flex-direction: row;
     padding: 15px;
@@ -259,4 +253,12 @@ label {
 header a {
     display: inline-block;
     width: min-content;
+}
+
+
+@media (max-width: 768px) {
+
+    li.poll-item>* {
+        width: 100%;
+    }
 }
