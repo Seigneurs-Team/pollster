@@ -39,7 +39,7 @@
             <h1>Админ панель</h1>
             <h1>Все опросы</h1>
 
-            <ul class="polls">
+            <ul id="polls">
                 {% for poll in all_objects %}
                 <li class="poll-item">
                     <a href="passing_poll/{{poll.id_of_poll}}/">

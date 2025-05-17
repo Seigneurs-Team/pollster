@@ -90,7 +90,7 @@
 
             <!-- Tab content -->
             <div id="your-polls" class="tabcontent">
-                <ul class="polls">
+                <ul id="polls">
                     {% if not user.usersPolls %}
                     <p>Здесь пока ничего нет...</p>
                     {% else %}
@@ -131,7 +131,7 @@
             </div>
 
             <div id="completed-polls" class="tabcontent">
-                <ul class="polls">
+                <ul id="polls">
                     {% if not user.completedPolls %}
                     <p>Здесь пока ничего нет...</p>
                     {% else %}

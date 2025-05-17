@@ -59,24 +59,24 @@
                 <h1>Специально для Вас</h1>
                 <div class="search">
                     <img src="{% static 'img/icons/Filter.svg' %}" class="opn-popup">
-                    <div class="popup feature-unavalable" id="popup">
-                        <img src="{% static 'img/icons/Smile.svg' %}" alt="smile">
+                    <div class="popup" id="popup">
+                        <!-- <img src="{% static 'img/icons/Smile.svg' %}" alt="smile">
                         <div class="feature-unavalable__message">
                             <p>Данная функция пока в разработке</p>
                             <p>Мы заботимся о Вашем комфорте и работаем над деталями</p>
-                        </div>
-                        <!-- <div class="popup-content">
-                            <h2>Фильтры (в разработке)</h2>
+                        </div> -->
+                        <div class="popup-content">
+                            <h2>Фильтры</h2>
                             <div class="filters">
 
-                                <ul>
+                                <!-- <ul>
                                     <li><input type="checkbox" name="popular" id="popular"><label
                                             for="popular">Популярные</label></li>
                                     <li><input type="checkbox" name="end-soon" id="end-soon"><label
                                             for="end-soon">Завершающиеся
                                             опросы</label></li>
-                                </ul>
-                                <p>С учетом возраста:</p>
+                                </ul> -->
+                                <!-- <p>С учетом возраста:</p>
                                 <ul>
                                     <li class="age"><input type="radio" name="popular" id="14"><label for="14">До
                                             14</label>
@@ -88,11 +88,11 @@
                                     <li class="age"><input type="radio" name="popular" id="31+"><label
                                             for="31+">31+</label>
                                     </li>
-                                </ul>
+                                </ul> -->
                                 <p>По тэгам:</p>
                                 <div class="tags">
-                                    <div class="selected-tags"></div>
-                                    <div class="not-selected-tags">
+                                    <div class="selected-tags" id="selected-tags"></div>
+                                    <div class="not-selected-tags" id="not-selected-tags">
                                         {% for tag in tags %}
                                         <button class="tag">
                                             <span>{{tag}}</span>
@@ -102,45 +102,40 @@
                                 </div>
 
                             </div>
-                            <button id="applyFilters">Применить фильтры</button>
-                        </div> -->
+                        </div>
                     </div>
-                    <input type="text" name="search" id="search" placeholder="Поиск опросов" maxlength="100">
-                    <img src="{% static 'img/icons/Search.svg' %}">
+                    <input type="text" name="search" id="search-input" placeholder="Поиск опросов" maxlength="100">
+                    <button id="search-btn">
+                        <img src="{% static 'img/icons/Search.svg' %}">
+                    </button>
                 </div>
             </div>
 
-            <ul class="polls">
+            <ul id="polls">
                 {% for poll in all_objects %}
-                <li class="poll-item">
+                <li class="poll-item" id="{{poll.id_of_poll}}">
                     <a href="passing_poll/{{poll.id_of_poll}}/">
-                        <!-- <div class="poll-img" data-image="data:image/png;base64,{{ poll.cover }}"></div> -->
                         <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
                         <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                         <p class="poll-description">{{poll.description}}</p>
-                        <span class="poll-author">Автор: {{poll.nickname_of_author}}</span>
-                        <div class="poll-tags">
-                            {% for tag in poll.tags %}
-                            <div class="tag">{{tag}}</div>
-                            {% endfor %}
-                        </div>
-                        <!--                    <div class="till-the-end">-->
-                        <!--                        <svg fill="#000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"-->
-                        <!--                             xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.003 512.003"-->
-                        <!--                             style="enable-background:new 0 0 512.003 512.003;" xml:space="preserve">-->
-
-                        <!--                                <path-->
-                        <!--                                        d="M477.196,318.082l-57.66-36.13c-5.88-3.209-9.54-9.37-9.54-16.077v-23.415c6.741-7.04,24.055-27.093,31.087-53.632 c7.066-5.803,11.187-14.387,11.187-23.586v-29.483c0-6.904-3.012-13.858-8.533-19.883l-0.017-39.543 c-0.043-0.759-5.197-76.331-93.85-76.331c-15.975,0-30.449,2.625-43.095,7.788c-14.25-5.177-31.204-7.788-50.772-7.788 c-19.568,0-36.523,2.611-50.774,7.789c-12.646-5.163-27.121-7.789-43.096-7.789c-88.644,0-93.807,75.571-93.867,76.8v39.074 c-5.53,6.033-8.533,12.979-8.533,19.883v29.483c0,9.199,4.13,17.783,11.187,23.586c7.031,26.539,24.346,46.592,31.087,53.632 v23.415c0,6.707-3.652,12.868-9.984,16.341L35.26,317.817C13.508,329.679,0,352.437,0,377.201v23.868 c0,4.71,3.823,8.533,8.533,8.533h59.638c-5.45,10.661-8.434,22.628-8.434,35.038v58.829c0,4.71,3.814,8.533,8.533,8.533h375.467 c4.719,0,8.533-3.823,8.533-8.533V444.64c0-12.41-2.984-24.376-8.434-35.038h59.634c4.719,0,8.533-3.823,8.533-8.533v-23.868 C512.003,352.437,498.495,329.679,477.196,318.082z M17.067,392.535v-15.334c0-18.517,10.104-35.533,26.812-44.663l56.755-35.601 c11.375-6.204,18.441-18.108,18.441-31.061v-26.94c0-2.355-0.981-4.617-2.697-6.229c-0.23-0.213-22.938-21.811-29.602-50.833 c-0.495-2.159-1.826-4.053-3.686-5.256c-3.934-2.543-6.289-6.793-6.289-11.375v-29.483c0-3.072,2.091-6.716,5.726-10.01 c1.792-1.613,2.807-3.917,2.807-6.323l-0.017-42.121c0.162-2.466,4.591-60.237,76.817-60.237c7.734,0,14.871,0.658,21.515,1.986 c-4.519,3.274-8.59,6.96-12.193,11.07c-20.207,23.049-18.338,50.995-17.852,55.689v45.389c-5.47,6.212-8.533,14.182-8.533,22.4 v34.133c0,10.377,4.719,20.062,12.774,26.53c7.817,30.95,24.183,54.281,29.892,61.764v39.706c0,8.26-4.497,15.846-11.75,19.797 l-76.143,41.532c-7.521,4.104-14.169,9.359-19.789,15.471H17.067z M435.203,494.935h-358.4V444.64 c0-13.803,4.742-26.901,13.055-37.336c0.536-0.5,1.006-1.067,1.4-1.689c4.647-5.414,10.289-10.041,16.76-13.574l76.134-41.523 c12.74-6.946,20.651-20.275,20.651-34.782v-42.667c0-1.988-0.708-3.934-1.98-5.47c-0.213-0.247-21.171-25.737-29.107-60.297 c-0.495-2.167-1.809-4.053-3.678-5.257c-4.949-3.2-7.902-8.55-7.902-14.31v-34.133c0-4.787,2.031-9.25,5.717-12.578 c1.792-1.621,2.816-3.925,2.816-6.34V85.335c0-0.375-0.026-0.742-0.077-1.118c-0.034-0.239-2.927-23.876,13.696-42.837 c5.93-6.768,13.625-12.129,23.021-16.081c0.683-0.18,1.338-0.451,1.957-0.794c12.669-4.943,28.282-7.437,46.736-7.437 c18.443,0,34.049,2.493,46.714,7.431c0.627,0.349,1.292,0.624,1.986,0.805c9.312,3.918,16.953,9.221,22.86,15.904 c16.614,18.782,13.875,42.803,13.85,43.008c-0.051,0.375-0.077,0.742-0.077,1.118v49.348c0,2.415,1.024,4.719,2.816,6.34 c3.686,3.328,5.717,7.791,5.717,12.578v34.133c0,5.76-2.953,11.11-7.902,14.31c-1.869,1.203-3.183,3.089-3.678,5.257 c-7.936,34.56-28.894,60.049-29.107,60.297c-1.271,1.536-1.98,3.482-1.98,5.47v42.667c0,14.507,7.91,27.836,20.651,34.782 l76.134,41.523c6.469,3.533,12.11,8.158,16.756,13.569c0.394,0.625,0.866,1.193,1.404,1.695 c8.313,10.435,13.055,23.532,13.055,37.335V494.935z M494.937,392.535h-62.984c-5.62-6.112-12.268-11.367-19.789-15.471h-0.009 l-76.134-41.532c-7.253-3.951-11.75-11.537-11.75-19.797v-39.706c5.709-7.484,22.076-30.814,29.892-61.764 c8.055-6.468,12.774-16.154,12.774-26.53v-34.133c0-8.218-3.063-16.188-8.533-22.4V85.813c0.486-4.693,2.355-32.64-17.852-55.689 c-3.603-4.11-7.675-7.796-12.193-11.07c6.645-1.328,13.782-1.986,21.512-1.986c72.226,0,76.655,57.771,76.8,59.733v42.624 c0,2.406,1.015,4.71,2.807,6.323c3.644,3.294,5.726,6.938,5.726,10.01v29.483c0,4.582-2.347,8.832-6.281,11.375 c-1.869,1.203-3.191,3.098-3.695,5.256c-6.656,29.022-29.363,50.62-29.602,50.833c-1.715,1.613-2.697,3.874-2.697,6.229v26.94 c0,12.954,7.066,24.858,17.988,30.797l57.66,36.13c16.256,8.866,26.359,25.882,26.359,44.399V392.535z">-->
-
-                        <!--                                </path>-->
-                        <!--                            </svg>-->
-                        <!--                        <span>Осталось ответов</span>-->
-                        <!--                    </div>-->
-
                     </a>
+                        <div class="poll-bottom">
+                            <div class="poll-bottom-left">
+                                <span class="poll-author">Автор: {{poll.nickname_of_author}}</span>
+                                <div class="poll-tags">
+                                    {% for tag in poll.tags %}
+                                    <div class="tag">{{tag}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <a href="/statistics/{{poll.id_of_poll}}">
+                                <img src="{% static 'img/icons/statistics.svg' %}">
+                            </a>
+                        </div>
                 </li>
                 {% endfor %}
             </ul>
+            <button id="more">Ещё</button>
 
         </main>
 
@@ -193,6 +188,19 @@
         {% include 'footer.html' %}
     </div>
     <script src="{% static 'scripts/index.js' %}" type="module"></script>
+    <!-- <script>
+        // Выбираем poll из контекста Django и передаём его в JavaScript
+        const questionsListStr = '{{ all_objects | escapejs }}'
+            .replace(/'/g, '"')  // Заменяем одинарные кавычки
+            .replace(/True/g, 'true')  // Булевы значения
+            .replace(/False/g, 'false');
+
+        // 2. Парсим в JavaScript-объект
+        const recommendedQuestions = JSON.parse(questionsListStr);
+
+        // 3. Сохраняем в sessionStorage (с правильным форматированием)
+        sessionStorage.setItem('recommendedQuestions', JSON.stringify(recommendedQuestions));
+    </script> -->
 
 </body>
 
