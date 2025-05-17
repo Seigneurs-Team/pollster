@@ -1,5 +1,4 @@
-
-ul.polls {
+ul#polls {
     /* обнуление стилей списка опросов */
     padding: 0;
     text-indent: 0;
@@ -17,9 +16,9 @@ ul.polls {
 .poll-item {
     width: 339px;
 
-    padding: var(--border-radius);
     border-radius: var(--border-radius);
 }
+
 
 
 li.poll-item:hover {
@@ -30,9 +29,10 @@ li.poll-item:hover {
     display: flex;
     flex-direction: column;
 }
+
 .poll-img {
-    width: 100%; /* или фиксированная ширина, например 300px */
-    height: 200px; /* задайте нужную высоту */
+    width: 100%;
+    height: 200px;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -84,13 +84,14 @@ li.poll-item:hover {
     width: 20px;
 }
 
-h2.poll-name, .poll-author {
+h2.poll-name,
+.poll-author {
     font-weight: 500;
 
 }
 
 h2.poll-name {
-    margin: 0;
+    margin: 5px 0 5px 0;
     font-size: 22px;
     text-align: center;
 }

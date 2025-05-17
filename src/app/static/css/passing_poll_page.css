@@ -104,10 +104,3 @@ form {
 .tag::before {
     content: "#";
 }
-
-.go-home {
-    border: var(--violet) solid 1.5px;
-    border-radius: var(--border-radius);
-    padding: 10px;
-    width: fit-content;
-}

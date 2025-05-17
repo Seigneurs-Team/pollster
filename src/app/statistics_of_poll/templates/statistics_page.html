@@ -26,12 +26,15 @@
 
 <body>
     <div class="content">
-        <header data-background="{% static 'img\backgrounds\header.png' %}">
-            <a href="/" class="logo-stub"></a>
+         <header>
+            <a href="/">
+                <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+            </a>
+
             <a href="/profile/{{user.id}}" class="profile-link"><span>{{ user.username }}</span> <img class="user-photo"
-                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
+                src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
-        
+
         <main data-poll-id="{{id_of_poll}}">
             <div class="poll-img"><img src="data:image/png;base64,{{ poll.cover }}" alt="poll image"></div>
             

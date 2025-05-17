@@ -57,7 +57,7 @@ class PollsMethodsMySQL:
         return json.loads(response_of_query[0])
 
     @get_connection_and_cursor
-    def get_polls(self, num_of_polls: int = 4, only_for_user: bool = False, id_of_user: int = None,
+    def get_polls(self, num_of_polls: int = 30, only_for_user: bool = False, id_of_user: int = None,
                   connection_object: ConnectionAndCursor = None, main_page: bool = False) -> list:
         """
         Функция возвращает list, состоящий из id: int, tags: string, name_of_poll: string, description: string

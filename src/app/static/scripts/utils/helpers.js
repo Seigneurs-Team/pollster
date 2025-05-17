@@ -1,14 +1,11 @@
 
 export function blockForm() {
     $('#loginForm').find('input, button').prop('disabled', true);
-    $('#loading-overlay').show();
-    $('#overlay-message').text('Выполняется проверка...');
-    $('#overlay-buttons').hide();
 }
 
 export function unblockForm() {
     $('#loginForm').find('input, button').prop('disabled', false);
-    $('#loading-overlay').hide();
+    $('#overlay-loading').hide();
 }
 
 export function showLoadingOverlay() {
@@ -20,28 +17,35 @@ export function hideLoadingOverlay() {
 }
 
 export function showSuccessOverlay() {
+    $('#overlay-result').show()
     $('#overlay-message').text(`Добро пожаловать!`);
-    $('#overlay-buttons').html('<button id="go-home">Вернуться на главную</button>').show();
+    $('#overlay-buttons').html('<button id="go-home">На главную</button>').show();
 }
 
 export function showFailOverlay(error) {
+    $('#overlay-result').show()
     $('#overlay-message').text(`Ошибка: ${error.message}`);
     $('#overlay-buttons').html('<button id="try-again">Попробовать позже</button>').show();
 }
 
 
-export function showQR(url, qr_code) {
+export function showCreatedQR(args) {
+    const [url, qr_code] = args
+    console.log('showing created qr')
 
-    // Создаем элемент <img> с jQuery и устанавливаем src
-    const $qrCodeImage = $('<img>', {
-        src: `data:image/png;base64,${qr_code}`,
-        alt: 'QR-код опроса',
-        class: 'qr-code'
-    });
+    if (!$('.qr-code-container').children().length) {
 
-    // Вставляем изображение в контейнер
-    $('.qr-code-container').append($qrCodeImage);
-    $('.poll-link input').val(url)
+        // Создаем элемент <img> с jQuery и устанавливаем src
+        const $qrCodeImage = $('<img>', {
+            src: `data:image/png;base64,${qr_code}`,
+            alt: 'QR-код опроса',
+            class: 'qr-code'
+        });
+
+        // Вставляем изображение в контейнер
+        $('.qr-code-container').append($qrCodeImage);
+        $('.poll-link input').val(url)
+    }
 
 
     $('#overlay-share-poll').show();
@@ -69,12 +73,12 @@ $('body').on('click', '.password-control', function () {
 
 
 // Обработка кнопки "Вернуться на главную"
-$('#loading-overlay').on('click', '#go-home', function () {
+$('#overlay-result').on('click', '#go-home', function () {
     window.location.href = '/'; // Перенаправление на главную страницу
 });
 
 // Обработка кнопки "Попробовать позже"
-$('#loading-overlay').on('click', '#try-again', function () {
-    $('#loading-overlay').hide(); // Скрываем overlay
+$('#overlay-result').on('click', '#try-again', function () {
+    $('#overlay-result').hide(); // Скрываем overlay
 });
 

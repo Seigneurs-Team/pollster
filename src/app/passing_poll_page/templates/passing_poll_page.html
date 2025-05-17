@@ -79,10 +79,10 @@
         // 2. Парсим в JavaScript-объект
         const questionsData = JSON.parse(questionsListStr);
 
-        // 3. Сохраняем в localStorage (с правильным форматированием)
-        localStorage.setItem('questionsList', JSON.stringify(questionsData));
+        // 3. Сохраняем в sessionStorage (с правильным форматированием)
+        sessionStorage.setItem('questionsList', JSON.stringify(questionsData));
 
-        localStorage.userId = {{ user.id }}
+        sessionStorage.userId = {{ user.id }}
 
     </script>
     <script src="{% static 'scripts/passing_poll_page.js' %}" type="module"></script>

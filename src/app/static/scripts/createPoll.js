@@ -2,7 +2,7 @@
 const host = 'http://127.0.0.1:8000';
 import { hasHTMLTags } from './create_poll_page.js';
 import { sendRequest } from './api.js';
-import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showQR } from './utils/helpers.js';
+import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showCreatedQR } from './utils/helpers.js';
 
 export function createPoll() {
     let questions = getQuestions()
@@ -39,7 +39,7 @@ export function createPoll() {
 function getQuestions() {
 
     // Перебираем все элементы с классом .question и добавляем их данные в questions в виде js-объекта
-    const questions = $('.question').map((idx, question) =>  {
+    const questions = $('.question').map((idx, question) => {
         const type = $(question).attr('data-type')
 
         // если это вопрос с вариантами ответа, то извлекаем их. если нет, то options останется []
@@ -49,7 +49,7 @@ function getQuestions() {
         } else if (type === 'short text') { // если это вопрос с коротким ответом, то в rightAnswersId заносится единственный правильный ответ, если он был введен пользователем
             return makeShortTextQuestion(type, question)
 
-        } else if (type === 'long text') { 
+        } else if (type === 'long text') {
             return makeLongTextQuestion(type, question)
         }
 
@@ -173,7 +173,21 @@ async function sendCreatePollRequest(data) {
     sendRequest('/create_poll', 'POST', data)
         .then((responseJSON) => {
             if ($('#private').is(':checked')) {
-                showQR(responseJSON.url, responseJSON.qr_code)
+                // showCreatedQR(responseJSON.url, responseJSON.qr_code)
+
+                // кэширование qr кода. пока закомментировано, т.к. responseJSON.id не существует
+                // Инициализируем хранилище, если его нет
+                if (!localStorage.urlsQRs) {
+                    localStorage.urlsQRs = "{}";
+                }
+                const urlsQRs = JSON.parse(localStorage.urlsQRs);
+                const id = responseJSON.id_of_poll
+
+                urlsQRs[id] = [responseJSON.url, responseJSON.qr_code];
+                localStorage.urlsQRs = JSON.stringify(urlsQRs);
+
+                showCreatedQR(urlsQRs[id]);
+                console.log('id', id)
 
             } else {
                 showSuccessOverlay()
