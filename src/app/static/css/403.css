@@ -70,6 +70,14 @@ textarea {
 
 
 body {
+    display: flex;
     background-color: var(--violet);
     color: white;
+}
+
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap:15px;
+    align-items: center;
 }
