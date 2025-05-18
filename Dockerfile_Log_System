@@ -1,0 +1,12 @@
+FROM python:3.9-slim
+
+SHELL ["/bin/bash", "-c"]
+
+WORKDIR /log
+COPY . /log
+
+RUN python3 -m venv venv && source venv/bin/activate
+
+RUN pip3 install -r requirements.txt
+
+CMD cd src && python3 -m Tools_for_rabbitmq.consumer --log_enable

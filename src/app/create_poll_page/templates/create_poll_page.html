@@ -6,100 +6,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pollster</title>
     {% load static %}
-    <!-- css, общий для всех страниц (header, footer, fonts...)  -->
+    
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/input-file.css' %}">
+
     <link rel="stylesheet" href="{% static 'css/create_poll_page.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
-    <script src="{% static 'scripts/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/circle-logo.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-          rel="stylesheet">
-
+        rel="stylesheet">
 </head>
 
 <body>
-<div class="content">
-    <header data-background="{% static 'img\header.png' %}">
-        <a href="/profile/{{user.id}}" class="profile-link">{{ user.username }} <img class="user-photo"
-                                                                                     src="{% static 'img\profile img.png' %}"
-                                                                                     alt="profile photo"></a>
-    </header>
+    <div class="content">
+        <header>
+            <a href="/">
+                <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+            </a>
+
+            <a href="/profile/{{user.id}}" class="profile-link"><span>{{ user.username }}</span> <img class="user-photo"
+                src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
+        </header>
 
 
-    <main data-deloption="{% static 'img/delOption.svg' %}">
+        <main data-deloption="{% static 'img/icons/cross.svg' %}" data-addoption="{% static 'img/icons/plus.svg' %}">
+            <div class="form">
+                <h1>Создать опрос</h1>
+                <label class="input-file addPollImage">
+                    <span class="load-img">Загрузить картинку</span>
+                    <input type="file" accept="image/png, image/jpeg" name="file" />
+                    <div class="imagePreview"></div>
+                </label>
 
-        <div class="form">
-            <h1>Создание опроса</h1>
+                <!-- Модальное окно для обрезки -->
+                <div id="cropModal"
+                    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
+                    <div
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 800px; background: white; padding: 20px; border-radius: 8px;">
+                        <div style="width: 100%; height: 400px;">
+                            <img id="cropImage" style="max-width: 100%; max-height: 100%;">
+                        </div>
+                        <div style="margin-top: 20px; text-align: right;">
+                            <button id="cancelCrop"
+                                style="padding: 8px 16px; margin-right: 10px; background: #f0f0f0; border: none; border-radius: 4px;">Отмена</button>
+                            <button id="confirmCrop"
+                                style="padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 4px;">Применить</button>
+                        </div>
+                    </div>
+                </div>
 
-            <label class="addPollImage">
-                + Добавить картинку
-                <input type="file" name="avatar" accept="image/png, image/jpeg"/>
-            </label>
+                <label class="form-label">Или выберите картинку по умолчанию:</label>
 
-            <div class="input-wrapper">
-                <label class="form-label" for="pollTitle">Название опроса (макс. 60 символов):</label>
-                <input type="text" id="pollTitle" maxlength="100">
+                <div class="default-images">
+                    <div class="default-image">
+                        <input type="radio" name="default-image" id="no-image" value="no-image">
+                        <label for="no-image"><img src="{% static 'img\default_img\no image.svg' %}" alt="default image"></label>
+                    </div>
+                    <div class="default-image">
+                        <input type="radio" name="default-image" id="image-1" value="1">
+                        <label for="image-1"><img src="{% static 'img\default_img\poll default img.jpg' %}"
+                                alt="default image"></label>
+                    </div>
+                    <div class="default-image">
+                        <input type="radio" name="default-image" id="image-2" value="2">
+                        <label for="image-2"><img src="{% static 'img\default_img\poll default img.png' %}"
+                                alt="default image"></label>
+                    </div>
+                    <div class="default-image">
+                        <input type="radio" name="default-image" id="image-3" value="3">
+                        <label for="image-3"><img src="{% static 'img\default_img\poll default img.png' %}"
+                                alt="default image"></label>
+                    </div>
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="form-label" for="pollTitle">Название опроса (макс. 60 символов):</label>
+                    <input type="text" id="pollTitle" maxlength="100">
+                    <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="form-label" for="pollDescription">Описание опроса (макс. 200 символов):</label>
+                    <textarea id="pollDescription" maxlength="200"></textarea>
+                    <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
+                </div>
+
+                <div class="tags-wrapper">
+                    <label class="form-label">Тэги (максимум 4):</label>
+                    <div class="tags">
+                        <div class="selected-tags"></div>
+                        <div class="not-selected-tags">
+                            {% for id, tag in tags %}
+                            <button class="tag" id="tag-{{id}}">
+                                <span>{{tag}}</span>
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <label class="form-label" for="newTagInput">Создайте свой тэг</label>
+                <div class="input-wrapper add-tag-wrapper">
+                    <input type="text" id="newTagInput" maxlength="20">
+                    <button class="addTag">
+                        <img src="{% static 'img/icons/plus.svg' %}" alt="добавить тэг">
+                    </button>
+                </div>
                 <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
-            </div>
 
-            <div class="input-wrapper">
-                <label class="form-label" for="pollDescription">Описание опроса (макс. 200 символов):</label>
-                <textarea id="pollDescription" maxlength="200"></textarea>
-                <div class="error-message">Недопустимые символы (например, &lt; или &gt;)!</div>
-            </div>
+                <input type="checkbox" name="private" id="private">
+                <label for="private">Сделать опрос приватным</label>
 
-            <div class="tags-wrapper">
-                <label class="form-label">Тэги:</label>
-                <div class="tags">
-                    <div class="selected-tags"></div>
-                    <div class="not-selected-tags">
-                        {% for id, tag in tags %}
-                        <button class="tag" id="tag-{{id}}">
-                            <span>{{tag}}</span>
+                <label class="form-label">Вопросы</label>
+                <div class="questions">
+
+                </div>
+                <button class="addQuestion"> + Добавить вопрос</button>
+                <button id="submitPollBtn">Отправить опрос</button>
+                <div class="error-message submit"></div>
+
+                <div id="choose-question-type-modal" class="modal">
+                    <div class="modal-content">
+                        <span>Выберите тип вопроса</span>
+                        <span class="modal-close">&times;</span> <!-- Кнопка закрытия -->
+                        <button class="answerType" name="short text">Ответ текстом (ограничено)</button>
+                        <button class="answerType" name="long text">Развернутый ответ
+                            (без ограничений)
                         </button>
-                        {% endfor %}
+                        <button class="answerType" name="radio">1 вариант ответа</button>
+                        <button class="answerType" name="checkbox">Несколько вариантов ответа</button>
+                        <button class="answerType" name="radio img" disabled>1 вариант ответа (картинки)</button>
+                        <button class="answerType" name="checkbox img" disabled>Несколько вариантов ответа
+                            (картинки)
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay" id="overlay-share-poll">
+                <div class="overlay-inner" id="overlay-share-poll-inner">
+                    <div class="overlay-content" class="share-poll_content">
+                        <div class="qr-code-container">
+                        </div>
+                        <div>
+                            <div class="poll-link"><input type="text" disabled><button class="copy-link"><img
+                                        src="{% static 'img/icons/Copy.svg' %}" alt="copy link"></button></div>
+                            <span class="copied">Copied!</span>
+                        </div>
+                        <button class="go-home">К опросам</button>
                     </div>
                 </div>
             </div>
 
-            <label class="form-label">Вопросы</label>
-            <div class="questions">
-
-            </div>
-            <button class="addQuestion"> + Добавить вопрос</button>
-            <button id="submitPollBtn">Отправить опрос</button>
-            <div class="error-message submit"></div>
-
-            <div id="choose-question-type-modal" class="modal">
-                <div class="modal-content">
-                    <span>Выберите тип вопроса</span>
-                    <span class="modal-close">&times;</span> <!-- Кнопка закрытия -->
-                    <button class="answerType" name="short text">Ответ текстом (ограничено)</button>
-                    <button class="answerType" name="long text">Развернутый ответ
-                        (без ограничений)
-                    </button>
-                    <button class="answerType" name="radiobutton">1 вариант ответа</button>
-                    <button class="answerType" name="checkbox">Несколько вариантов ответа</button>
-                    <button class="answerType" name="radiobutton img">1 вариант ответа (картинки)</button>
-                    <button class="answerType" name="checkbox img">Несколько вариантов ответа
-                        (картинки)
-                    </button>
+            <div class="overlay" id="overlay-loading">
+                <div class="overlay-inner">
+                    <div class="overlay-content">
+                        <img src="{% static 'img/loader.gif' %}" alt="loading">
+                    </div>
                 </div>
-
             </div>
 
+            <div class="overlay" id="overlay-success">
+                <div class="overlay-inner">
+                    <div class="overlay-content">
+                        <span>Опрос успешно создан!</span>
+                        <button class="go-home">К опросам</button>
+                    </div>
+                </div>
+            </div>
+        </main>
 
-            <script src="{% static 'scripts/create_poll_page.js' %}" type="module"></script>
-        </div>
-    </main>
+    </div>
+    <div class="footer-wrapper">
+        {% include 'footer.html' %}
+    </div>
 
-</div>
-{% include 'footer.html' %}
+    <script>
+        localStorage.userId = {{ user.id }}
+    </script>
+    <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+
+    <script src="{% static 'scripts/create_poll_page.js' %}" type="module"></script>
+
+    <!-- Подключаем Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
 </body>
 
 </html>

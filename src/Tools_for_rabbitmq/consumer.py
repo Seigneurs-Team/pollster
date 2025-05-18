@@ -9,9 +9,12 @@ from Tools_for_rabbitmq.Queue import Queue
 from Configs.Hosts import Hosts
 import logging
 from logging import basicConfig
-from Dionysus.engine_of_Dionysus import EngineOfDionysus
+import sys
 
-from databases.mysql_db import client_mysqldb
+if '--log_enable' not in sys.argv:
+    from Dionysus.engine_of_Dionysus import EngineOfDionysus
+
+from log_system.LogEngine import log_engine
 
 from Configs.Commands_For_RMQ import Commands
 basicConfig(filename='consumer.log', filemode='w', level=logging.DEBUG, format='[%(levelname)s] - %(funcName)s - %(message)s')
@@ -19,15 +22,21 @@ logger = logging.getLogger()
 
 
 class Consumer:
+    """
+    Класс является интерфейсом взаимодействия с rabbbitmq контейнером, как consumer сущность
+    """
     def __init__(self, host):
         self.parameters = pika.ConnectionParameters(heartbeat=0, host=host)
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
 
-        self.engine_of_dionysus = EngineOfDionysus()
+        print('START CONSUMING')
+        if '--log_enable' not in sys.argv:
+            self.engine_of_dionysus = EngineOfDionysus()
 
         self.queue = Queue.poll_queue
         self.queue_callback = Queue.poll_queue_callback
+        self.log_queue = Queue.log_queue
         self.exchange = ''
 
         self.declare_queue()
@@ -36,18 +45,32 @@ class Consumer:
         self.channel.start_consuming()
 
     def declare_queue(self):
-        self.channel.queue_declare(queue=self.queue, durable=True)
-        self.channel.queue_declare(queue=self.queue_callback, durable=True)
+        if '--log_enable' not in sys.argv:
+            self.channel.queue_declare(queue=self.queue, durable=True)
+            self.channel.queue_declare(queue=self.queue_callback, durable=True)
+        else:
+            self.channel.queue_declare(queue=self.log_queue, durable=True)
 
     def callback(self, channel: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: Any):
         self.confirm_the_request(channel, method, properties, body)
 
     def consume(self):
-        self.channel.basic_qos(prefetch_count=1)
-        self.channel.basic_consume(queue=self.queue, on_message_callback=self.callback)
+        self.channel.basic_qos(prefetch_count=25)
+        if '--log_enable' not in sys.argv:
+            self.channel.basic_consume(queue=self.queue, on_message_callback=self.callback)
+        else:
+            self.channel.basic_consume(queue=self.log_queue, on_message_callback=self.callback_on_log_request)
         self.channel.start_consuming()
 
     def confirm_the_request(self, channel: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: bytes):
+        """
+        Функция исполняет команды, которые присылает Publisher. Команды можно посмотреть в классе Commands Configs.Commands_For_RMQ
+        :param channel: канал связи
+        :param method: метод доставки сообщения
+        :param properties: настройки
+        :param body: сообщение в виде байтовой строки
+        :return: None
+        """
         result: str = ''
         if re.search(Commands.get_vector_poll.replace('%s', ''), body.decode()):
             id_of_poll = int(body.decode().split('=')[1])
@@ -74,7 +97,24 @@ class Consumer:
         )
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
+    def callback_on_log_request(self, channel: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: bytes):
+        body = str(body.decode())
+        level = body.split("$LEVEL=")[1]
+        message = json.loads(body.split("$LEVEL=")[0].split('SAVE_LOG_MESSAGE=')[1])
+        logger.info(message)
+
+        response = log_engine.create_entry(level, message)
+        channel.basic_ack(delivery_tag=method.delivery_tag)
+
     def callback_on_ping_request(self, channel: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: Any):
+        """
+        Callback на сообщение ping
+        :param channel: канал связи
+        :param method: метод доставки сообщения
+        :param properties: настройки
+        :param body: сообщение в виде байтовой строки
+        :return: None
+        """
         channel.basic_publish(
             exchange=self.exchange,
             routing_key=properties.reply_to,
@@ -83,9 +123,19 @@ class Consumer:
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def publish(self, body: bytes):
+        """
+        Отправка Publisher какого-то сообщения
+        :param body: сообщение
+        :return: None
+        """
         self.channel.basic_publish(self.exchange, routing_key=self.queue_callback, body=body)
 
     def reconnect(self):
+        """
+        Переподключение к контейнеру rabbitmq
+
+        :return:
+        """
         self.connection = pika.BlockingConnection(self.parameters)
         self.channel = self.connection.channel()
 

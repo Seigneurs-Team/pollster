@@ -1,0 +1,11 @@
+.first-circle {
+    bottom: 142px;
+}
+
+.second-circle {
+    bottom: 98px;
+}
+
+main.create-new-account {
+    background-image: url("../img/backgrounds/registration-background.png");
+}

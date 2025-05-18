@@ -43,7 +43,13 @@ INSTALLED_APPS = [
     'app.sign_in_page',
     'app.create_new_account_page',
     'app.profile_page',
-    'app.log_out'
+    'app.log_out',
+    'app.statistics_of_poll',
+    'app.get_qr_code_of_poll',
+    'app.custom_handlers_of_status_codes',
+    'drf_spectacular',
+    'app.admin_panel',
+    'app.search_system'
 ]
 
 MIDDLEWARE = [
@@ -77,8 +83,23 @@ TEMPLATES = [
     },
 ]
 
+HANDLER403 = 'app.custom_handlers_of_status_codes.views.custom_forbidden'
 WSGI_APPLICATION = 'app.pollster.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Pollster",
+    "VERSION": "0.0.1",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "filter": True,
+    },
+    "COMPONENT_SPLIT_REQUEST": True
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -128,7 +149,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'common_static'), # все статические файлы общие
+    os.path.join(BASE_DIR, 'static'), # статические файлы 
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Union
+from dataclasses import dataclass, field
+from typing import Union, Optional
 
 
 @dataclass
@@ -9,6 +9,8 @@ class Poll:
     tags: str
     id_of_poll: int
     id_of_author: Union[None, int]
+    nickname_of_author: str
+    cover: Union[None, str]
 
 
 @dataclass
@@ -33,3 +35,8 @@ class Option(Question):
 @dataclass
 class RightAnswer(Question):
     RightAnswerId: int
+
+
+@dataclass
+class SizeOfImage:
+    size_of_cover: int = 10240

@@ -1,0 +1,83 @@
+:root {
+    --border-radius: 12px;
+    --violet: #5863BF;
+}
+
+/* Убираем синий цвет на iOS для всех интерактивных элементов */
+button,
+.tag,
+.addQuestion,
+#submitPollBtn,
+.answerType,
+.addTag,
+.copy-link,
+.go-home {
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Явно задаем цвет для всех состояний ссылок */
+a,
+a:visited,
+a:active,
+a:hover {
+    color: #000;
+}
+
+/* Для тэгов, если они все еще синие */
+.tag {
+    color: #000;
+    /* Или любой другой нужный цвет */
+}
+
+/* Для кнопки добавления вопроса и отправки опроса */
+.addQuestion,
+#submitPollBtn {
+    color: #000;
+}
+
+/* reset default styles */
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+button {
+    background-color: #fff;
+    border: none;
+}
+
+body,
+button,
+textarea {
+    margin: 0;
+    padding: 0;
+    /*font*/
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    font-size: 14px;
+    color: #000;
+
+}
+
+
+body {
+    display: flex;
+    background-color: var(--violet);
+    color: white;
+}
+
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap:15px;
+    align-items: center;
+}

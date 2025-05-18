@@ -1,0 +1,299 @@
+:root {
+    /*--font-family: BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-sans;*/
+}
+
+
+/* Убираем синий цвет на iOS для всех интерактивных элементов */
+button,
+.tag,
+.addQuestion,
+#submitPollBtn,
+.answerType,
+.addTag,
+.copy-link,
+.go-home {
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Явно задаем цвет для всех состояний ссылок */
+a,
+a:visited,
+a:active,
+a:hover {
+    color: #000;
+}
+
+/* Для тэгов, если они все еще синие */
+.tag {
+    color: #000;
+    /* Или любой другой нужный цвет */
+}
+
+/* Для кнопки добавления вопроса и отправки опроса */
+.addQuestion,
+#submitPollBtn {
+    color: #000;
+}
+
+/* reset default styles */
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+button {
+    background-color: #fff;
+    border: none;
+}
+
+body,
+button,
+textarea {
+    margin: 0;
+    padding: 0;
+    /*font*/
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    font-size: 14px;
+    color: #000;
+
+}
+
+b {
+    font-weight: bold;
+}
+
+.go-back {
+    display: flex;
+    flex-direction: column;
+    width: 143px;
+    font-weight: 800;
+    text-align: center;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 28px;
+}
+
+button:hover,
+#createPollBtn:hover {
+    color: #fff;
+    background-color: var(--violet);
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    margin-top: 8px;
+}
+
+header .logo {
+    width: 30%;
+    min-width: 170px;
+}
+
+/* .logo-stub {
+    height: 121px;
+    width: 300px;
+    display: inline-block;
+} */
+
+.profile-link {
+    display: flex;
+    font-weight: 500;
+    max-height: 32px;
+    font-size: 16px;
+    align-items: center;
+}
+
+.profile-link span {
+    width: max-content;
+}
+
+.user-photo {
+    border-radius: 50%;
+    width: 32px;
+    margin-left: 8px;
+}
+
+.content {
+    width: 768px;
+    margin: auto;
+    min-height: calc(100vh - 100px);
+    /* высота экрана минус отступ от футера */
+    padding-bottom: 100px;
+}
+
+footer {
+    background: black;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    row-gap: 9px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.footer-logo {
+    width: 100px;
+}
+
+.contacts {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.footer-line {
+    height: 1.5px;
+    width: 100%;
+    background: linear-gradient(to right,
+            black 0%,
+            rgba(255, 255, 255, 0.5) 50%,
+            /* или используйте #808080 для серого */
+            black 100%);
+}
+
+.contact {
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+    color: white;
+}
+
+.contacts img {
+    width: 25px;
+}
+
+.error-message,
+#error-message {
+    font-size: 12px;
+    color: red;
+}
+
+input[type="text"] {
+    border: var(--violet) 1.5px solid;
+}
+
+input:invalid {
+    border-color: red;
+    outline-color: red;
+}
+
+[aria-invalid] {
+    background-color: #f5b2b2;
+}
+
+
+.poll-item .tag {
+    display: inline;
+    color: rgb(52, 115, 242);
+    margin-right: 4px;
+}
+
+.poll-item .tag::before {
+    content: "#";
+}
+
+.overlay,
+#overlay-loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.overlay-inner,
+.overlay-content {
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    color: black;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.overlay-content {
+    display: flex;
+    width: max-content;
+    flex-direction: column;
+    row-gap: 30px;
+    align-items: center;
+}
+
+#overlay-loading img {
+    width: 100px;
+}
+
+#overlay-loading .overlay-inner,
+#overlay-loading .overlay-content {
+    background-color: transparent;
+}
+
+#overlay-result .overlay-content {
+    row-gap: 10px;
+}
+
+
+.qr-code {
+    max-width: '100%';
+    height: 'auto'
+}
+
+.poll-link {
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+}
+
+.poll-link input:disabled {
+    background: #fff;
+    border: none;
+    min-width: 250px;
+}
+
+.copy-link,
+.copy-link:hover {
+    background: none;
+    border: none;
+}
+
+.copy-link img {
+    width: 24px;
+}
+
+.copied {
+    display: none;
+}
+
+
+.go-home {
+    border: var(--violet) solid 1.5px;
+    border-radius: var(--border-radius);
+    padding: 10px;
+    width: fit-content;
+}

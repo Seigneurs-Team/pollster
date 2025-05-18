@@ -1,0 +1,106 @@
+:root {
+    --border-radius: 15px;
+    --violet: #5863BF;
+}
+
+
+.poll-img img {
+    width: 100%;
+    border-radius: 28px;
+}
+
+main {
+    text-align: center;
+}
+
+.poll-name {
+    font-size: 25px;
+    font-weight: 700;
+    margin: 20px 0;
+}
+
+.poll-description {
+    margin: 20px 0;
+}
+
+.start {
+    margin-top: 20px;
+}
+
+.start, .first-circle {
+    color: #fff;
+    width: 325px;
+    height: 68px;
+    background-color: var(--violet);
+    border-radius: var(--border-radius);
+}
+
+.submit {
+    
+    color: #fff;
+    width: 200px;
+    height: 68px;
+    background-color: var(--violet);
+    border-radius: var(--border-radius);
+}
+
+.start:hover {
+    color: var(--violet);
+    background-color: #fff;
+    border: var(--violet) solid 2px;
+}
+
+form {
+    display: none;
+}
+
+#questions {
+    text-align: left;
+    border: var(--violet) solid 0.5px;
+    border-radius: 30px;
+    padding: 60px;
+    margin: 30px 0;
+}
+
+.question {
+    text-align: left;
+    font-weight: 700;
+    margin-bottom: 60px;
+}
+
+.question-text {
+    margin-bottom: 15px;
+    text-decoration: underline;
+
+}
+
+.question textarea, .question input[type="text"] {
+    width: 100%;
+    border: none;
+    border-bottom: var(--violet) solid 1px;
+}
+
+.question textarea:hover, .question textarea:focus, .question textarea:focus-visible, .question input[type="text"]:hover, .question input[type="text"]:focus, .question input[type="text"]:focus-visible {
+    width: 100%;
+    outline: none;
+    border: none;
+    border-bottom: var(--violet) solid 2px;
+}
+
+.question textarea {
+    border-radius: 10px;
+}
+
+.question label {
+    padding-left: 15px;
+}
+
+.tag {
+    display: inline;
+    color: rgb(52, 115, 242);
+    margin-right: 4px;
+}
+
+.tag::before {
+    content: "#";
+}
