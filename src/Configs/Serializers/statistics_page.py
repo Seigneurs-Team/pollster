@@ -39,6 +39,7 @@ class SuccessResponseOnStatisticsPage(serializers.Serializer):
     id_of_poll = serializers.IntegerField()
     user = UserInStatistics()
     questions = Statistics()
+    cover = serializers.CharField()
 
 
 class SuccessResponseOnStatisticsPagePrivatePoll(SuccessResponseOnStatisticsPage):
