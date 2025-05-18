@@ -4,7 +4,8 @@ from Configs.Serializers.sign_in import (
     RequestOnSignIn,
     SuccessResponseOnSignIn,
     UnSuccessResponseOnSignIn400,
-    UnSuccessResponseOnSignIn401
+    UnSuccessResponseOnSignIn401,
+    UnSuccessResponseOnSignIn423
 )
 
 
@@ -37,6 +38,10 @@ SIGN_IN_SCHEMA = {
         401: OpenApiResponse(
             description='Пользователь ввел неверные учетные записи.',
             response=UnSuccessResponseOnSignIn401
+        ),
+        423: OpenApiResponse(
+            description='Аккаунт заблокирован в системе.',
+            response=UnSuccessResponseOnSignIn423
         )
     }
 }

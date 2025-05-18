@@ -518,3 +518,21 @@ class UserMethodsMySQL:
             f"""SELECT value FROM data_of_passing_poll_from_user WHERE id_of_poll = {id_of_poll} AND
             serial_number_of_question = {serial_number_of_questions}""")
         return [value[0] for value in connection_object.cursor.fetchall()]
+
+    @get_connection_and_cursor
+    def create_entry_into_ban_users(self, id_of_user: int, connection_object: ConnectionAndCursor = None):
+        assert self.check_user_into_ban_users(id_of_user) is False
+
+        connection_object.cursor.execute("""INSERT INTO ban_users (id_of_user) VALUES (%s)""", (id_of_user, ))
+        connection_object.connection.commit()
+
+    @get_connection_and_cursor
+    def delete_entry_from_ban_users(self, id_of_user: int, connection_object: ConnectionAndCursor = None):
+        assert self.check_user_into_ban_users(id_of_user) is True
+        connection_object.cursor.execute(f"""DELETE FROM ban_users WHERE id_of_user = {id_of_user}""")
+        connection_object.connection.commit()
+
+    @get_connection_and_cursor
+    def check_user_into_ban_users(self, id_of_user: int, connection_object: ConnectionAndCursor = None) -> bool:
+        connection_object.cursor.execute(f"""SELECT COUNT(*) FROM ban_users WHERE id_of_user = {id_of_user}""")
+        return connection_object.cursor.fetchone()[0] != 0

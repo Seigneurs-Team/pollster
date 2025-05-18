@@ -62,6 +62,9 @@ def sign_in_user_account(request, json_data: dict, admin: bool = False):
         password_from_db, id_of_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login)
         _, id_of_super_user = client_mysqldb.get_user_password_and_id_of_user_from_table(login, admin=admin)
 
+        if client_mysqldb.check_user_into_ban_users(id_of_user):
+            return JsonResponse({'response': 'Пользователь заблокирован в системе.'}, status=423)
+
         assert password == password_from_db
         assert password_from_db is not None
 

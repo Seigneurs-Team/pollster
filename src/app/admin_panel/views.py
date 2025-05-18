@@ -14,12 +14,7 @@ from databases.mysql_db import client_mysqldb
 from authentication.check_user_on_auth import authentication_for_admin_panel
 
 
-from Tools_for_rabbitmq.producer import producer
-from Configs.Commands_For_RMQ import Commands
-from Configs.Responses_from_consumer import Responses
-
-
-from Configs.Schemas.admin_panel import GET_ADMIN_PANEL_SCHEMA
+from Configs.Schemas.admin_panel import GET_ADMIN_PANEL_SCHEMA, BAN_USER_SCHEMA, UNBAN_SCHEMA
 
 
 @extend_schema(**GET_ADMIN_PANEL_SCHEMA)
@@ -30,42 +25,24 @@ def request_on_admin_panel(requests: WSGIRequest):
     return render(requests, 'admin_panel.html', context={'all_objects': polls})
 
 
-@api_view(['GET'])
-def requests_on_get_polls(request, num_of_polls=5):
-    """
-    Функция нужна для получения выбранного количества опросов из БД
-    :param request:
-    :param num_of_polls: количество опросов
-
-    :return: список опросов. Каждый элемент массива является экземпляром класса Poll
-    """
-    polls = [dataclasses.asdict(dataclass) for dataclass in client_mysqldb.get_polls(int(num_of_polls))]
-    return JsonResponse({"list": polls})
-
-
-def get_polls_for_user(id_of_user: int, polls: list):
-    """
-    Функция возвращает список опросов, которые рекомендательная система посчитала подходящими для конкретного пользователя.
-    Отправляется запрос в контейнер consumer, который принимает значение ID_OF_POLL и NUM_OF_POLLS. После вычислений
-    нейронной модели контейнер consumer возвращает список рекомендательных идентификаторов опросов.
-
-    :param id_of_user: идентификатор пользователя
-
-    :param polls: первичный список опросов, который может впоследствии изменить свое содержимое или нет
-
-    :return: список опросов типа Poll
-    """
+@extend_schema(**BAN_USER_SCHEMA)
+@api_view(['POST'])
+@authentication_for_admin_panel
+def request_on_ban_user(request: WSGIRequest, id_of_user: int):
     try:
-        if client_mysqldb.check_existence_vector_of_user_from_ranking_table(id_of_user):
-            response_of_rmq_request = producer.publish(Commands.get_similar_polls % (5, id_of_user))
-            if response_of_rmq_request == Responses.RefusedConnection:
-                raise AssertionError
-            if response_of_rmq_request['response'] == Responses.UserPassAllPolls:
-                polls = []
-            elif response_of_rmq_request['response'] == Responses.Ok:
-                list_polls_ids = response_of_rmq_request['polls_ids']
-                polls = client_mysqldb.get_polls_by_their_id(list_polls_ids)
+        client_mysqldb.create_entry_into_ban_users(id_of_user)
     except AssertionError:
-        pass
-    return polls
+        return JsonResponse({'response': 'Пользователь не найден.'}, status=404)
 
+    return JsonResponse({'responses': 'Пользователь успешно заблокирован в системе.'})
+
+
+@extend_schema(**UNBAN_SCHEMA)
+@api_view(['POST'])
+@authentication_for_admin_panel
+def request_on_unban_user(requst: WSGIRequest, id_of_user: int):
+    try:
+        client_mysqldb.delete_entry_from_ban_users(id_of_user)
+        return JsonResponse({'response': 'Пользователь успешно разблокирован в системе.'})
+    except AssertionError:
+        return JsonResponse({'response': 'Пользователь не найден.'}, status=404)

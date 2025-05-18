@@ -40,7 +40,7 @@ from app.statistics_of_poll.views import request_on_statistics_page, request_on_
 
 from app.get_qr_code_of_poll.views import request_on_get_qr_code
 
-from app.admin_panel.views import request_on_admin_panel
+from app.admin_panel.views import request_on_admin_panel, request_on_ban_user, request_on_unban_user
 
 from app.search_system.views import request_on_get_search_polls
 
@@ -72,6 +72,7 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
     path('admin_panel', request_on_admin_panel, name='admin_panel'),
+    path('admin_panel/ban/<int:id_of_user>', request_on_ban_user, name='ban_user'),
+    path('admin_panel/unban/<int:id_of_user>',request_on_unban_user, name='unban_user'),
     path('search_polls', request_on_get_search_polls, name='search_system')
-
 ]

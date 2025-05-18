@@ -17,3 +17,7 @@ class UnSuccessResponseOnSignIn401(serializers.Serializer):
 
 class UnSuccessResponseOnSignIn400(serializers.Serializer):
     response = serializers.CharField(default='Неправильный pow в теле запроса. Challenge POW не был пройден правильно.')
+
+
+class UnSuccessResponseOnSignIn423(serializers.Serializer):
+    response = serializers.CharField(default='Пользователь заблокирован в системе.')

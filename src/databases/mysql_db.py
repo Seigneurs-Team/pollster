@@ -122,6 +122,8 @@ class MysqlDB(UserMethodsMySQL, PollsMethodsMySQL, PassPollsMethods):
         connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS ranking_table_of_users(id_of_user INT PRIMARY KEY, vector_of_user BLOB,
         FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE)""")
 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS ban_users(id_of_user INT PRIMARY KEY)""")
+
         # superuser
         connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS superusers(id_of_superuser INT, login VARCHAR(100), password VARCHAR(255), 
         PRIMARY KEY (id_of_superuser), 
