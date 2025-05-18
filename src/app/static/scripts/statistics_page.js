@@ -54,7 +54,7 @@ $(document).ready(async function () {
             questions[i].options = options
             questions[i].countOfSelected = countOfSelected
 
-            drawOptionsChart(i, options, countOfSelected)
+            drawBarChart(i, options, countOfSelected)
             chartsTypes[i] = 'options'
         }
     }
@@ -179,7 +179,7 @@ function changeChartData(btn, chart, id, dataType) {
     for (let i = 0; i < questions.length; i++) {
         if (questions[i].id == id) {
             if (dataType == 'options') {
-                drawOptionsChart(i, questions[i].options, questions[i].countOfSelected, 'pie')
+                drawBarChart(i, questions[i].options, questions[i].countOfSelected)
 
                 // активная кнопка
                 chartDataRWAnswers.removeClass('active')
@@ -195,4 +195,29 @@ function changeChartData(btn, chart, id, dataType) {
             break;
         }
     }
+}
+
+function drawBarChart (i, options, countOfSelected) {
+    // можно использовать типы bar, polarArea, pie, doughnut
+
+    const datasets = []
+    options.forEach((option, idx) => {
+        datasets.push({
+            label: option,
+            data: [countOfSelected[idx]],
+            backgroundColor: COLORS[idx],
+            hoverOffset: 4
+        })
+    })
+
+    const myChart = new Chart($(`#${questions[i].id} .chart`), {
+        type: 'bar',
+        data: {
+            labels: ['Количество голосов'],
+            datasets: datasets
+        },
+    });
+    $(`#${questions[i].id}`).data('chart', myChart);
+
+
 }
