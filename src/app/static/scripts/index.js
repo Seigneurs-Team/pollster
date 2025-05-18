@@ -100,14 +100,13 @@ function renderPolls(listOfPolls) {
 
 
     listOfPolls.forEach(poll => {
-
         const pollTags = poll.tags.reduce((pollTags, tag) => {
-            pollTags += `<div class="tag">${tag}</div>
+            return pollTags += `<div class="tag">${tag}</div>
             `
         }, '')
 
         const pollEl = $(`
-<li class="poll-item">
+<li class="poll-item" id="${poll.id_of_poll}">
     <a href="passing_poll/${poll.id_of_poll}/">
         <!-- <div class="poll-img" data-image="data:image/png;base64,${poll.cover}"></div> -->
         <div class="poll-img"><img src="data:image/png;base64,${poll.cover}" alt="poll image"></div>
