@@ -339,3 +339,8 @@ ul#polls {
     align-items: flex-end;
     padding-bottom: var(--border-radius);
 }
+
+.statistics-btn {
+width: 32px;
+height: 33px;
+}

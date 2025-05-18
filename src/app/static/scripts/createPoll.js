@@ -139,7 +139,7 @@ function checkCorrectData(pollData) { // проверка на корректн�
         // Проверяем все текстовые поля на 1) не пустоту 2) наличие html тэгов
         $(`.questions input[type="text"], .questions textarea`).each((idx, input) => {
             const value = $(input).val();
-            if (!value.trim() && $(input).attr('class') !== 'right-answer') {
+            if (!value.trim() && $(input).attr('class') !== 'right-answer') { // правильный ответ необязателен
                 isInvalid = true;
                 msg = 'Некорректно заполнена форма: Пустые поля!'
                 return false;

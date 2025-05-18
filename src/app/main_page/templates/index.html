@@ -119,19 +119,19 @@
                         <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                         <p class="poll-description">{{poll.description}}</p>
                     </a>
-                        <div class="poll-bottom">
-                            <div class="poll-bottom-left">
-                                <span class="poll-author">Автор: {{poll.nickname_of_author}}</span>
-                                <div class="poll-tags">
-                                    {% for tag in poll.tags %}
-                                    <div class="tag">{{tag}}</div>
-                                    {% endfor %}
-                                </div>
+                    <div class="poll-bottom">
+                        <div class="poll-bottom-left">
+                            <span class="poll-author">Автор: {{poll.nickname_of_author}}</span>
+                            <div class="poll-tags">
+                                {% for tag in poll.tags %}
+                                <div class="tag">{{tag}}</div>
+                                {% endfor %}
                             </div>
-                            <a href="/statistics/{{poll.id_of_poll}}">
-                                <img src="{% static 'img/icons/statistics.svg' %}">
-                            </a>
                         </div>
+                        <a href="/statistics/{{poll.id_of_poll}}">
+                            <img src="{% static 'img/icons/statistics.svg' %}">
+                        </a>
+                    </div>
                 </li>
                 {% endfor %}
             </ul>
