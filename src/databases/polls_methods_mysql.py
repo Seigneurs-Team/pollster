@@ -20,6 +20,8 @@ logger = getLogger()
 
 
 def check_tags_on_similarity(input_tags: list[str], poll_tags: list[str]) -> bool:
+    if len(input_tags) == 0:
+        return True
     input_tags = list(map(lambda x: x.lower(), input_tags))
     poll_tags = list(map(lambda x: x.lower(), poll_tags))
 
@@ -525,12 +527,14 @@ class PollsMethodsMySQL:
     def search_polls_by_name_and_tags(self, name_for_search: str, tags: list[str], watched_polls: list[int], limit: int = 10, connection_object: ConnectionAndCursor = None):
         watched_polls = [str(id_of_poll) for id_of_poll in watched_polls]
         if len(watched_polls) == 0:
-            watched_polls = "(NULL)"
+            watched_polls = ""
         else:
             watched_polls = "(" + ",".join(watched_polls) + ")"
+
+        watched_polls = "" if watched_polls == "" else f"""AND id NOT IN {watched_polls}"""
+
         connection_object.cursor.execute(f"""SELECT id, name_of_poll, description, tags, id_of_author FROM polls 
-        WHERE name_of_poll REGEXP "^{name_for_search}" 
-        AND id NOT IN {watched_polls}""")
+        WHERE name_of_poll REGEXP ".*{name_for_search}.*" """ + watched_polls)
         response_of_query = connection_object.cursor.fetchmany(limit)
         returned_polls = [
             dataclasses.asdict(Poll(poll[1], poll[2], json.loads(poll[3]), poll[0], poll[4], self.get_user_data_from_table(poll[4])[0], self.get_cover_of_poll_in_base64_format(poll[0], connection_object=connection_object)))
