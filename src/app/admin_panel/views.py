@@ -11,7 +11,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import JsonResponse
 from databases.mysql_db import client_mysqldb
 
-from authentication.check_user_on_auth import authentication_for_main_page
+from authentication.check_user_on_auth import authentication_for_admin_panel
 
 
 from Tools_for_rabbitmq.producer import producer
@@ -23,39 +23,12 @@ from log_system.Levels import Levels
 from Configs.Schemas.main_page import MAIN_PAGE_SCHEMA, GET_POLLS_SCHEMA
 
 
-@extend_schema(**MAIN_PAGE_SCHEMA)
-@api_view(['GET'])
-@authentication_for_main_page
-def request_on_admin_panel(requests: WSGIRequest, is_authenticated: bool):
-    
-    """
-    Функция нужна для отправки клиенту страницы html. Если пользователь авторизован в системе, то ему будут подобраны опросы
-    с помощью рекомендательной системы, иначе будут выданы первые пять опросов из БД.
-
-    :param requests:
-    :param is_authenticated: если True, то авторизованный пользователь отправляет запрос на загрузку страницы,
-    если False, то неавторизованный пользователь отправляет запрос на сервер.
-    Переменная нужна для понимания, какие опросы отправлять обратно клиенту.
-
-    :return: render(requests, 'index.html', context={'all_objects': polls, 'tags': tags, 'user': user})
-    """
+# @extend_schema(**MAIN_PAGE_SCHEMA)
+# @api_view(['GET'])
+@authentication_for_admin_panel
+def request_on_admin_panel(requests: WSGIRequest, id_of_user: int = None):
     polls = client_mysqldb.get_polls(main_page=True)
-    tags = ['развлечения', 'наука', 'животные', 'кухня', 'искусство', 'дети', 'музыка', 'кино и сериалы', 'путешествия', 'игры', 'мода и стиль', 'здоровье', 'образование']
-    if is_authenticated is True:
-        id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
-        producer.publish_log('Получил запрос на рендеринг главной страницы', Levels.Debug, id_of_user, requests=requests)
-
-        nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
-        user = {'is_authenticated': is_authenticated, 'id': id_of_user, 'username': nickname}
-        polls = client_mysqldb.get_polls(only_for_user=True, id_of_user=id_of_user)
-
-        polls = get_polls_for_user(id_of_user, polls)
-
-    else:
-        producer.publish_log('Получил запрос на рендеринг главной страницы', Levels.Debug, None, requests=requests)
-
-        user = {'is_authenticated': is_authenticated}
-    return render(requests, 'admin_panel.html', context={'all_objects': polls, 'tags': tags, 'user': user})
+    return render(requests, 'admin_panel.html', context={'all_objects': polls})
 
 
 @extend_schema(**GET_POLLS_SCHEMA)

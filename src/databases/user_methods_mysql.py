@@ -26,6 +26,8 @@ class UserMethodsMySQL:
                                              (1, 'user'))
             connection_object.cursor.execute("""INSERT INTO table_of_type_of_users(id_of_type, type) VALUES(%s, %s)""",
                                              (2, 'staff'))
+            connection_object.cursor.execute("""INSERT INTO table_of_type_of_users(id_of_type, type) VALUES(%s, %s)""",
+                                             (3, 'superuser'))
             connection_object.connection.commit()
 
     @get_connection_and_cursor
@@ -35,16 +37,22 @@ class UserMethodsMySQL:
 
         :return: None
         """
-        try:
-            id_of_superuser = random.randint(-99999999, -9999999)
-            connection_object.cursor.execute("""INSERT INTO users (id_of_user, type_of_user) VALUES (%s, %s)""",
-                                             (id_of_superuser, 3))
-            connection_object.cursor.execute(
-                """INSERT INTO superusers (id_of_superusers, login, password) VALUES (%s, %s, %s)""",
-                (id_of_superuser, 'admin', 'P@ssw0rd'))
-            connection_object.connection.commit()
-        except mysql.connector.IntegrityError:
-            self.create_superuser()
+        connection_object.cursor.execute("""SELECT COUNT(*) FROM superusers""")
+
+        if connection_object.cursor.fetchone()[0] != 0:
+            return None
+
+        connection_object.cursor.execute("""INSERT INTO users (type_of_user) VALUES (%s)""", (3, ))
+        connection_object.cursor.execute("""SELECT LAST_INSERT_ID()""")
+        id_of_superuser = connection_object.cursor.fetchone()[0]
+
+        connection_object.cursor.execute(
+            """INSERT INTO superusers (id_of_superuser, login, password) VALUES (%s, %s, %s)""",
+            (id_of_superuser, 'admin@admin-pollster.ru', 'P@ssw0rd'))
+
+        connection_object.connection.commit()
+
+        self.create_user('admin@admin-pollster.ru', 'P@ssw0rd', 2, 'admin', connection_object=connection_object)
 
     @get_connection_and_cursor
     def create_user(self, login: str, password: str, type_of_user: int, nickname: str,
@@ -58,31 +66,33 @@ class UserMethodsMySQL:
         :param nickname: никнейм
         :return: None
         """
-        connection_object.cursor.execute(f"""SELECT * FROM user WHERE login = "{login}" OR nickname = "{nickname}" """)
-        if len(connection_object.cursor.fetchall()) != 0:
+        connection_object.cursor.execute(f"""SELECT COUNT(*) FROM user WHERE login = "{login}" OR nickname = "{nickname}" """)
+        if connection_object.cursor.fetchone()[0] != 0:
             raise ErrorSameLogins('одинаковый логин')
-        try:
-            id_of_user = random.randint(-9999999, -999999)
-            connection_object.cursor.execute("""INSERT INTO users (id_of_user, type_of_user) VALUES (%s, %s)""",
-                                             (id_of_user, type_of_user))
-            connection_object.cursor.execute(
-                """INSERT INTO user (id_of_user, login, password, nickname) VALUES (%s, %s, %s, %s)""",
-                (id_of_user, login, password, nickname))
-            connection_object.connection.commit()
-        except mysql.connector.IntegrityError:
-            self.create_user(login, password, type_of_user, nickname)
+        connection_object.cursor.execute("""INSERT INTO users (type_of_user) VALUES (%s)""", (type_of_user, ))
+
+        connection_object.cursor.execute("""SELECT LAST_INSERT_ID()""")
+        id_of_user = connection_object.cursor.fetchone()[0]
+
+        connection_object.cursor.execute(
+            """INSERT INTO user (id_of_user, login, password, nickname) VALUES (%s, %s, %s, %s)""",
+            (id_of_user, login, password, nickname))
+        connection_object.connection.commit()
 
     @get_connection_and_cursor
-    def get_user_password_and_id_of_user_from_table(self, login, connection_object: ConnectionAndCursor = None):
+    def get_user_password_and_id_of_user_from_table(self, login, connection_object: ConnectionAndCursor = None, admin: bool = False):
         """
         Функция возвращает пароль и идентификатор пользователя по логину
 
+        :param admin:
         :param connection_object:
         :param login: логин
 
         :return: пароль и идентификатор пользователя
         """
-        connection_object.cursor.execute(f"""SELECT password, id_of_user FROM user WHERE login = "{login}" """)
+        table = "user" if admin is False else "superusers"
+        id_of_user_filed = "id_of_user" if admin is False else "id_of_superuser"
+        connection_object.cursor.execute(f"""SELECT password, {id_of_user_filed} FROM {table} WHERE login = "{login}" """)
         response = connection_object.cursor.fetchone()
         if response is None:
             return None, None
@@ -110,6 +120,7 @@ class UserMethodsMySQL:
         assert session is not None
 
         if now < session[0]:
+            print(session)
             connection_object.cursor.execute(f"""SELECT nickname FROM user WHERE id_of_user = {session[1]}""")
             user = connection_object.cursor.fetchone()
             if user is not None:

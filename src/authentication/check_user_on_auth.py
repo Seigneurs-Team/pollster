@@ -28,6 +28,24 @@ def check_user(request, get_id_of_user: bool = False):
         return id_of_user
 
 
+def check_admin(request: WSGIRequest) -> int:
+    """
+    Функция представляет собой экран для использования админ панели.
+    :param request:
+    :return: id_of_admin
+    """
+
+    assert 'auth_admin_sessionid' in request.COOKIES
+    auth_admin_sessionid = request.COOKIES['auth_admin_sessionid']
+
+    id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(
+        auth_admin_sessionid,
+        'auth_admin_sessionid'
+    )
+
+    return id_of_user
+
+
 def authentication(return_id_of_user: bool = True):
     """
     Декоратор является точкой проверки подлинности авторизации клиента в системе
@@ -167,3 +185,14 @@ def authentication_for_statistics(return_id_of_user: bool = True):
                 return HttpResponseRedirect('/sign_in')
         return wrapped_func
     return wrapped_high_func
+
+
+def authentication_for_admin_panel(func):
+    def wrapped_func(request: WSGIRequest, *args, **kwargs):
+        try:
+            id_of_user = check_admin(request)
+            kwargs['id_of_user'] = id_of_user
+            return func(request, *args, **kwargs)
+        except (AssertionError, CookieWasExpired) as _ex:
+            raise PermissionDenied()
+    return wrapped_func

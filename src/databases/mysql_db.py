@@ -106,14 +106,15 @@ class MysqlDB(UserMethodsMySQL, PollsMethodsMySQL, PassPollsMethods):
         connection_object.cursor.execute(
             """CREATE TABLE IF NOT EXISTS table_of_type_of_users(id_of_type INT, type VARCHAR(100), PRIMARY KEY (id_of_type))""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT PRIMARY KEY, type_of_user INT, 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS users(id_of_user INT AUTO_INCREMENT, type_of_user INT, 
+        PRIMARY KEY (id_of_user),
         FOREIGN KEY (type_of_user) REFERENCES table_of_type_of_users(id_of_type) ON UPDATE CASCADE)""")
 
         connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS user(id_of_user INT, password VARCHAR(255), login VARCHAR(100), nickname VARCHAR(50), tags VARCHAR(100), date_of_birth DATE, number_of_phone VARCHAR(17),
         PRIMARY KEY (id_of_user), 
         FOREIGN KEY (id_of_user) REFERENCES users(id_of_user) ON DELETE CASCADE)""")
 
-        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, id_of_cookie INT, cookie VARCHAR(10), expired TIMESTAMP, name_of_cookie VARCHAR(30), 
+        connection_object.cursor.execute("""CREATE TABLE IF NOT EXISTS sessions(id_of_user INT, id_of_cookie INT, cookie VARCHAR(30), expired TIMESTAMP, name_of_cookie VARCHAR(30), 
         PRIMARY KEY (id_of_cookie), 
         FOREIGN KEY (id_of_user) REFERENCES users (id_of_user) ON DELETE CASCADE)""")
 
@@ -136,6 +137,7 @@ class MysqlDB(UserMethodsMySQL, PollsMethodsMySQL, PassPollsMethods):
 
         self.set_types_of_questions()
         self.set_table_type_of_users()
+        self.create_superuser()
 
     # -----------------------------------------------------------------------------------------------------------------------
     # часть кода связанная с методами базы данных: подключение, переподключение, удаление таблиц
