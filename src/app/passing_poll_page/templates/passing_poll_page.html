@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Pollster</title>
     {% load static %}
-    
+
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
@@ -29,7 +29,7 @@
             </a>
 
             <a href="/profile/{{user.id}}" class="profile-link"><span>{{ user.username }}</span> <img class="user-photo"
-                src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
+                    src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
         </header>
 
 
@@ -68,22 +68,16 @@
             </div>
         </div>
     </div>
+    {{ poll.questions | json_script:"questionsData" }}
 
     <script>
-        // Выбираем poll из контекста Django и передаём его в JavaScript
-        const questionsListStr = '{{ poll.questions | escapejs }}'
-            .replace(/'/g, '"')  // Заменяем одинарные кавычки
-            .replace(/True/g, 'true')  // Булевы значения
-            .replace(/False/g, 'false');
+        // Получаем данные из тега <script>, созданного json_script
+        const questionsData = JSON.parse(document.getElementById('questionsData').textContent);
+        console.log(questionsData); // Теперь это валидный JS-объект/массив
 
-        // 2. Парсим в JavaScript-объект
-        const questionsData = JSON.parse(questionsListStr);
-
-        // 3. Сохраняем в sessionStorage (с правильным форматированием)
+        // Сохраняем в sessionStorage
         sessionStorage.setItem('questionsList', JSON.stringify(questionsData));
-
-        sessionStorage.userId = {{ user.id }}
-
+        sessionStorage.userId = {{ user.id }};
     </script>
     <script src="{% static 'scripts/passing_poll_page.js' %}" type="module"></script>
 
