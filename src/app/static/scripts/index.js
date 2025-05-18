@@ -61,9 +61,7 @@ function searchPolls() {
     const data = {
         "name_of_poll_for_search": $('#search-input').val(),
         "tags": tags,
-        "watched_polls": [
-            0
-        ],
+        "watched_polls": watchedPolls,
         "count_of_polls": 10
     }
     console.log('data', data)

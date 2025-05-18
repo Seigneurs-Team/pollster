@@ -14,7 +14,7 @@ ul#polls {
 }
 
 .poll-item {
-    width: 339px;
+    width: 360px;
 
     border-radius: var(--border-radius);
 }
