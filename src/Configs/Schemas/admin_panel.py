@@ -11,6 +11,9 @@ GET_ADMIN_PANEL_SCHEMA = {
         200: OpenApiResponse(
             description='Сервер обработал запрос и вернул страницу Админ-панели.',
             response=SuccessResponseOnGetAdminPanel
+        ),
+        403: OpenApiResponse(
+            response='Попытка не супер пользователя получить доступ к админ-панели.'
         )
     }
 }
