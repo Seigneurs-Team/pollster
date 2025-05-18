@@ -78,20 +78,54 @@ def request_on_create_new_poll(request: HttpRequest, id_of_user: int = None):
 
 
 def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
-    if 'cover' in json_data:
-        cover = base64.b64decode(json_data['cover'])
-        client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, cover)
-    else:
-        dir_img = pathlib.Path('app/static/img/default_img')
-        images = [path for path in dir_img.iterdir()]
-        random_image = random.choice(images)
-
-        with open(random_image, 'rb') as file:
-            client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, file.read())
-
+    try:
+        save_cover(json_data, poll)
+    except Exception as ex:
+        pass
     producer.publish(Commands.get_vector_poll % poll.id_of_poll)
     response_data = {"response": 'Опрос был успешно создан.', 'id_of_poll': poll.id_of_poll}
     if json_data['private']:
+        return save_private_poll(poll, response_data)
+    else:
+        return JsonResponse(response_data)
+
+
+def save_random_cover(images, poll):
+    random_image = random.choice(images)
+
+    with open(random_image, 'rb') as file:
+        client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, file.read())
+
+
+def save_cover_by_user(json_data, poll):
+    cover = base64.b64decode(json_data['cover'])
+    client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, cover)
+
+
+def save_cover_by_pick(images: list, poll, pick: int):
+    image = images[pick]
+
+    with open(image, 'rb') as file:
+        client_mysqldb.add_cover_into_cover_of_polls(poll.id_of_poll, file.read())
+
+
+def save_cover(json_data, poll):
+    dir_img = pathlib.Path('app/default_poll_imgs/')
+    images = [path for path in dir_img.iterdir()][::-1]
+    if 'cover' in json_data:
+        save_cover_by_user(json_data, poll)
+
+    elif 'coverDefault' in json_data and json_data['coverDefault'] != 0:
+        if len(images) <= int(json_data['coverDefault']) - 1:
+            save_random_cover(images, poll)
+        else:
+            save_cover_by_pick(images, poll, int(json_data['coverDefault']) - 1)
+    else:
+        save_random_cover(images, poll)
+
+
+def save_private_poll(poll, response_data):
+    try:
         code = client_mysqldb.add_entry_into_private_polls(poll.id_of_poll)
         base_64_qr_code = generate_qr_code_of_link('http://%s/%s' % (Hosts.domain, code))
 
@@ -99,5 +133,5 @@ def on_success_create_poll(json_data: dict, poll: Poll, result: bool):
         response_data['url'] = "http://%s/%s" % (Hosts.domain, code)
 
         return JsonResponse(response_data)
-    else:
-        return JsonResponse(response_data)
+    except Exception as ex:
+        raise mysql.connector.errors.DataError
