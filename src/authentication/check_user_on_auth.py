@@ -119,7 +119,11 @@ def authentication_for_delete_polls(func):
             id_of_user = client_mysqldb.get_id_of_user_from_table_with_cookies(request.COOKIES['auth_sessionid'], 'auth_sessionid')
             id_of_author = client_mysqldb.get_id_of_author_of_poll(id_of_poll)
 
-            assert (id_of_user == id_of_author) or client_mysqldb.check_user_into_superusers(id_of_user)
+            id_of_superuser: int = -1
+            if 'auth_admin_sessionid' in request.COOKIES:
+                id_of_superuser = check_admin(request)
+
+            assert (id_of_user == id_of_author) or client_mysqldb.check_user_into_superusers(id_of_superuser)
 
             return func(request, id_of_poll, *args, **kwargs)
 
