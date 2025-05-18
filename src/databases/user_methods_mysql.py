@@ -120,7 +120,6 @@ class UserMethodsMySQL:
         assert session is not None
 
         if now < session[0]:
-            print(session)
             connection_object.cursor.execute(f"""SELECT nickname FROM user WHERE id_of_user = {session[1]}""")
             user = connection_object.cursor.fetchone()
             if user is not None:
