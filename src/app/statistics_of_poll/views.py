@@ -29,10 +29,11 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
     """
     nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
     user = {'id': id_of_user, 'username': nickname}
+    cover = client_mysqldb.get_cover_of_poll_in_base64_format(id_of_poll)
 
     dict_of_statistic = get_statistic(id_of_poll)
 
-    context: dict = {'id_of_poll': id_of_poll, 'user': user, 'questions': dict_of_statistic}
+    context: dict = {'id_of_poll': id_of_poll, 'user': user, 'questions': dict_of_statistic, 'cover': cover}
 
     if client_mysqldb.check_poll_on_private(id_of_poll):
         code = client_mysqldb.get_code_from_private_polls(id_of_poll)
