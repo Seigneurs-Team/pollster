@@ -190,8 +190,7 @@ def authentication_for_statistics(return_id_of_user: bool = True):
 def authentication_for_admin_panel(func):
     def wrapped_func(request: WSGIRequest, *args, **kwargs):
         try:
-            id_of_user = check_admin(request)
-            kwargs['id_of_user'] = id_of_user
+            check_admin(request)
             return func(request, *args, **kwargs)
         except (AssertionError, CookieWasExpired) as _ex:
             raise PermissionDenied()

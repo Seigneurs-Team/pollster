@@ -18,20 +18,18 @@ from Tools_for_rabbitmq.producer import producer
 from Configs.Commands_For_RMQ import Commands
 from Configs.Responses_from_consumer import Responses
 
-from log_system.Levels import Levels
 
-from Configs.Schemas.main_page import MAIN_PAGE_SCHEMA, GET_POLLS_SCHEMA
+from Configs.Schemas.admin_panel import GET_ADMIN_PANEL_SCHEMA
 
 
-# @extend_schema(**MAIN_PAGE_SCHEMA)
-# @api_view(['GET'])
+@extend_schema(**GET_ADMIN_PANEL_SCHEMA)
+@api_view(['GET'])
 @authentication_for_admin_panel
-def request_on_admin_panel(requests: WSGIRequest, id_of_user: int = None):
+def request_on_admin_panel(requests: WSGIRequest):
     polls = client_mysqldb.get_polls(main_page=True)
     return render(requests, 'admin_panel.html', context={'all_objects': polls})
 
 
-@extend_schema(**GET_POLLS_SCHEMA)
 @api_view(['GET'])
 def requests_on_get_polls(request, num_of_polls=5):
     """

@@ -1,5 +1,4 @@
 from drf_spectacular.utils import OpenApiResponse
-from rest_framework.serializers import Serializer
 from Configs.Serializers.change_user_data import (
     SuccessChangeSerializer,
     UnSuccessChangeSerializer,
