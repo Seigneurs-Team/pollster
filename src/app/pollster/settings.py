@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'app.custom_handlers_of_status_codes',
     'drf_spectacular',
     'app.admin_panel',
-    'app.search_system'
+    'app.search_system',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

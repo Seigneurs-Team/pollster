@@ -4,6 +4,7 @@ from Configs.Serializers.profile_page import SuccessResponseOnGetProfilePage
 
 PROFILE_PAGE_SCHEMA = {
     'summary': 'Получение HTML страницы профиля пользователя.',
+    'methods': ['GET'],
     'tags': ['profile page'],
     'description': 'Endpoint нужен для получения HTML страницы профиля пользователя. В этом ответе также находятся опросы, созданные и пройденные пользователем.',
     'parameters': [
@@ -19,6 +20,9 @@ PROFILE_PAGE_SCHEMA = {
         200: OpenApiResponse(
             description='Запрос был успешно обработан и была выдана HTML страница со следующими параметрами.',
             response=SuccessResponseOnGetProfilePage
+        ),
+        403: OpenApiResponse(
+            description='Попытка зайти на профиль другого человека.'
         )
     }
 }
