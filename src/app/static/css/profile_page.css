@@ -255,6 +255,10 @@ header a {
     width: min-content;
 }
 
+#completed-polls .actions {
+    justify-content: flex-end
+}
+
 
 @media (max-width: 768px) {
 

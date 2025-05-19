@@ -102,9 +102,7 @@
                         <div class="poll-info">
                             <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                             <p class="poll-description">{{poll.description}}</p>
-                            <!-- <div>
-                                <div class="answers-left-poll">Осталось {{10}} человек</div>
-                            </div> -->
+                            <p class="poll-tags">{{poll.tags}} </p>
                             <div class="btns">
                                 <button class="complete-poll" data-poll="{{poll.id_of_poll}}">
                                     Завершить опрос
@@ -136,25 +134,29 @@
                     <p>Здесь пока ничего нет...</p>
                     {% else %}
                     {% for poll in user.completedPolls %}
-                    <li class="poll-wrapper">
-                        <a class="poll-item" href="passing_poll/{{poll.id_of_poll}}/">
-                            <div class="poll-img"> <img src="data:image/png;base64,{{ poll.cover }}" alt="Poll cover">
+                    <li class="poll-item">
+                        <div class="poll-img">
+                            <img src="data:image/png;base64,{{ poll.cover }}" alt="Poll cover">
+                        </div>
+                        <div class="poll-info">
+                            <h2 class="poll-name">{{poll.name_of_poll}}</h2>
+                            <p class="poll-description">{{poll.description}}</p>
+                            <p class="poll-tags">{{poll.tags}} </p>
+                            <div class="actions">
+                                <a href="/statistics/{{poll.id_of_poll}}">
+                                    <img src="{% static 'img/icons/statistics.svg' %}">
+                                </a>
+                                <button class="share-poll" data-poll="{{poll.id_of_poll}}">
+                                    <img src="{% static 'img/icons/share.svg' %}">
+                                </button>
                             </div>
-                            <div class="poll-info">
-                                <h2 class="poll-name">{{poll.name_of_poll}}</h2>
-                                <p class="poll-description">{{poll.description}}</p>
-                                <p class="poll-tags">{{item.tags}} </p>
-                                <div>
-                                    <div class="answers-left-poll">Осталось {{10}} человек</div>
-                                </div>
-                            </div>
-                        </a>
+                        </div>
                     </li>
                     {% endfor %}
                     {% endif %}
                 </ul>
             </div>
-        
+
 
             <div class="overlay" id="overlay-loading">
                 <div class="overlay-inner">
