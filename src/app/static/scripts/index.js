@@ -20,18 +20,11 @@ $('.tag').click(function () {
     }
 })
 
-// для неактивных фильтров
-// $('.popup input').attr("disabled", "disabled")
-// $('.popup button').attr("disabled", "disabled")
-
-
 // Закрытие при клике вне
 $(document).on('click', function (e) {
     if (!$(e.target).closest('.popup').length &&
         !$(e.target).hasClass('opn-popup') &&
         $('.popup').attr('class').includes('popup__active')) {
-        console.log(!$(e.target).closest('.popup').length)
-        console.log(!$(e.target).hasClass('opn-popup'))
         $(".popup").toggleClass('popup__active');
     }
 });
@@ -44,7 +37,7 @@ $(".popup").click(function (e) {
 $("#search-btn").click(searchPolls)
 
 // Обработчик нажатия Enter в поле ввода
-$("#search-input").keydown(function(event) {
+$("#search-input").keydown(function (event) {
     if (event.key === "Enter") {
         searchPolls(); // Вызываем функцию поиска
     }
@@ -75,16 +68,18 @@ function searchPolls() {
         // очищаем список опросов и заполняем результатами поиска
         pollsDiv.empty()
         renderPolls(listOfPolls)
+
+        // обновляем watched polls для того чтобы когда юзер нажмет "еще" сразу достать готовый запрос из sessionstorage
+        $('.poll-item').each((index, poll) => {
+            watchedPolls.push(poll.getAttribute('id'))
+        })
+        console.log('new watchedPolls', watchedPolls)
+        data["watched_polls"] = watchedPolls
+
+        sessionStorage.currentRequest = JSON.stringify(data)
     })
 
-    // обновляем watched polls для того чтобы когда юзер нажмет "еще" сразу достать готовый запрос из sessionstorage
-    $('.poll-item').each((index, poll) => {
-        watchedPolls.push(poll.getAttribute('id'))
-    })
-    console.log('new watchedPolls', watchedPolls)
-    data["watched_polls"] = watchedPolls
 
-    sessionStorage.currentRequest = JSON.stringify(data)
 }
 
 
@@ -129,11 +124,11 @@ $('#more').click(() => {
     const requestData = sessionStorage.currentRequest
     if (requestData) {
         sendRequest('/search_polls', 'POST', requestData).then(responseJson => {
-        const listOfPolls = responseJson.list_of_polls
-        console.log('new listOfPolls', listOfPolls)
+            const listOfPolls = responseJson.list_of_polls
+            console.log('new listOfPolls', listOfPolls)
 
-        // добавляем результаты поиска
-        renderPolls(listOfPolls)
-    })
+            // добавляем результаты поиска
+            renderPolls(listOfPolls)
+        })
     }
 })

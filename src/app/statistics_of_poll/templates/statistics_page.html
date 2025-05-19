@@ -35,9 +35,14 @@
             <a href="/">
                 <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
             </a>
-
-            <a href="/profile/{{user.id}}" class="profile-link"><span>{{ user.username }}</span> <img class="user-photo"
-                src="{% static 'img\default_img\profile img.png' %}" alt="profile photo"></a>
+            {% if user.is_authenticated %}
+            <a href="/profile/{{user.id}}" class="profile-link">
+                <span>{{ user.username }}</span>
+                <img class="user-photo" src="{% static 'img\default_img\profile img.png' %}" alt="profile photo">
+            </a>
+            {% else %}
+            <a href="/sign_in" class="sign-up">Войти</a>
+            {% endif %}
         </header>
 
         <main data-poll-id="{{id_of_poll}}">
