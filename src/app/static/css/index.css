@@ -70,10 +70,27 @@ main {
     font-size: 24px;
 }
 
+
+#search-btn {
+    display: flex;
+    align-items: center;
+}
+
 #search-btn:hover {
     background-color: transparent;
 }
 
+#search-btn path {
+    transition: stroke 0.2s ease;
+}
+
+#search-btn:hover path {
+    stroke: #808080;
+}
+
+#search-btn:active path {
+    stroke: #4D4D4D;
+}
 
 
 .popup {
@@ -125,7 +142,8 @@ main {
 
 .popup__active {
     /* display: block; */
-    display: flex; /* для  .feature-unavalabl*/
+    display: flex;
+    /* для  .feature-unavalabl*/
 }
 
 input[type="checkbox"],
@@ -341,6 +359,6 @@ ul#polls {
 }
 
 .statistics-btn {
-width: 32px;
-height: 33px;
+    width: 32px;
+    height: 33px;
 }

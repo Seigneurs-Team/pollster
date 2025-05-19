@@ -43,6 +43,12 @@ $(".popup").click(function (e) {
 
 $("#search-btn").click(searchPolls)
 
+// Обработчик нажатия Enter в поле ввода
+$("#search-input").keydown(function(event) {
+    if (event.key === "Enter") {
+        searchPolls(); // Вызываем функцию поиска
+    }
+});
 
 
 function searchPolls() {
@@ -53,10 +59,6 @@ function searchPolls() {
     console.log('tags', tags)
 
     let watchedPolls = []
-    $('.poll-item').each((index, poll) => {
-        watchedPolls.push(poll.getAttribute('id'))
-    })
-    console.log('watchedPolls', watchedPolls)
 
     const data = {
         "name_of_poll_for_search": $('#search-input').val(),
@@ -76,7 +78,6 @@ function searchPolls() {
     })
 
     // обновляем watched polls для того чтобы когда юзер нажмет "еще" сразу достать готовый запрос из sessionstorage
-    watchedPolls = []
     $('.poll-item').each((index, poll) => {
         watchedPolls.push(poll.getAttribute('id'))
     })
