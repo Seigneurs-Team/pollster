@@ -6,11 +6,33 @@
     margin-top: 10px;
 }
 
-.btns .complete-poll {
-    font-weight: 400;
-    padding: 10px;
-    background-color: white;
-    color:black;
-    border: solid 1.5px var(--violet);
-    border-radius: var(--border-radius);
+
+#ban-wrapper {
+    display: flex;
+    column-gap: 10px;
+}
+
+#ban, #unban {
+    padding: 5px;
+    border: var(--violet) 1px solid;
+}
+
+.actions {
+    display:flex;
+    column-gap: 10px;
+    justify-content: flex-end
+}
+
+
+.actions button:hover {
+    background: none;
+    cursor:pointer;
+}
+
+.success {
+    color: green;
+}
+
+.fail {
+    color: red;
 }

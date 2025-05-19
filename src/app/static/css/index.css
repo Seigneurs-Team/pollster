@@ -325,16 +325,17 @@ ul#polls {
 
 
 #more {
-    color: #fff;
+    color: var(--violet);
+    background-color: #fff;
     width: 150px;
-    height: 50px;
-    background-color: var(--violet);
+    border: var(--violet) solid 2px;
+    padding: 5px 14px;
     border-radius: var(--border-radius);
 }
 
 #more:hover {
-    color: var(--violet);
-    background-color: #fff;
+    color: #fff;
+    background-color: var(--violet);
     border: var(--violet) solid 2px;
 }
 
@@ -361,4 +362,8 @@ ul#polls {
 .statistics-btn {
     width: 32px;
     height: 33px;
+}
+
+#more-wrapper {
+    text-align: center;
 }
