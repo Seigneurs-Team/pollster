@@ -84,6 +84,10 @@ function drawRightAnswersChart(i, type = 'doughnut') {
 }
 
 function drawOptionsChart(i, options, countOfSelected, type = 'bar') {
+    if (type === 'bar') {
+        drawBarChart(i, options, countOfSelected)
+        return
+    }
     // количество выбранных вариантов ответа: нужно получить список вариантов ответа и список количества выбора каждого из них
     /// можно использовать типы bar, polarArea, pie, doughnut
     const myChart = new Chart($(`#${questions[i].id} .chart`), {
