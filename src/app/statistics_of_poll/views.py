@@ -27,8 +27,11 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
     :param id_of_user: идентификатор пользователя
     :return: render(requests, 'statistics_page.html', context={'id_of_poll': id_of_poll, 'user': user})
     """
-    nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
-    user = {'id': id_of_user, 'username': nickname}
+    user = None
+    if 'auth_sessionid' in requests.COOKIES and id_of_user is not None:
+        nickname = client_mysqldb.get_user_nickname_from_table_with_cookie(requests.COOKIES['auth_sessionid'], 'auth_sessionid')
+        user = {'id': id_of_user, 'username': nickname}
+
     cover = client_mysqldb.get_cover_of_poll_in_base64_format(id_of_poll)
 
     dict_of_statistic = get_statistic(id_of_poll)
@@ -37,15 +40,14 @@ def request_on_statistics_page(requests: WSGIRequest, id_of_poll: int, id_of_use
 
     if client_mysqldb.check_poll_on_private(id_of_poll):
         code = client_mysqldb.get_code_from_private_polls(id_of_poll)
-        context['qr_code'] = generate_qr_code_of_link("http://%s/%s" % (Hosts.domain, code))
-        context['url_on_poll'] = "http://%s/%s" % (Hosts.domain, code)
+        context['qr_code'] = generate_qr_code_of_link("http://%s:8000/passing_poll/%s" % (Hosts.domain, code))
+        context['url_on_poll'] = "http://%s:8000/passing_poll/%s" % (Hosts.domain, code)
 
     return render(requests, 'statistics_page.html', context=context)
 
 
 @extend_schema(**GET_STATISTICS_SCHEMA)
 @api_view(['GET'])
-@authentication_for_statistics(False)
 def request_on_get_statistics(requests: WSGIRequest, id_of_poll: int):
     """
     Функция нужна для получения статистики по конкретному опросу.
