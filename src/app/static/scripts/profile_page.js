@@ -1,5 +1,5 @@
 import { sendRequest } from './api.js';
-import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay, showCreatedQR } from './utils/helpers.js';
+import { showLoadingOverlay, hideLoadingOverlay, showFailOverlay } from './utils/helpers.js';
 
 
 let tagsErrorMessage = $('#tags-error-message');
@@ -208,6 +208,20 @@ function showExistingQR(args) {
     $('#overlay-share-poll').show();
 }
 
+// закрытие всплывающего окна по клику на overlay
+$('#overlay-share-poll').click(function (e) {
+    // Проверяем, был ли клик именно на overlay (а не на его дочерние элементы)
+    if (e.target === this) {
+        $(this).hide();
+    }
+});
+
+// закрытие всплывающего окна по ESC
+$(document).keyup(function (e) {
+    if (e.key === "Escape") {
+        $('#overlay-share-poll').hide();
+    }
+});
 
 function getUrlAndQR(id) {
     showLoadingOverlay();
@@ -319,18 +333,3 @@ function showToast(toastId, toastInner, secondsLeft, fn, pollItem) {
         }
     });
 }
-
-// закрытие всплывающего окна по клику на overlay
-$('#overlay-share-poll').click(function (e) {
-    // Проверяем, был ли клик именно на overlay (а не на его дочерние элементы)
-    if (e.target === this) {
-        $(this).hide();
-    }
-});
-
-// Дополнительно: закрытие по ESC
-$(document).keyup(function (e) {
-    if (e.key === "Escape") {
-        $('#overlay-share-poll').hide();
-    }
-});

@@ -1,0 +1,38 @@
+
+.btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+
+#ban-wrapper {
+    display: flex;
+    column-gap: 10px;
+}
+
+#ban, #unban {
+    padding: 5px;
+    border: var(--violet) 1px solid;
+}
+
+.actions {
+    display:flex;
+    column-gap: 10px;
+    justify-content: flex-end
+}
+
+
+.actions button:hover {
+    background: none;
+    cursor:pointer;
+}
+
+.success {
+    color: green;
+}
+
+.fail {
+    color: red;
+}

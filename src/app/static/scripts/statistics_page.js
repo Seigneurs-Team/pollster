@@ -61,15 +61,15 @@ $(document).ready(async function () {
 })
 
 
-// количество выбранных правильных вариантов ответа: в labels всегда "right/wrong", в data 1й элемент - количество правльных, 2й - неправильных ответов. в вопросах с коротким ответом то же самое (но это для графика. а так все ответы будут списком выводиться)
+// количество выбранных правильных вариантов ответа: в labels всегда "Верно/Неверно", в data 1й элемент - количество правльных, 2й - неправильных ответов. в вопросах с коротким ответом то же самое (но это для графика. а так все ответы будут списком выводиться)
 function drawRightAnswersChart(i, type = 'doughnut') {
 
     const myChart = new Chart($(`#${questions[i].id} .chart`), {
         type: type,
         data: {
             labels: [
-                'right',
-                'wrong'
+                'Верно',
+                'Неверно'
             ],
             datasets: [{
                 label: 'Ответило',
@@ -84,6 +84,10 @@ function drawRightAnswersChart(i, type = 'doughnut') {
 }
 
 function drawOptionsChart(i, options, countOfSelected, type = 'bar') {
+    if (type === 'bar') {
+        drawBarChart(i, options, countOfSelected)
+        return
+    }
     // количество выбранных вариантов ответа: нужно получить список вариантов ответа и список количества выбора каждого из них
     /// можно использовать типы bar, polarArea, pie, doughnut
     const myChart = new Chart($(`#${questions[i].id} .chart`), {

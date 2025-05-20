@@ -175,18 +175,22 @@ def authentication_for_statistics(return_id_of_user: bool = True):
     def wrapped_high_func(func):
         def wrapped_func(request: WSGIRequest, *args, **kwargs):
             try:
-                id_of_user = check_user(request, get_id_of_user=True)
-                if return_id_of_user:
-                    kwargs['id_of_user'] = id_of_user
                 if client_mysqldb.check_poll_on_private(kwargs['id_of_poll']):
+                    id_of_user = check_user(request, get_id_of_user=True)
                     if id_of_user == client_mysqldb.get_metadata_of_poll(kwargs['id_of_poll'])[3]:
                         return func(request, *args, **kwargs)
                     else:
                         raise PermissionDenied()
                 else:
-                    return func(request, *args, **kwargs)
-            except (AssertionError, CookieWasExpired) as _ex:
-                return HttpResponseRedirect('/sign_in')
+                    try:
+                        id_of_user = check_user(request, get_id_of_user=True)
+                        if return_id_of_user:
+                            kwargs['id_of_user'] = id_of_user
+                    except (AssertionError, CookieWasExpired):
+                        return func(request, *args, **kwargs)
+            except (AssertionError, CookieWasExpired):
+                raise PermissionDenied()
+
         return wrapped_func
     return wrapped_high_func
 

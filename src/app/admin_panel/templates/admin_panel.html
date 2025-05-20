@@ -12,12 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
     <title>Pollster</title>
-    
+
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/poll-feed.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_panel.css' %}">
     <link rel="stylesheet" href="{% static 'css/media.css' %}">
 
 </head>
@@ -25,18 +26,51 @@
 <body>
     <div class="content">
         <header>
-            <a href="/" class="logo-stub"></a>
-            <!--        <img src="{% static 'img\header2.png' %}" alt="logo" class="logo">-->
-            <div class="right-block">
-                <div class="search">
-                    <input type="text" name="search" id="search" placeholder="Поиск опросов" maxlength="100">
-                    <img src="{% static 'img/icons/Search.svg' %}">
-                </div>
+            <a href="/">
+                <img src="{% static 'img\logo.png' %}" alt="logo" class="logo">
+            </a>
+            <div class="search">
+                <img src="{% static 'img/icons/Filter.svg' %}" class="opn-popup">
+                <div class="popup" id="popup">
+                    <div class="popup-content">
+                        <h2>Фильтры</h2>
+                        <div class="filters">
+                            <p>По тэгам:</p>
+                            <div class="tags">
+                                <div class="selected-tags" id="selected-tags"></div>
+                                <div class="not-selected-tags" id="not-selected-tags">
+                                    {% for tag in tags %}
+                                    <button class="tag">
+                                        <span>{{tag}}</span>
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
 
+                        </div>
+                    </div>
+                </div>
+                <input type="text" name="search" id="search-input" placeholder="Поиск опросов" maxlength="100">
+                <button id="search-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+                            stroke="#B3B3B3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
             </div>
+
         </header>
         <main>
             <h1>Админ панель</h1>
+
+            <h1>Бан пользователей</h1>
+            <div id="ban-wrapper">
+                <input id="ban-input" type="text">
+                <button id="ban">Бан</button>
+                <button id="unban">Разбан</button>
+            </div>
+            <div id="ban-result" class="success"></div>
             <h1>Все опросы</h1>
 
             <ul id="polls">
@@ -53,6 +87,16 @@
                             <div class="tag">{{tag}}</div>
                             {% endfor %}
                         </div>
+                        <div class="btns">
+                            <div class="actions">
+                                <a href="/statistics/{{poll.id_of_poll}}">
+                                    <img src="{% static 'img/icons/statistics.svg' %}">
+                                </a>
+                                <button class="delete-poll" data-poll="{{poll.id_of_poll}}">
+                                    <img src="{% static 'img/icons/basket.svg' %}">
+                                </button>
+                            </div>
+                        </div>
 
 
                     </a>
@@ -60,28 +104,46 @@
                 {% endfor %}
             </ul>
 
+
         </main>
 
     </div>
-   
+
     <div class="footer-wrapper" data-cloud-1="{% static 'img/cloud 1.svg' %}"
         data-cloud-2="{% static 'img/cloud 2.svg' %}">
         <div style="position: fixed; left: -50px; top: 0; height: 100vh; z-index: 1000;">
-            <div style="transform: rotate(-90deg) translateX(-100%); transform-origin: left top; position: absolute; left: 0; animation: moveDown 4s linear infinite;">
-              <img src="http://open-krasnodar.ru/subdomain_files/ajax_images/913/1361354500.gif" style="width: 200px; height: 200px; display: block; transform: scaleY(-1);">
+            <div
+                style="transform: rotate(-90deg) translateX(-100%); transform-origin: left top; position: absolute; left: 0; animation: moveDown 4s linear infinite;">
+                <img src="http://open-krasnodar.ru/subdomain_files/ajax_images/913/1361354500.gif"
+                    style="width: 200px; height: 200px; display: block; transform: scaleY(-1);">
             </div>
-            
+
             <style>
-              @keyframes moveDown {
-                0% { top: -200px; }
-                100% { top: 100vh; }
-              }
+                @keyframes moveDown {
+                    0% {
+                        top: -200px;
+                    }
+
+                    100% {
+                        top: 100vh;
+                    }
+                }
             </style>
-          </div>
+        </div>
         {% include 'footer.html' %}
     </div>
     <script src="{% static 'scripts/lib/jquery-3.7.1.slim.min.js' %}" type="module"></script>
+
+    <meta property="og:title" content="Pollster: платформа для анкетирования" />
+    <meta property="og:description" content="Современная платформа для создания и прохождения опросов на Django" />
+    <meta property="og:image" content="{% static 'img\circle-logo.png' %}" />
+    <meta property="og:url" content="https://example.com/open-graph-guide" />
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/external/toastr.css' %}">
     <script src="{% static 'scripts/index.js' %}" type="module"></script>
+    <script src="{% static 'scripts/admin-panel.js' %}" type="module"></script>
 
 </body>
 
