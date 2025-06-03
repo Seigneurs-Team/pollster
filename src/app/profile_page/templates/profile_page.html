@@ -102,7 +102,11 @@
                         <div class="poll-info">
                             <h2 class="poll-name">{{poll.name_of_poll}}</h2>
                             <p class="poll-description">{{poll.description}}</p>
-                            <p class="poll-tags">{{poll.tags}} </p>
+                            <div class="poll-tags">
+                                {% for tag in poll.tags %}
+                                <div class="tag">{{tag}}</div>
+                                {% endfor %}
+                            </div>
                             <div class="btns">
                                 <button class="complete-poll" data-poll="{{poll.id_of_poll}}">
                                     Завершить опрос
